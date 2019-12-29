@@ -24,8 +24,63 @@ UnsignedHugeInt::UnsignedHugeInt(const unsigned long long value) {
 }
 
 UnsignedHugeInt::UnsignedHugeInt(const UnsignedHugeInt& orig) {
+    // ToDo: Complete this method.
 }
 
 UnsignedHugeInt::~UnsignedHugeInt() {
+    // ToDo: Complete this method.
 }
 
+UnsignedHugeInt UnsignedHugeInt::operator+(UnsignedHugeInt addend) {
+    // ToDo: Complete this method.
+    
+}
+
+UnsignedHugeInt UnsignedHugeInt::operator+(long long addend) {
+    // ToDo: Complete this method.
+    
+}
+
+UnsignedHugeInt UnsignedHugeInt::operator-(UnsignedHugeInt minuend) {
+    // ToDo: Complete this method.
+    
+}
+
+UnsignedHugeInt UnsignedHugeInt::operator-(long long minuend) {
+    // ToDo: Complete this method.
+    
+}
+
+UnsignedHugeInt UnsignedHugeInt::operator*(UnsignedHugeInt factor) {
+    // ToDo: Complete this method.
+    
+}
+
+UnsignedHugeInt UnsignedHugeInt::operator*(long long factor) {
+    // ToDo: Complete this method.
+    
+}
+
+UnsignedHugeInt UnsignedHugeInt::operator/(UnsignedHugeInt divisor) {
+    // ToDo: Complete this method.
+    
+}
+
+UnsignedHugeInt UnsignedHugeInt::operator/(long long divisor) {
+    // ToDo: Complete this method.
+    
+}
+
+long UnsignedHugeInt::num_words() {
+    return this->numWords;
+}
+
+bool UnsignedHugeInt::is_prime() {
+    // ToDo: Complete this method.
+    return false;
+}
+
+std::string UnsignedHugeInt::to_string() {
+    // ToDo: Complete this method.
+    return NULL;
+}
