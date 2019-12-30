@@ -1,0 +1,13 @@
+[{
+  "file": "C:\\Users\\Seeker\\Documents\\programming\\PrimeGenerator\\PrimeGenerator\\main.cpp",
+  "directory": "C:\\Users\\Seeker\\Documents\\programming\\PrimeGenerator\\PrimeGenerator",
+  "command": "clang  -c C:\\Users\\Seeker\\Documents\\programming\\PrimeGenerator\\PrimeGenerator\\main.cpp -o C:\\Users\\Seeker\\Documents\\programming\\PrimeGenerator\\PrimeGenerator\\main.cpp.o -target x86_64-pc-windows-gnu -Ic:\\MinGW\\lib\\gcc\\mingw32\\8.2.0\\include\\c++ -Ic:\\MinGW\\lib\\gcc\\mingw32\\8.2.0\\include\\c++\\mingw32 -Ic:\\MinGW\\lib\\gcc\\mingw32\\8.2.0\\include\\c++\\backward -Ic:\\MinGW\\lib\\gcc\\mingw32\\8.2.0\\include -Ic:\\MinGW\\include -Ic:\\MinGW\\lib\\gcc\\mingw32\\8.2.0\\include-fixed -I. -I.  -std=c++17  -Wall  -g  -O0  -Wall"
+ }, {
+  "file": "C:\\Users\\Seeker\\Documents\\programming\\PrimeGenerator\\PrimeGenerator\\UnsignedHugeInt.cpp",
+  "directory": "C:\\Users\\Seeker\\Documents\\programming\\PrimeGenerator\\PrimeGenerator",
+  "command": "clang  -c C:\\Users\\Seeker\\Documents\\programming\\PrimeGenerator\\PrimeGenerator\\UnsignedHugeInt.cpp -o C:\\Users\\Seeker\\Documents\\programming\\PrimeGenerator\\PrimeGenerator\\UnsignedHugeInt.cpp.o -target x86_64-pc-windows-gnu -Ic:\\MinGW\\lib\\gcc\\mingw32\\8.2.0\\include\\c++ -Ic:\\MinGW\\lib\\gcc\\mingw32\\8.2.0\\include\\c++\\mingw32 -Ic:\\MinGW\\lib\\gcc\\mingw32\\8.2.0\\include\\c++\\backward -Ic:\\MinGW\\lib\\gcc\\mingw32\\8.2.0\\include -Ic:\\MinGW\\include -Ic:\\MinGW\\lib\\gcc\\mingw32\\8.2.0\\include-fixed -I. -I.  -std=c++17  -Wall  -g  -O0  -Wall"
+ }, {
+  "file": "C:\\Users\\Seeker\\Documents\\programming\\PrimeGenerator\\PrimeGenerator\\UnsignedHugeInt.h",
+  "directory": "C:\\Users\\Seeker\\Documents\\programming\\PrimeGenerator\\PrimeGenerator",
+  "command": "clang  -c C:\\Users\\Seeker\\Documents\\programming\\PrimeGenerator\\PrimeGenerator\\UnsignedHugeInt.h -o C:\\Users\\Seeker\\Documents\\programming\\PrimeGenerator\\PrimeGenerator\\UnsignedHugeInt.h.o -target x86_64-pc-windows-gnu -Ic:\\MinGW\\lib\\gcc\\mingw32\\8.2.0\\include\\c++ -Ic:\\MinGW\\lib\\gcc\\mingw32\\8.2.0\\include\\c++\\mingw32 -Ic:\\MinGW\\lib\\gcc\\mingw32\\8.2.0\\include\\c++\\backward -Ic:\\MinGW\\lib\\gcc\\mingw32\\8.2.0\\include -Ic:\\MinGW\\include -Ic:\\MinGW\\lib\\gcc\\mingw32\\8.2.0\\include-fixed -I. -I.  -std=c++17  -Wall  -g  -O0  -Wall"
+ }]
