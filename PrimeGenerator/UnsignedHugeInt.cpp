@@ -86,10 +86,13 @@ bool UnsignedHugeInt::is_prime() {
 std::string UnsignedHugeInt::to_string() {
     // ToDo: Complete this method.
     std::string numberString = "";
+    std::ostringstream numberToStringStream;
     if (this->numWords == 0)
         numberString = "0";
     else if (this->numWords == 1) {
 //        numberString = std::to_string(this->words[0]);        
+    numberToStringStream << this->words[0];
+    numberString = numberToStringStream.str();
     }
     // ToDo: If numWords > 1
     return numberString;

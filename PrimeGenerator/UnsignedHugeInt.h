@@ -9,6 +9,12 @@
 
 //#include <bits/stdc++.h>
 #include <iostream>
+
+//#include <iomanip>
+//#include <locale>
+#include <sstream>
+//#include <ostream>
+
 //#include <string>
 //#include <cstring>
 #define MAXNUMWORDS 100000000
