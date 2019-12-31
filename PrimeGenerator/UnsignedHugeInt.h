@@ -17,7 +17,8 @@
 
 //#include <string>
 //#include <cstring>
-#define MAXNUMWORDS 100000000
+//#define MAXNUMWORDS 100000000
+#define MAXNUMWORDS 100000
 
 class UnsignedHugeInt {
 public:

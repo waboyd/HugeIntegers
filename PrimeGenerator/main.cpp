@@ -21,9 +21,9 @@ int main(int argc, char **argv)
     
     std::cout << "Test message.\n";
     
-//    UnsignedHugeInt numA;
-//    std::cout << "Value of the number: ";
-//    std::cout << numA.to_string() << ".\n";
+    UnsignedHugeInt numA(98741);
+    std::cout << "Value of the number: ";
+    std::cout << numA.to_string() << ".\n";
 //    int dummyInt;
 //    std::cin >> dummyInt;
 //    
