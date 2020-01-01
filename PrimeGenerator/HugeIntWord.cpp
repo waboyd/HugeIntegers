@@ -24,3 +24,14 @@ HugeIntWord::~HugeIntWord()
 {
 }
 
+HugeIntWord* HugeIntWord::get_next_word() {
+    return this->lessSigWord;
+}
+
+std::string HugeIntWord::to_string() {
+    std::ostringstream numberToStringStream;
+    std::string numberString;
+    numberToStringStream << this->value;
+    numberString = numberToStringStream.str();
+    return numberString;
+}
