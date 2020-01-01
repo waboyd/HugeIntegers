@@ -1,3 +1,6 @@
-Debug/UnsignedHugeInt.cpp.o: UnsignedHugeInt.cpp UnsignedHugeInt.h
+Debug/UnsignedHugeInt.cpp.o: UnsignedHugeInt.cpp UnsignedHugeInt.h \
+ HugeIntWord.h
 
 UnsignedHugeInt.h:
+
+HugeIntWord.h:

@@ -8,6 +8,8 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="HugeIntWord.cpp"/>
+    <File Name="HugeIntWord.h"/>
     <File Name="UnsignedHugeInt.cpp"/>
     <File Name="UnsignedHugeInt.h"/>
     <File Name="main.cpp"/>

@@ -13,7 +13,7 @@ CurrentFileName        :=
 CurrentFilePath        :=
 CurrentFileFullPath    :=
 User                   :=Seeker
-Date                   :=30/12/2019
+Date                   :=31/12/2019
 CodeLitePath           :="C:/Program Files/CodeLite"
 LinkerName             :=C:/MinGW/bin/g++.exe
 SharedObjectLinkerName :=C:/MinGW/bin/g++.exe -shared -fPIC
@@ -62,7 +62,7 @@ AS       := C:/MinGW/bin/as.exe
 ## User defined environment variables
 ##
 CodeLiteDir:=C:\Program Files\CodeLite
-Objects0=$(IntermediateDirectory)/UnsignedHugeInt.cpp$(ObjectSuffix) $(IntermediateDirectory)/main.cpp$(ObjectSuffix) 
+Objects0=$(IntermediateDirectory)/UnsignedHugeInt.cpp$(ObjectSuffix) $(IntermediateDirectory)/main.cpp$(ObjectSuffix) $(IntermediateDirectory)/HugeIntWord.cpp$(ObjectSuffix) 
 
 
 
@@ -108,6 +108,14 @@ $(IntermediateDirectory)/main.cpp$(DependSuffix): main.cpp
 
 $(IntermediateDirectory)/main.cpp$(PreprocessSuffix): main.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/main.cpp$(PreprocessSuffix) main.cpp
+
+$(IntermediateDirectory)/HugeIntWord.cpp$(ObjectSuffix): HugeIntWord.cpp $(IntermediateDirectory)/HugeIntWord.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/Users/Seeker/Documents/programming/PrimeGenerator/PrimeGenerator/HugeIntWord.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/HugeIntWord.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/HugeIntWord.cpp$(DependSuffix): HugeIntWord.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/HugeIntWord.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/HugeIntWord.cpp$(DependSuffix) -MM HugeIntWord.cpp
+
+$(IntermediateDirectory)/HugeIntWord.cpp$(PreprocessSuffix): HugeIntWord.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/HugeIntWord.cpp$(PreprocessSuffix) HugeIntWord.cpp
 
 
 -include $(IntermediateDirectory)/*$(DependSuffix)

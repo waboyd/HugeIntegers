@@ -26,7 +26,7 @@ int main(int argc, char **argv)
     std::cout << numA.to_string() << ".\n";
 //    int dummyInt;
 //    std::cin >> dummyInt;
-//    
+    
     return 0;
 
 }

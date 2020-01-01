@@ -17,8 +17,10 @@
 
 //#include <string>
 //#include <cstring>
-//#define MAXNUMWORDS 100000000
-#define MAXNUMWORDS 100000
+
+#include "HugeIntWord.h"
+
+//#define MAXNUMWORDS 100000
 
 class UnsignedHugeInt {
 public:
@@ -39,7 +41,8 @@ public:
     std::string to_string();
     
 private:
-    unsigned long numWords;
-    unsigned long words[MAXNUMWORDS];
+    static unsigned long long maxWordValue;
+    unsigned long long numWords;
+//    unsigned long words[MAXNUMWORDS];
+    HugeIntWord *leastSigWord, *mostSigWord;
 };
-
