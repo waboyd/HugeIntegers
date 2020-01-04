@@ -1,7 +1,8 @@
 #include "UnsignedHugeInt.h"
 
-    // ToDo: Set the maxWordValue here and in HugeIntWord.
-    unsigned long long UnsignedHugeInt::maxWordValue = 999999999;
+    // ToDo: Set the maxWordValmax_word_valuein HugeIntWord.
+    unsigned long long UnsignedHugeInt::max_word_value = 999999999;
+    unsigned long long UnsignedHugeInt::word_base = UnsignedHugeInt::max_word_value + 1;
 
 UnsignedHugeInt::UnsignedHugeInt() {
     // ToDo: Set maximum word value.
@@ -13,11 +14,22 @@ UnsignedHugeInt::UnsignedHugeInt() {
 
 UnsignedHugeInt::UnsignedHugeInt(const unsigned long long value) {
     // ToDo: Set maximum word value.
-    // ToDo: Handle input values larger than the maximum word size.
-    this->numWords = 1;
-    HugeIntWord *newWord = new HugeIntWord(value);
-    this->mostSigWord = newWord;
-    this->leastSigWord = newWord;
+    if (value > UnsignedHugeInt::max_word_value) {
+        unsigned long carryValue = value / UnsignedHugeInt::word_base;
+        unsigned long long lesserValue = value % UnsignedHugeInt::word_base;
+        HugeIntWord *lesserWord, *greaterWord;
+        lesserWord = new HugeIntWord(lesserValue);
+        greaterWord = new HugeIntWord(carryValue, 1, lesserWord);
+        this->mostSigWord = greaterWord;
+        this->leastSigWord = lesserWord;
+        this->numWords = 2;
+    }
+    else {
+        HugeIntWord *newWord = new HugeIntWord(value);
+        this->mostSigWord = newWord;
+        this->leastSigWord = newWord;
+        this->numWords = 1;
+    }
 }
 
 UnsignedHugeInt::UnsignedHugeInt(const UnsignedHugeInt& orig) {
@@ -105,6 +117,7 @@ bool UnsignedHugeInt::is_prime() {
 }
 
 std::string UnsignedHugeInt::to_string() {
+    // ToDo: Convert the words to base 10 when forming the string.
     std::string numberString = "", wordString;
     HugeIntWord *thisWord;
     if (this->numWords == 0)

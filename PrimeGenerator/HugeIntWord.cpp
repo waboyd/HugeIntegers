@@ -17,8 +17,8 @@ HugeIntWord::HugeIntWord(unsigned long long value, unsigned long long place_valu
     this->lessSigWord = lowerSignificantWord;
     this->place_value = place_value;
     this->moreSigWord = NULL;
+    lowerSignificantWord->attach_more_significant_word(this);
 }
-
 
 HugeIntWord::~HugeIntWord()
 {
@@ -46,10 +46,11 @@ void HugeIntWord::remove_more_significant_word() {
         std::cout << "WARNING: An attempt was made to remove a null more significant word.\n";
         return;
     }
-    this->moreSigWord == NULL;
+    this->moreSigWord = NULL;
 }
 
 std::string HugeIntWord::to_string() {
+    // ToDo: Convert the words to base 10 when forming the string.
     std::ostringstream numberToStringStream;
     std::string numberString;
     numberToStringStream << this->value;

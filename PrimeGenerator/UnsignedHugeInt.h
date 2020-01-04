@@ -43,7 +43,8 @@ public:
     std::string to_string();
     
 private:
-    static unsigned long long maxWordValue;
+    static unsigned long long max_word_value;
+    static unsigned long long word_base;
     unsigned long long numWords;
     HugeIntWord *leastSigWord, *mostSigWord;
     

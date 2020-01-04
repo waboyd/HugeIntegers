@@ -21,7 +21,7 @@ int main(int argc, char **argv)
     
     std::cout << "Test message.\n";
     
-    UnsignedHugeInt numA(98741);
+    UnsignedHugeInt numA(4553345398741);
     unsigned int intA = 59;
     UnsignedHugeInt numB(1259);
     UnsignedHugeInt sumA;
