@@ -22,8 +22,14 @@ int main(int argc, char **argv)
     std::cout << "Test message.\n";
     
     UnsignedHugeInt numA(98741);
+    unsigned int intA = 59;
+    UnsignedHugeInt numB(1259);
+    UnsignedHugeInt sumA;
     std::cout << "Value of the number: ";
     std::cout << numA.to_string() << ".\n";
+    
+//    sumA = numA + intA;
+    numA + intA;
 //    int dummyInt;
 //    std::cin >> dummyInt;
     
