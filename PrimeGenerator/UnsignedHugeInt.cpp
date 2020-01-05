@@ -134,21 +134,37 @@ std::string UnsignedHugeInt::to_string() {
 }
 
 HugeIntWord* UnsignedHugeInt::add_word() {
-    // ToDo: Complete this method.
-    
-    return NULL;
+    return this->add_word((unsigned long long)0);
 }
 
 HugeIntWord* UnsignedHugeInt::add_word(unsigned long long value) {
-    // ToDo: Complete this method.
-    
-    return NULL;
+    if (value > UnsignedHugeInt::max_word_value) {
+        unsigned long carryValue = value / UnsignedHugeInt::word_base;
+        unsigned long long lesserValue = value % UnsignedHugeInt::word_base;
+        HugeIntWord *lesserWord, *greaterWord;
+        lesserWord = new HugeIntWord(lesserValue);
+        greaterWord = new HugeIntWord(carryValue, 1, lesserWord);
+        this->add_word(lesserWord);
+        this->add_word(greaterWord);
+        return greaterWord;
+    }
+    else {
+        HugeIntWord *newWord = new HugeIntWord(value);
+        this->add_word(newWord);
+        return newWord;
+    }
 }
 
 HugeIntWord* UnsignedHugeInt::add_word(HugeIntWord* new_word) {
-    // ToDo: Complete this method.
-    
-    return NULL;
+    if (new_word == NULL) {
+        throw std::invalid_argument("A null word was added to an UnsignedHugeInt.");
+    }
+    HugeIntWord *oldMostSigWord = this->mostSigWord;
+    new_word->set_less_significant_word(oldMostSigWord, this->numWords);
+    oldMostSigWord->set_more_significant_word(new_word);
+    this->mostSigWord = new_word;
+    return new_word;
+    ++this->numWords;        
 }
 
 void UnsignedHugeInt::throw_warning(std::string message) {

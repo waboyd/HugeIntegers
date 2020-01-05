@@ -14,12 +14,15 @@ public:
     HugeIntWord(unsigned long long value);
     HugeIntWord(unsigned long long value, unsigned long long place_value, HugeIntWord* lowerSignificantWord);
     ~HugeIntWord();
+    
+    unsigned long long get_value();
     /**
      * @brief Return the next less significant word (segment) of the number.
      * @return The next less significant word (segment) of the number.
      */
     HugeIntWord* get_next_word();
-    void attach_more_significant_word(HugeIntWord* next_word);
+    void set_more_significant_word(HugeIntWord* next_word);
+    void set_less_significant_word(HugeIntWord* next_word, unsigned long long greatest_place_value);
     void remove_more_significant_word();
     std::string to_string();
     
