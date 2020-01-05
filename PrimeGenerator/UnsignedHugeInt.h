@@ -39,6 +39,7 @@ public:
     UnsignedHugeInt operator/(UnsignedHugeInt divisor);
     UnsignedHugeInt operator/(long long divisor);
     long num_words();
+    HugeIntWord* remove_most_significant_word();
     bool is_prime();
     std::string to_string();
     

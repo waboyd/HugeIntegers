@@ -111,6 +111,20 @@ long UnsignedHugeInt::num_words() {
     return this->numWords;
 }
 
+HugeIntWord* UnsignedHugeInt::remove_most_significant_word() {
+    HugeIntWord *oldMostSigWord = this->mostSigWord;
+    if (oldMostSigWord == NULL) {
+        throw std::logic_error("An UnsignedHugeInt object has no words or value.");
+    }
+    HugeIntWord *newMostSigWord = oldMostSigWord->get_next_word();
+    if (newMostSigWord == NULL) {
+        throw std::logic_error("An attempt was made to remove the only word of an UnsignedHugeInt object.");
+    }
+    this->mostSigWord = newMostSigWord;
+    delete(oldMostSigWord);
+    return newMostSigWord;
+}
+
 bool UnsignedHugeInt::is_prime() {
     // ToDo: Complete this method.
     return false;
