@@ -120,7 +120,9 @@ HugeIntWord* UnsignedHugeInt::remove_most_significant_word() {
     if (newMostSigWord == NULL) {
         throw std::logic_error("An attempt was made to remove the only word of an UnsignedHugeInt object.");
     }
+    newMostSigWord->remove_more_significant_word();
     this->mostSigWord = newMostSigWord;
+    --this->numWords;
     delete(oldMostSigWord);
     return newMostSigWord;
 }
