@@ -21,18 +21,22 @@ int main(int argc, char **argv)
     
     std::cout << "Test message.\n";
     
-    UnsignedHugeInt numA(4553345398741);
+//    UnsignedHugeInt numA(4553345398741);
+    UnsignedHugeInt *numA = new UnsignedHugeInt(4553345398741);
     unsigned int intA = 59;
     UnsignedHugeInt numB(1259);
-    UnsignedHugeInt sumA;
+    UnsignedHugeInt *sumA;
     std::cout << "Value of the number: ";
-    std::cout << numA.to_string() << ".\n";
+    std::cout << numA->to_string() << ".\n";
     
-//    sumA = numA + intA;
-    numA + intA;
+    sumA = *numA + intA;
+    std::cout << "Operation result: " << sumA->to_string() << "\n";
+//    *numA + intA;
 //    int dummyInt;
 //    std::cin >> dummyInt;
-    
+
+
+    delete(numA);
     return 0;
 
 }

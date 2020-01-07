@@ -31,7 +31,7 @@ public:
     UnsignedHugeInt(const UnsignedHugeInt& orig);
     virtual ~UnsignedHugeInt();
     UnsignedHugeInt operator+(const UnsignedHugeInt& addend);
-    UnsignedHugeInt operator+(const long long& addend);
+    UnsignedHugeInt* operator+(const long long& addend);
     UnsignedHugeInt operator-(UnsignedHugeInt minuend);
     UnsignedHugeInt operator-(long long minuend);
     UnsignedHugeInt operator*(UnsignedHugeInt factor);

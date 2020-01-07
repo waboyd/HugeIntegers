@@ -55,9 +55,9 @@ UnsignedHugeInt UnsignedHugeInt::operator+(const UnsignedHugeInt& addend) {
     return sum;
 }
 
-UnsignedHugeInt UnsignedHugeInt::operator+(const long long& addend) {
+UnsignedHugeInt* UnsignedHugeInt::operator+(const long long& addend) {
     // ToDo: Complete this method.
-//    UnsignedHugeInt sum(43);
+    UnsignedHugeInt *sum;
     
     std::cout << "First addend: " << this->to_string() << "\n";
     std::cout << "Second addend: " << addend << "\n";
@@ -82,7 +82,7 @@ UnsignedHugeInt UnsignedHugeInt::operator+(const long long& addend) {
     thisWordSum += thisAddendWord->get_value();
     thisCarryValue += thisWordSum / UnsignedHugeInt::word_base;
     thisWordSum = thisWordSum % UnsignedHugeInt::word_base;
-    UnsignedHugeInt sum(thisWordSum);
+    sum = new UnsignedHugeInt(thisWordSum);
     
     thisAddendWord = thisAddendWord->get_next_more_sig_word();
     
@@ -94,7 +94,7 @@ UnsignedHugeInt UnsignedHugeInt::operator+(const long long& addend) {
         }
         thisCarryValue = thisWordSum / UnsignedHugeInt::word_base;
         thisWordSum = thisWordSum % UnsignedHugeInt::word_base;
-        sum.add_word(thisWordSum);
+        sum->add_word(thisWordSum);
     }
 
     // Test section
