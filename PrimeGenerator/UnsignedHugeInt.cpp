@@ -42,7 +42,7 @@ UnsignedHugeInt::~UnsignedHugeInt() {
     while (thisWord != NULL) {
         wordToDelete = thisWord;
         
-        nextWord = thisWord->get_next_word();
+        nextWord = thisWord->get_next_lower_sig_word();
         delete(wordToDelete);
         thisWord = nextWord;
     }
@@ -57,12 +57,53 @@ UnsignedHugeInt UnsignedHugeInt::operator+(const UnsignedHugeInt& addend) {
 
 UnsignedHugeInt UnsignedHugeInt::operator+(const long long& addend) {
     // ToDo: Complete this method.
-    UnsignedHugeInt sum;
+//    UnsignedHugeInt sum(43);
     
     std::cout << "First addend: " << this->to_string() << "\n";
     std::cout << "Second addend: " << addend << "\n";
     
+//    return sum;
+    
+    
+    
+    
+    // ToDo: Complete this method.
+    unsigned long long thisWordSum;
+    unsigned long long thisCarryValue = 0;
+    HugeIntWord *thisAddendWord = this->leastSigWord;
+    
+//    std::cout << "First addend: " << this->to_string() << "\n";
+//    std::cout << "Second addend: " << addend << "\n";
+    
+//    unsigned long long thisPlaceValue = 0;
+    
+    thisWordSum = addend % UnsignedHugeInt::word_base;
+    thisCarryValue = addend / UnsignedHugeInt::word_base;
+    thisWordSum += thisAddendWord->get_value();
+    thisCarryValue += thisWordSum / UnsignedHugeInt::word_base;
+    thisWordSum = thisWordSum % UnsignedHugeInt::word_base;
+    UnsignedHugeInt sum(thisWordSum);
+    
+    thisAddendWord = thisAddendWord->get_next_more_sig_word();
+    
+    while (thisAddendWord != NULL || thisCarryValue > 0) {
+        thisWordSum = thisCarryValue;
+        if (thisAddendWord != NULL) {
+            thisWordSum += thisAddendWord->get_value();
+            thisAddendWord = thisAddendWord->get_next_more_sig_word();
+        }
+        thisCarryValue = thisWordSum / UnsignedHugeInt::word_base;
+        thisWordSum = thisWordSum % UnsignedHugeInt::word_base;
+        sum.add_word(thisWordSum);
+    }
+
+    // Test section
+//    UnsignedHugeInt sum(42);
+    
     return sum;
+//    return NULL;
+    
+    
 }
 
 UnsignedHugeInt UnsignedHugeInt::operator-(UnsignedHugeInt minuend) {
@@ -116,7 +157,7 @@ HugeIntWord* UnsignedHugeInt::remove_most_significant_word() {
     if (oldMostSigWord == NULL) {
         throw std::logic_error("An UnsignedHugeInt object has no words or value.");
     }
-    HugeIntWord *newMostSigWord = oldMostSigWord->get_next_word();
+    HugeIntWord *newMostSigWord = oldMostSigWord->get_next_lower_sig_word();
     if (newMostSigWord == NULL) {
         throw std::logic_error("An attempt was made to remove the only word of an UnsignedHugeInt object.");
     }
@@ -143,7 +184,7 @@ std::string UnsignedHugeInt::to_string() {
         while (thisWord != NULL) {
             wordString = thisWord->to_string();
             numberString += wordString;
-            thisWord = thisWord->get_next_word();
+            thisWord = thisWord->get_next_lower_sig_word();
         }
     }
     return numberString;

@@ -20,7 +20,8 @@ public:
      * @brief Return the next less significant word (segment) of the number.
      * @return The next less significant word (segment) of the number.
      */
-    HugeIntWord* get_next_word();
+    HugeIntWord* get_next_lower_sig_word();
+    HugeIntWord* get_next_more_sig_word();
     void set_more_significant_word(HugeIntWord* next_word);
     void set_less_significant_word(HugeIntWord* next_word, unsigned long long greatest_place_value);
     void remove_more_significant_word();
