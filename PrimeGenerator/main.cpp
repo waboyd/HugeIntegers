@@ -29,7 +29,7 @@ int main(int argc, char **argv)
     std::cout << "Value of the number: ";
     std::cout << numA->to_string() << ".\n";
     
-    sumA = *numA + intA;
+    sumA = *numA + numB;
     std::cout << "Operation result: " << sumA->to_string() << "\n";
 //    *numA + intA;
 //    int dummyInt;

@@ -30,7 +30,7 @@ public:
     UnsignedHugeInt(const unsigned long long value);
     UnsignedHugeInt(const UnsignedHugeInt& orig);
     virtual ~UnsignedHugeInt();
-    UnsignedHugeInt operator+(const UnsignedHugeInt& addend);
+    UnsignedHugeInt* operator+(const UnsignedHugeInt& addend);
     UnsignedHugeInt* operator+(const long long& addend);
     UnsignedHugeInt operator-(UnsignedHugeInt minuend);
     UnsignedHugeInt operator-(long long minuend);
@@ -41,7 +41,7 @@ public:
     long num_words();
     HugeIntWord* remove_most_significant_word();
     bool is_prime();
-    std::string to_string();
+    std::string to_string() const;
     
 private:
     static unsigned long long max_word_value;

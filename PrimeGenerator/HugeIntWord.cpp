@@ -4,6 +4,8 @@
 //{
 //    
 //}
+unsigned long long HugeIntWord::max_value = MAX_VALUE;
+unsigned long long HugeIntWord::base_value = max_value + 1;
 
 HugeIntWord::HugeIntWord(unsigned long long value){
     this->value = value;
@@ -78,4 +80,41 @@ std::string HugeIntWord::to_string() {
     numberToStringStream << this->value;
     numberString = numberToStringStream.str();
     return numberString;
+}
+
+bool HugeIntWord::add_value(unsigned long long addend) {
+    unsigned long long thisNewValue;
+    unsigned long long carryValue;
+    if (addend <= HugeIntWord::max_value) {
+        thisNewValue = this->value + addend;
+        if (thisNewValue > HugeIntWord::max_value) {
+            carryValue = thisNewValue / HugeIntWord::base_value;
+            thisNewValue = thisNewValue % HugeIntWord::base_value;
+            this->value = thisNewValue;
+            if (this->moreSigWord == NULL) {
+                this->moreSigWord = new HugeIntWord(carryValue, this->place_value + 1, this);
+            }
+            else {
+                this->moreSigWord->add_value(carryValue);
+            }
+            return true;
+        }
+        else {
+            this->value = thisNewValue;
+            return false;
+        }
+    }
+    else {
+        thisNewValue = (addend % HugeIntWord::base_value) + this->value;
+        carryValue = (addend / HugeIntWord::base_value) + (thisNewValue / HugeIntWord::base_value);
+        thisNewValue = thisNewValue % HugeIntWord::base_value;
+        this->value = thisNewValue;
+        if (this->moreSigWord == NULL) {
+            this->moreSigWord = new HugeIntWord(carryValue, this->place_value + 1, this);
+        }
+        else {
+            this->moreSigWord->add_value(carryValue);
+        }
+        return true;        
+    }
 }

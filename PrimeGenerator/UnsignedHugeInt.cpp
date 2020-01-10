@@ -48,34 +48,49 @@ UnsignedHugeInt::~UnsignedHugeInt() {
     }
 }
 
-UnsignedHugeInt UnsignedHugeInt::operator+(const UnsignedHugeInt& addend) {
-    // ToDo: Complete this method.
-    UnsignedHugeInt sum;
-    
-    return sum;
-}
-
-UnsignedHugeInt* UnsignedHugeInt::operator+(const long long& addend) {
+UnsignedHugeInt* UnsignedHugeInt::operator+(const UnsignedHugeInt& addend) {
     // ToDo: Complete this method.
     UnsignedHugeInt *sum;
     
     std::cout << "First addend: " << this->to_string() << "\n";
-    std::cout << "Second addend: " << addend << "\n";
+    std::cout << "Second addend: " << addend.to_string() << "\n";
     
-//    return sum;
+//    unsigned long long thisWordSum;
+//    unsigned long long thisCarryValue = 0;
+//    HugeIntWord *thisAddendWordA = this->leastSigWord;
+//    HugeIntWord *thisAddendWordB = addend.
     
-    
-    
-    
-    // ToDo: Complete this method.
-    unsigned long long thisWordSum;
-    unsigned long long thisCarryValue = 0;
-    HugeIntWord *thisAddendWord = this->leastSigWord;
+//    thisWordSum = addend % UnsignedHugeInt::word_base;
+//    thisCarryValue = addend / UnsignedHugeInt::word_base;
+//    thisWordSum += thisAddendWordA->get_value();
+//    thisCarryValue += thisWordSum / UnsignedHugeInt::word_base;
+//    thisWordSum = thisWordSum % UnsignedHugeInt::word_base;
+//    sum = new UnsignedHugeInt(thisWordSum);
+//    
+//    thisAddendWordA = thisAddendWordA->get_next_more_sig_word();
+//    
+//    while (thisAddendWordA != NULL || thisCarryValue > 0) {
+//        thisWordSum = thisCarryValue;
+//        if (thisAddendWordA != NULL) {
+//            thisWordSum += thisAddendWordA->get_value();
+//            thisAddendWordA = thisAddendWordA->get_next_more_sig_word();
+//        }
+//        thisCarryValue = thisWordSum / UnsignedHugeInt::word_base;
+//        thisWordSum = thisWordSum % UnsignedHugeInt::word_base;
+//        sum->add_word(thisWordSum);
+//    }
+    return sum;
+}
+
+UnsignedHugeInt* UnsignedHugeInt::operator+(const long long& addend) {
+    UnsignedHugeInt *sum;
     
 //    std::cout << "First addend: " << this->to_string() << "\n";
 //    std::cout << "Second addend: " << addend << "\n";
-    
-//    unsigned long long thisPlaceValue = 0;
+//    
+    unsigned long long thisWordSum;
+    unsigned long long thisCarryValue = 0;
+    HugeIntWord *thisAddendWord = this->leastSigWord;
     
     thisWordSum = addend % UnsignedHugeInt::word_base;
     thisCarryValue = addend / UnsignedHugeInt::word_base;
@@ -96,14 +111,8 @@ UnsignedHugeInt* UnsignedHugeInt::operator+(const long long& addend) {
         thisWordSum = thisWordSum % UnsignedHugeInt::word_base;
         sum->add_word(thisWordSum);
     }
-
-    // Test section
-//    UnsignedHugeInt sum(42);
-    
     return sum;
-//    return NULL;
-    
-    
+
 }
 
 UnsignedHugeInt UnsignedHugeInt::operator-(UnsignedHugeInt minuend) {
@@ -173,7 +182,7 @@ bool UnsignedHugeInt::is_prime() {
     return false;
 }
 
-std::string UnsignedHugeInt::to_string() {
+std::string UnsignedHugeInt::to_string() const {
     // ToDo: Convert the words to base 10 when forming the string.
     std::string numberString = "", wordString;
     HugeIntWord *thisWord;
