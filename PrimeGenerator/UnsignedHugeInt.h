@@ -30,15 +30,27 @@ public:
     UnsignedHugeInt(const unsigned long long value);
     UnsignedHugeInt(const UnsignedHugeInt& orig);
     virtual ~UnsignedHugeInt();
-    UnsignedHugeInt* operator+(const UnsignedHugeInt& addend);
-    UnsignedHugeInt* operator+(const long long& addend);
-    UnsignedHugeInt operator-(UnsignedHugeInt minuend);
-    UnsignedHugeInt operator-(long long minuend);
-    UnsignedHugeInt operator*(UnsignedHugeInt factor);
-    UnsignedHugeInt operator*(long long factor);
-    UnsignedHugeInt operator/(UnsignedHugeInt divisor);
-    UnsignedHugeInt operator/(long long divisor);
-    long num_words();
+    
+    /**
+     * @brief Determine which of the two numbers is greater.
+     * @param numberA One of the numbers to compare.
+     * @param numberB One of the numbers to compare.
+     * @return 1 if numberA is greater; 0 if the numbers are equal; -1 if numberB is greater.
+     */
+    static short compare(const UnsignedHugeInt& numberA, const UnsignedHugeInt& numberB);
+    static UnsignedHugeInt* sum_of(const UnsignedHugeInt& addendA, const UnsignedHugeInt& addendB);
+    UnsignedHugeInt* operator+(const UnsignedHugeInt& addend) const;
+    UnsignedHugeInt* operator+(const long long addend) const;
+    UnsignedHugeInt operator-(UnsignedHugeInt minuend) const;
+    UnsignedHugeInt operator-(long long minuend) const;
+    UnsignedHugeInt operator*(UnsignedHugeInt factor) const;
+    UnsignedHugeInt operator*(long long factor) const;
+    UnsignedHugeInt operator/(UnsignedHugeInt divisor) const;
+    UnsignedHugeInt operator/(long long divisor) const;
+    
+    long num_words() const;
+    HugeIntWord* get_most_significant_word() const;
+    HugeIntWord* get_least_significant_word() const;
     HugeIntWord* remove_most_significant_word();
     bool is_prime();
     std::string to_string() const;

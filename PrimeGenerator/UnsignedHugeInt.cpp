@@ -48,13 +48,58 @@ UnsignedHugeInt::~UnsignedHugeInt() {
     }
 }
 
-UnsignedHugeInt* UnsignedHugeInt::operator+(const UnsignedHugeInt& addend) {
+short UnsignedHugeInt::compare(const UnsignedHugeInt& numberA, const UnsignedHugeInt& numberB) {
+
+//    if (numberA == NULL || numberB == NULL) {
+//        throw std::invalid_argument("A null value was compared.");
+//    }
+
+    unsigned long long numWordsA = numberA.num_words();
+    unsigned long long numWordsB = numberB.num_words();
+    HugeIntWord *thisWordA, *thisWordB;
+    unsigned long long wordValueA, wordValueB;
+    
+    thisWordA = numberA.get_most_significant_word();
+    thisWordB = numberB.get_most_significant_word();
+    
+    if (numWordsA > numWordsB && thisWordA->get_value() > 0)
+        return 1;
+    else if (numWordsA < numWordsB && thisWordB->get_value() > 0)
+        return -1;
+        
+    while (thisWordA != NULL && thisWordB != NULL) {
+        wordValueA = thisWordA->get_value();
+        wordValueB = thisWordB->get_value();
+        if (wordValueA > wordValueB)
+            return 1;
+        else if (wordValueA < wordValueB)
+            return -1;
+        thisWordA = thisWordA->get_next_lower_sig_word();
+        thisWordB = thisWordB->get_next_lower_sig_word();
+    }
+    
+    if ((thisWordA == NULL && thisWordB != NULL) || (thisWordA != NULL && thisWordB == NULL)) {
+        throw std::logic_error("A problem occurred involving the number of words in an UnsignedHugeInt.");
+    }
+    
+    return 0;   // The numbers are equal.
+}
+
+UnsignedHugeInt* UnsignedHugeInt::sum_of(const UnsignedHugeInt& addendA, const UnsignedHugeInt& addendB) {
+    // ToDo: Complete this method.
+    UnsignedHugeInt *sum;
+    
+    return sum;
+}
+
+UnsignedHugeInt* UnsignedHugeInt::operator+(const UnsignedHugeInt& addend) const {
     // ToDo: Complete this method.
     UnsignedHugeInt *sum;
     
     std::cout << "First addend: " << this->to_string() << "\n";
     std::cout << "Second addend: " << addend.to_string() << "\n";
     
+    unsigned long long numSumWords = 0;
 //    unsigned long long thisWordSum;
 //    unsigned long long thisCarryValue = 0;
 //    HugeIntWord *thisAddendWordA = this->leastSigWord;
@@ -82,7 +127,7 @@ UnsignedHugeInt* UnsignedHugeInt::operator+(const UnsignedHugeInt& addend) {
     return sum;
 }
 
-UnsignedHugeInt* UnsignedHugeInt::operator+(const long long& addend) {
+UnsignedHugeInt* UnsignedHugeInt::operator+(const long long addend) const {
     UnsignedHugeInt *sum;
     
 //    std::cout << "First addend: " << this->to_string() << "\n";
@@ -115,50 +160,58 @@ UnsignedHugeInt* UnsignedHugeInt::operator+(const long long& addend) {
 
 }
 
-UnsignedHugeInt UnsignedHugeInt::operator-(UnsignedHugeInt minuend) {
+UnsignedHugeInt UnsignedHugeInt::operator-(UnsignedHugeInt minuend) const {
     // ToDo: Complete this method.
     UnsignedHugeInt difference;
     
     return difference;
 }
 
-UnsignedHugeInt UnsignedHugeInt::operator-(long long minuend) {
+UnsignedHugeInt UnsignedHugeInt::operator-(long long minuend) const {
     // ToDo: Complete this method.
     UnsignedHugeInt difference;
     
     return difference;
 }
 
-UnsignedHugeInt UnsignedHugeInt::operator*(UnsignedHugeInt factor) {
+UnsignedHugeInt UnsignedHugeInt::operator*(UnsignedHugeInt factor) const {
     // ToDo: Complete this method.
     UnsignedHugeInt product;
     
     return product;
 }
 
-UnsignedHugeInt UnsignedHugeInt::operator*(long long factor) {
+UnsignedHugeInt UnsignedHugeInt::operator*(long long factor) const {
     // ToDo: Complete this method.
     UnsignedHugeInt product;
     
     return product;
 }
 
-UnsignedHugeInt UnsignedHugeInt::operator/(UnsignedHugeInt divisor) {
+UnsignedHugeInt UnsignedHugeInt::operator/(UnsignedHugeInt divisor) const {
     // ToDo: Complete this method.
     UnsignedHugeInt quotient;
     
     return quotient;
 }
 
-UnsignedHugeInt UnsignedHugeInt::operator/(long long divisor) {
+UnsignedHugeInt UnsignedHugeInt::operator/(long long divisor) const {
     // ToDo: Complete this method.
     UnsignedHugeInt quotient;
     
     return quotient;
 }
 
-long UnsignedHugeInt::num_words() {
+long UnsignedHugeInt::num_words() const {
     return this->numWords;
+}
+
+HugeIntWord* UnsignedHugeInt::get_most_significant_word() const {
+    return this->mostSigWord;
+}
+
+HugeIntWord* UnsignedHugeInt::get_least_significant_word() const {
+    return this->leastSigWord;
 }
 
 HugeIntWord* UnsignedHugeInt::remove_most_significant_word() {
