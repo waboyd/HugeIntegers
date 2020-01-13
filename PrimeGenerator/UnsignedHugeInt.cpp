@@ -14,6 +14,7 @@ UnsignedHugeInt::UnsignedHugeInt() {
 
 UnsignedHugeInt::UnsignedHugeInt(const unsigned long long value) {
     // ToDo: Set maximum word value.
+    // ToDo: Allow inputs that require more than 2 words.
     if (value > UnsignedHugeInt::max_word_value) {
         unsigned long carryValue = value / UnsignedHugeInt::word_base;
         unsigned long long lesserValue = value % UnsignedHugeInt::word_base;
@@ -86,20 +87,78 @@ short UnsignedHugeInt::compare(const UnsignedHugeInt& numberA, const UnsignedHug
 }
 
 UnsignedHugeInt* UnsignedHugeInt::sum_of(const UnsignedHugeInt& addendA, const UnsignedHugeInt& addendB) {
-    // ToDo: Complete this method.
     UnsignedHugeInt *sum;
+    HugeIntWord *greaterAddendWord, *lesserAddendWord;
+    HugeIntWord *sumWord;
+    unsigned long long thisWordSum, carryValue = 0;
+    
+    if (addendB.num_words() > addendA.num_words()) {
+        greaterAddendWord = addendB.get_least_significant_word();
+        lesserAddendWord = addendA.get_least_significant_word();
+    }
+    else {
+        greaterAddendWord = addendA.get_least_significant_word();
+        lesserAddendWord = addendB.get_least_significant_word();
+    }
+    sum = new UnsignedHugeInt;
+    sumWord = sum->get_least_significant_word();
+    
+    while (lesserAddendWord != NULL) {
+        thisWordSum = greaterAddendWord->get_value() + lesserAddendWord->get_value() + carryValue;
+        carryValue = thisWordSum / UnsignedHugeInt::word_base;
+        thisWordSum = thisWordSum % UnsignedHugeInt::word_base;
+        
+        if (sumWord == NULL) {
+            sumWord = sum->add_word(thisWordSum);
+        }
+        else {
+            sumWord->add_value(thisWordSum);
+        }
+        greaterAddendWord = greaterAddendWord->get_next_more_sig_word();
+        lesserAddendWord = lesserAddendWord->get_next_more_sig_word();
+        sumWord = sumWord->get_next_more_sig_word();
+    }
+    
+    while (greaterAddendWord != NULL) {
+        thisWordSum = greaterAddendWord->get_value() + carryValue;
+        carryValue = thisWordSum / UnsignedHugeInt::word_base;
+        thisWordSum = thisWordSum % UnsignedHugeInt::word_base;
+        
+        if (sumWord == NULL) {
+            sumWord = sum->add_word(thisWordSum);
+        }
+        else {
+            sumWord->add_value(thisWordSum);
+        }
+        greaterAddendWord = greaterAddendWord->get_next_more_sig_word();
+        sumWord = sumWord->get_next_more_sig_word();
+    }
+    
+    while (carryValue > 0) {
+        thisWordSum = carryValue % UnsignedHugeInt::word_base;
+        carryValue = carryValue / UnsignedHugeInt::word_base;
+        
+        if (sumWord == NULL) {
+            sumWord = sum->add_word(thisWordSum);
+        }
+        else {
+            sumWord->add_value(thisWordSum);
+        }
+        sumWord = sumWord->get_next_more_sig_word();        
+    }
     
     return sum;
 }
 
 UnsignedHugeInt* UnsignedHugeInt::operator+(const UnsignedHugeInt& addend) const {
-    // ToDo: Complete this method.
     UnsignedHugeInt *sum;
     
+    // ToDo: Remove these print statements.
     std::cout << "First addend: " << this->to_string() << "\n";
     std::cout << "Second addend: " << addend.to_string() << "\n";
     
-    unsigned long long numSumWords = 0;
+    sum = UnsignedHugeInt::sum_of(*this, addend);
+//    unsigned long long numSumWords = 0;
 //    unsigned long long thisWordSum;
 //    unsigned long long thisCarryValue = 0;
 //    HugeIntWord *thisAddendWordA = this->leastSigWord;
@@ -226,6 +285,9 @@ HugeIntWord* UnsignedHugeInt::remove_most_significant_word() {
     newMostSigWord->remove_more_significant_word();
     this->mostSigWord = newMostSigWord;
     --this->numWords;
+    if (this->numWords != newMostSigWord->get_word_number() + 1) {
+        throw std::logic_error("The place of the most significant word does not match the number of words.");
+    }
     delete(oldMostSigWord);
     return newMostSigWord;
 }
@@ -237,6 +299,7 @@ bool UnsignedHugeInt::is_prime() {
 
 std::string UnsignedHugeInt::to_string() const {
     // ToDo: Convert the words to base 10 when forming the string.
+    // ToDo: Add extra 0s in string when necessary.
     std::string numberString = "", wordString;
     HugeIntWord *thisWord;
     if (this->numWords == 0)
@@ -251,6 +314,11 @@ std::string UnsignedHugeInt::to_string() const {
     }
     return numberString;
 }
+
+// ToDo: Remove the numWords attribute of UnsignedHugeInt.
+//void UnsignedHugeInt::set_number_of_words_to(unsigned long long number_of_words) {
+//    this->numWords = number_of_words;
+//}
 
 HugeIntWord* UnsignedHugeInt::add_word() {
     return this->add_word((unsigned long long)0);
@@ -279,11 +347,14 @@ HugeIntWord* UnsignedHugeInt::add_word(HugeIntWord* new_word) {
         throw std::invalid_argument("A null word was added to an UnsignedHugeInt.");
     }
     HugeIntWord *oldMostSigWord = this->mostSigWord;
-    new_word->set_less_significant_word(oldMostSigWord, this->numWords);
+    new_word->set_less_significant_word(oldMostSigWord);
     oldMostSigWord->set_more_significant_word(new_word);
     this->mostSigWord = new_word;
+    ++this->numWords;
+    if (this->numWords != this->mostSigWord->get_word_number() + 1) {
+        throw std::logic_error("The place of the most significant word does not match the number of words.");
+    }    
     return new_word;
-    ++this->numWords;        
 }
 
 void UnsignedHugeInt::throw_warning(std::string message) {

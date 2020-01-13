@@ -30,6 +30,10 @@ unsigned long long HugeIntWord::get_value() {
     return this->value;
 }
 
+unsigned long long HugeIntWord::get_word_number() {
+    return this->place_value;
+}
+
 HugeIntWord* HugeIntWord::get_next_lower_sig_word() {
     return this->lessSigWord;
 }
@@ -49,9 +53,10 @@ void HugeIntWord::set_more_significant_word(HugeIntWord* next_word) {
     }
     
     this->moreSigWord = next_word;
+    this->place_value = next_word->get_word_number() + 1;
 }
 
-void HugeIntWord::set_less_significant_word(HugeIntWord* next_word, unsigned long long greatest_place_value) {
+void HugeIntWord::set_less_significant_word(HugeIntWord* next_word) {
     if (this->lessSigWord != NULL) {
         throw std::logic_error("An attempt was made to attach a word to replace an existing word.");
     }
@@ -62,7 +67,7 @@ void HugeIntWord::set_less_significant_word(HugeIntWord* next_word, unsigned lon
     }
     
     this->lessSigWord = next_word;
-    this->place_value = greatest_place_value;
+    this->place_value = next_word->get_word_number() + 1;
 }
 
 void HugeIntWord::remove_more_significant_word() {

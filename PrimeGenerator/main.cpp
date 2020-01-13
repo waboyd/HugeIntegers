@@ -22,9 +22,9 @@ int main(int argc, char **argv)
     std::cout << "Test message.\n";
     
 //    UnsignedHugeInt numA(4553345398741);
-    UnsignedHugeInt *numA = new UnsignedHugeInt(4553345398741);
+    UnsignedHugeInt *numA = new UnsignedHugeInt(547890553345398741);
     unsigned int intA = 59;
-    UnsignedHugeInt numB(1259);
+    UnsignedHugeInt numB(852109446654601259);
     UnsignedHugeInt *sumA;
     std::cout << "Value of the number: ";
     std::cout << numA->to_string() << ".\n";

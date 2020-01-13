@@ -55,6 +55,9 @@ public:
     bool is_prime();
     std::string to_string() const;
     
+protected:
+//    void set_number_of_words_to(unsigned long long number_of_words);
+    
 private:
     static unsigned long long max_word_value;
     static unsigned long long word_base;
