@@ -299,7 +299,6 @@ bool UnsignedHugeInt::is_prime() {
 
 std::string UnsignedHugeInt::to_string() const {
     // ToDo: Convert the words to base 10 when forming the string.
-    // ToDo: Add extra 0s in string when necessary.
     std::string numberString = "", wordString;
     HugeIntWord *thisWord;
     if (this->numWords == 0)

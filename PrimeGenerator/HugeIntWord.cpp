@@ -82,9 +82,18 @@ std::string HugeIntWord::to_string() {
     // ToDo: Convert the words to base 10 when forming the string.
     std::ostringstream numberToStringStream;
     std::string numberString;
+    std::string formattedNumberString;
+    unsigned short numLeadingZeros;
     numberToStringStream << this->value;
     numberString = numberToStringStream.str();
-    return numberString;
+    if (this->moreSigWord != NULL) {
+        numLeadingZeros = MAX_NUMBER_OF_DIGITS - numberString.length();
+        formattedNumberString = std::string(numLeadingZeros, '0') + numberString;
+    }
+    else {
+        formattedNumberString = numberString;
+    }
+    return formattedNumberString;
 }
 
 bool HugeIntWord::add_value(unsigned long long addend) {

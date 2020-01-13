@@ -6,6 +6,7 @@
 #include <exception>
 
 #define MAX_VALUE   999999999
+#define MAX_NUMBER_OF_DIGITS    9
 
 class HugeIntWord
 {
