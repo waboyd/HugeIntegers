@@ -61,7 +61,6 @@ protected:
 private:
     static unsigned long long max_word_value;
     static unsigned long long word_base;
-    unsigned long long numWords;
     HugeIntWord *leastSigWord, *mostSigWord;
     
     // Private Methods

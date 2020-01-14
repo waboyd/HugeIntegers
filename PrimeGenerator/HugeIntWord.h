@@ -16,11 +16,11 @@ class HugeIntWord
 public:
 //    HugeIntWord();
     HugeIntWord(unsigned long long value);
-    HugeIntWord(unsigned long long value, unsigned long long place_value, HugeIntWord* lowerSignificantWord);
+    HugeIntWord(unsigned long long value, HugeIntWord* lowerSignificantWord);
     ~HugeIntWord();
     
-    unsigned long long get_value();
-    unsigned long long get_word_number();
+    unsigned long long get_value() const;
+    unsigned long long get_word_number() const;
     /**
      * @brief Return the next less significant word (segment) of the number.
      * @return The next less significant word (segment) of the number.

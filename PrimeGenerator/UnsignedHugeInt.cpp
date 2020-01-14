@@ -6,7 +6,6 @@
 
 UnsignedHugeInt::UnsignedHugeInt() {
     // ToDo: Set maximum word value.
-    this->numWords = 1;
     HugeIntWord *newWord = new HugeIntWord(0);
     this->mostSigWord = newWord;
     this->leastSigWord = newWord;
@@ -20,16 +19,14 @@ UnsignedHugeInt::UnsignedHugeInt(const unsigned long long value) {
         unsigned long long lesserValue = value % UnsignedHugeInt::word_base;
         HugeIntWord *lesserWord, *greaterWord;
         lesserWord = new HugeIntWord(lesserValue);
-        greaterWord = new HugeIntWord(carryValue, 1, lesserWord);
+        greaterWord = new HugeIntWord(carryValue, lesserWord);
         this->mostSigWord = greaterWord;
         this->leastSigWord = lesserWord;
-        this->numWords = 2;
     }
     else {
         HugeIntWord *newWord = new HugeIntWord(value);
         this->mostSigWord = newWord;
         this->leastSigWord = newWord;
-        this->numWords = 1;
     }
 }
 
@@ -262,7 +259,7 @@ UnsignedHugeInt UnsignedHugeInt::operator/(long long divisor) const {
 }
 
 long UnsignedHugeInt::num_words() const {
-    return this->numWords;
+    return (this->mostSigWord->get_word_number() + 1);
 }
 
 HugeIntWord* UnsignedHugeInt::get_most_significant_word() const {
@@ -284,10 +281,6 @@ HugeIntWord* UnsignedHugeInt::remove_most_significant_word() {
     }
     newMostSigWord->remove_more_significant_word();
     this->mostSigWord = newMostSigWord;
-    --this->numWords;
-    if (this->numWords != newMostSigWord->get_word_number() + 1) {
-        throw std::logic_error("The place of the most significant word does not match the number of words.");
-    }
     delete(oldMostSigWord);
     return newMostSigWord;
 }
@@ -301,7 +294,7 @@ std::string UnsignedHugeInt::to_string() const {
     // ToDo: Convert the words to base 10 when forming the string.
     std::string numberString = "", wordString;
     HugeIntWord *thisWord;
-    if (this->numWords == 0)
+    if (this->mostSigWord == NULL)
         numberString = "0";
     else {
         thisWord = this->mostSigWord;
@@ -314,11 +307,6 @@ std::string UnsignedHugeInt::to_string() const {
     return numberString;
 }
 
-// ToDo: Remove the numWords attribute of UnsignedHugeInt.
-//void UnsignedHugeInt::set_number_of_words_to(unsigned long long number_of_words) {
-//    this->numWords = number_of_words;
-//}
-
 HugeIntWord* UnsignedHugeInt::add_word() {
     return this->add_word((unsigned long long)0);
 }
@@ -329,7 +317,7 @@ HugeIntWord* UnsignedHugeInt::add_word(unsigned long long value) {
         unsigned long long lesserValue = value % UnsignedHugeInt::word_base;
         HugeIntWord *lesserWord, *greaterWord;
         lesserWord = new HugeIntWord(lesserValue);
-        greaterWord = new HugeIntWord(carryValue, 1, lesserWord);
+        greaterWord = new HugeIntWord(carryValue, lesserWord);
         this->add_word(lesserWord);
         this->add_word(greaterWord);
         return greaterWord;
@@ -349,10 +337,6 @@ HugeIntWord* UnsignedHugeInt::add_word(HugeIntWord* new_word) {
     new_word->set_less_significant_word(oldMostSigWord);
     oldMostSigWord->set_more_significant_word(new_word);
     this->mostSigWord = new_word;
-    ++this->numWords;
-    if (this->numWords != this->mostSigWord->get_word_number() + 1) {
-        throw std::logic_error("The place of the most significant word does not match the number of words.");
-    }    
     return new_word;
 }
 
