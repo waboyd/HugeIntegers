@@ -1,6 +1,6 @@
 #include "UnsignedHugeInt.h"
 
-    // ToDo: Set the maxWordValmax_word_valuein HugeIntWord.
+    // ToDo: Set the max_word_value in UnsignedHugeInt and HugeIntWord.
     unsigned long long UnsignedHugeInt::max_word_value = 999999999;
     unsigned long long UnsignedHugeInt::word_base = UnsignedHugeInt::max_word_value + 1;
 
@@ -86,7 +86,7 @@ short UnsignedHugeInt::compare(const UnsignedHugeInt& numberA, const UnsignedHug
 UnsignedHugeInt* UnsignedHugeInt::sum_of(const UnsignedHugeInt& addendA, const UnsignedHugeInt& addendB) {
     UnsignedHugeInt *sum;
     HugeIntWord *greaterAddendWord, *lesserAddendWord;
-    HugeIntWord *sumWord;
+    HugeIntWord *sumWord, *sumMostSigWord;
     unsigned long long thisWordSum, carryValue = 0;
     
     if (addendB.num_words() > addendA.num_words()) {
@@ -99,6 +99,7 @@ UnsignedHugeInt* UnsignedHugeInt::sum_of(const UnsignedHugeInt& addendA, const U
     }
     sum = new UnsignedHugeInt;
     sumWord = sum->get_least_significant_word();
+    sumMostSigWord = sum->get_most_significant_word();
     
     while (lesserAddendWord != NULL) {
         thisWordSum = greaterAddendWord->get_value() + lesserAddendWord->get_value() + carryValue;
@@ -107,9 +108,10 @@ UnsignedHugeInt* UnsignedHugeInt::sum_of(const UnsignedHugeInt& addendA, const U
         
         if (sumWord == NULL) {
             sumWord = sum->add_word(thisWordSum);
+            sumMostSigWord = sumWord;
         }
         else {
-            sumWord->add_value(thisWordSum);
+            sumMostSigWord = sumWord->add_value(thisWordSum);
         }
         greaterAddendWord = greaterAddendWord->get_next_more_sig_word();
         lesserAddendWord = lesserAddendWord->get_next_more_sig_word();
@@ -123,9 +125,10 @@ UnsignedHugeInt* UnsignedHugeInt::sum_of(const UnsignedHugeInt& addendA, const U
         
         if (sumWord == NULL) {
             sumWord = sum->add_word(thisWordSum);
+            sumMostSigWord = sumWord;
         }
         else {
-            sumWord->add_value(thisWordSum);
+            sumMostSigWord = sumWord->add_value(thisWordSum);
         }
         greaterAddendWord = greaterAddendWord->get_next_more_sig_word();
         sumWord = sumWord->get_next_more_sig_word();
@@ -137,13 +140,14 @@ UnsignedHugeInt* UnsignedHugeInt::sum_of(const UnsignedHugeInt& addendA, const U
         
         if (sumWord == NULL) {
             sumWord = sum->add_word(thisWordSum);
+            sumMostSigWord = sumWord;
         }
         else {
-            sumWord->add_value(thisWordSum);
+            sumMostSigWord = sumWord->add_value(thisWordSum);
         }
         sumWord = sumWord->get_next_more_sig_word();        
     }
-    
+    sum->mostSigWord = sumMostSigWord;
     return sum;
 }
 

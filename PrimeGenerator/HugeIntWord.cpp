@@ -96,7 +96,8 @@ std::string HugeIntWord::to_string() {
     return formattedNumberString;
 }
 
-bool HugeIntWord::add_value(unsigned long long addend) {
+HugeIntWord* HugeIntWord::add_value(unsigned long long addend) {
+    HugeIntWord *mostSignificantAddedWord;
     unsigned long long thisNewValue;
     unsigned long long carryValue;
     if (addend <= HugeIntWord::max_value) {
@@ -106,17 +107,16 @@ bool HugeIntWord::add_value(unsigned long long addend) {
             thisNewValue = thisNewValue % HugeIntWord::base_value;
             this->value = thisNewValue;
             if (this->moreSigWord == NULL) {
-                this->moreSigWord = new HugeIntWord(carryValue, this);
+                this->moreSigWord = new HugeIntWord(0, this);
+                
                 // ToDo: Change the most significant word of the integer.
             }
-            else {
-                this->moreSigWord->add_value(carryValue);
-            }
-            return true;
+            mostSignificantAddedWord = this->moreSigWord->add_value(carryValue);
+//            return true;
         }
         else {
             this->value = thisNewValue;
-            return false;
+            mostSignificantAddedWord = this;
         }
     }
     else {
@@ -125,11 +125,10 @@ bool HugeIntWord::add_value(unsigned long long addend) {
         thisNewValue = thisNewValue % HugeIntWord::base_value;
         this->value = thisNewValue;
         if (this->moreSigWord == NULL) {
-            this->moreSigWord = new HugeIntWord(carryValue, this);
+            this->moreSigWord = new HugeIntWord(0, this);
         }
-        else {
-            this->moreSigWord->add_value(carryValue);
-        }
-        return true;        
+        mostSignificantAddedWord = this->moreSigWord->add_value(carryValue);
+//        return true;        
     }
+    return mostSignificantAddedWord;
 }

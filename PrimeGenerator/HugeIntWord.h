@@ -45,8 +45,8 @@ private:
     /**
      * @brief Add a value to this word.
      * @param addend Value to add to the word.
-     * @return True if an amount was carried to the next word; false if no carry.
+     * @return Pointer to most significant word of the addition operation.
      */
-    bool add_value(unsigned long long addend);
+    HugeIntWord* add_value(unsigned long long addend);
 };
 
