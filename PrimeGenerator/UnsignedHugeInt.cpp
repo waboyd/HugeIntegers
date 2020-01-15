@@ -1,8 +1,8 @@
 #include "UnsignedHugeInt.h"
 
-    // ToDo: Set the max_word_value in UnsignedHugeInt and HugeIntWord.
-    unsigned long long UnsignedHugeInt::max_word_value = 999999999;
-    unsigned long long UnsignedHugeInt::word_base = UnsignedHugeInt::max_word_value + 1;
+// ToDo: Set the max_word_value in UnsignedHugeInt and HugeIntWord.
+unsigned long long UnsignedHugeInt::max_word_value = 999999999;
+unsigned long long UnsignedHugeInt::word_base = UnsignedHugeInt::max_word_value + 1;
 
 UnsignedHugeInt::UnsignedHugeInt() {
     // ToDo: Set maximum word value.
@@ -13,21 +13,9 @@ UnsignedHugeInt::UnsignedHugeInt() {
 
 UnsignedHugeInt::UnsignedHugeInt(const unsigned long long value) {
     // ToDo: Set maximum word value.
-    // ToDo: Allow inputs that require more than 2 words.
-    if (value > UnsignedHugeInt::max_word_value) {
-        unsigned long carryValue = value / UnsignedHugeInt::word_base;
-        unsigned long long lesserValue = value % UnsignedHugeInt::word_base;
-        HugeIntWord *lesserWord, *greaterWord;
-        lesserWord = new HugeIntWord(lesserValue);
-        greaterWord = new HugeIntWord(carryValue, lesserWord);
-        this->mostSigWord = greaterWord;
-        this->leastSigWord = lesserWord;
-    }
-    else {
-        HugeIntWord *newWord = new HugeIntWord(value);
-        this->mostSigWord = newWord;
-        this->leastSigWord = newWord;
-    }
+    HugeIntWord *newWord = new HugeIntWord(0);
+    this->leastSigWord = newWord;
+    this->mostSigWord = newWord->add_value(value);
 }
 
 UnsignedHugeInt::UnsignedHugeInt(const UnsignedHugeInt& orig) {
