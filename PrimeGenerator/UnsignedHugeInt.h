@@ -9,6 +9,8 @@
 
 //#include <bits/stdc++.h>
 #include <iostream>
+#include <stdlib.h>
+#include <string.h>
 
 //#include <iomanip>
 //#include <locale>
@@ -21,6 +23,7 @@
 #include "HugeIntWord.h"
 
 //#define MAXNUMWORDS 100000
+#define MAX_DIGITS_PER_WORD 9
 
 class UnsignedHugeInt {
 public:
@@ -28,6 +31,7 @@ public:
     
     UnsignedHugeInt();
     UnsignedHugeInt(const unsigned long long value);
+    UnsignedHugeInt(std::string integer_string);
     UnsignedHugeInt(const UnsignedHugeInt& orig);
     virtual ~UnsignedHugeInt();
     

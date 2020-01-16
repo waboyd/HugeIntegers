@@ -75,6 +75,9 @@ void HugeIntWord::remove_more_significant_word() {
         std::cout << "WARNING: An attempt was made to remove a null more significant word.\n";
         return;
     }
+    else {
+        delete(this->moreSigWord);
+    }
     this->moreSigWord = NULL;
 }
 

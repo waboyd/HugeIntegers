@@ -18,6 +18,34 @@ UnsignedHugeInt::UnsignedHugeInt(const unsigned long long value) {
     this->mostSigWord = newWord->add_value(value);
 }
 
+UnsignedHugeInt::UnsignedHugeInt(std::string integer_string) {
+    // ToDo: handle bases that are not a power of 10.
+    std::string thisWordString;
+    char thisWordChar[MAX_DIGITS_PER_WORD + 1];
+    unsigned long long thisWordValue;
+    unsigned long long thisWordIndex = integer_string.length();
+    HugeIntWord *thisWordObject = new HugeIntWord(0);
+    HugeIntWord *newWordObject;
+    this->leastSigWord = thisWordObject;
+    
+    // Add words for the least significant words.
+    while (thisWordIndex > MAX_DIGITS_PER_WORD) {
+        thisWordIndex -= MAX_DIGITS_PER_WORD;
+        thisWordString = integer_string.substr(thisWordIndex, MAX_DIGITS_PER_WORD);
+        strcpy(thisWordChar, thisWordString.c_str());
+        thisWordValue = strtoul(thisWordChar, NULL, 10);
+        thisWordObject->add_value(thisWordValue);
+        newWordObject = new HugeIntWord(0, thisWordObject);
+        thisWordObject = newWordObject;
+    }
+    
+    // 
+    thisWordString = integer_string.substr(0, thisWordIndex);
+    strcpy(thisWordChar, thisWordString.c_str());
+    thisWordValue = strtoul(thisWordChar, NULL, 10);
+    this->mostSigWord = thisWordObject->add_value(thisWordValue);
+}
+
 UnsignedHugeInt::UnsignedHugeInt(const UnsignedHugeInt& orig) {
     // ToDo: Complete this method.
 }
