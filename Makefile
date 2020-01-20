@@ -1,8 +1,8 @@
 .PHONY: clean All
 
 All:
-	@echo "----------Building project:[ HugeIntegers - Debug ]----------"
-	@cd "PrimeGenerator" && "$(MAKE)" -f  "HugeIntegers.mk"
+	@echo "----------Building project:[ TestUnsignedHugeInt - Debug ]----------"
+	@cd "TestUnsignedHugeInt" && "$(MAKE)" -f  "TestUnsignedHugeInt.mk"
 clean:
-	@echo "----------Cleaning project:[ HugeIntegers - Debug ]----------"
-	@cd "PrimeGenerator" && "$(MAKE)" -f  "HugeIntegers.mk" clean
+	@echo "----------Cleaning project:[ TestUnsignedHugeInt - Debug ]----------"
+	@cd "TestUnsignedHugeInt" && "$(MAKE)" -f  "TestUnsignedHugeInt.mk" clean
