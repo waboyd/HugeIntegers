@@ -4,7 +4,7 @@
 -Ic:\MinGW\lib\gcc\mingw32\8.2.0\include
 -Ic:\MinGW\include
 -Ic:\MinGW\lib\gcc\mingw32\8.2.0\include-fixed
--IC:\Users\Seeker\Documents\programming\PrimeGenerator\TestUnsignedHugeInt
--IC:\Users\Seeker\Documents\programming\PrimeGenerator\HugeIntegers
+-IC:\Users\Seeker\Documents\programming\HugeIntegers\TestUnsignedHugeInt
+-IC:\Users\Seeker\Documents\programming\HugeIntegers\HugeIntegers
 -target
 x86_64-pc-windows-gnu

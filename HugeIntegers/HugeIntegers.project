@@ -8,11 +8,12 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="hugeIntTests.cpp"/>
+    <File Name="catch.hpp"/>
     <File Name="HugeIntWord.cpp"/>
     <File Name="HugeIntWord.h"/>
     <File Name="UnsignedHugeInt.cpp"/>
     <File Name="UnsignedHugeInt.h"/>
-    <File Name="main.cpp"/>
   </VirtualDirectory>
   <Settings Type="Executable">
     <GlobalSettings>
