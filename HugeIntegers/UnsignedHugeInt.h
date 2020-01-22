@@ -70,6 +70,7 @@ private:
     
     // Private Methods
     
+    void change_to_copy_of(const UnsignedHugeInt& orig);
     /**
      * @brief Add a new most significant word with a value of 0;
      * @return Pointer to the new word that was added.

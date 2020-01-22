@@ -47,11 +47,11 @@ UnsignedHugeInt::UnsignedHugeInt(std::string integer_string) {
 }
 
 UnsignedHugeInt::UnsignedHugeInt(const UnsignedHugeInt& orig) {
-    // ToDo: Complete this method.
+    this->change_to_copy_of(orig);
 }
 
 UnsignedHugeInt::UnsignedHugeInt(const UnsignedHugeInt* orig) {
-    // ToDo: Complete this method.
+    this->change_to_copy_of(*orig);
 }
 
 UnsignedHugeInt::~UnsignedHugeInt() {
@@ -291,6 +291,28 @@ std::string UnsignedHugeInt::to_string() const {
         }
     }
     return numberString;
+}
+
+void UnsignedHugeInt::change_to_copy_of(const UnsignedHugeInt& orig) {
+    HugeIntWord *thisCopyWord, *thisOrigWord;
+    thisOrigWord = orig.get_least_significant_word();
+    if (thisOrigWord != NULL) {
+        thisCopyWord = new HugeIntWord(thisOrigWord->get_value());
+        this->leastSigWord = thisCopyWord;
+        thisOrigWord = thisOrigWord->get_next_more_sig_word();
+    }
+    else {
+        thisCopyWord = new HugeIntWord(0);
+        this->leastSigWord = thisCopyWord;
+        this->mostSigWord = thisCopyWord;
+        return;
+    }
+    this->leastSigWord = thisCopyWord;
+    while (thisOrigWord != NULL) {
+        thisCopyWord = new HugeIntWord(thisOrigWord->get_value(), thisCopyWord);
+        thisOrigWord = thisOrigWord->get_next_more_sig_word();
+    }
+    this->mostSigWord = thisCopyWord;
 }
 
 HugeIntWord* UnsignedHugeInt::add_word() {

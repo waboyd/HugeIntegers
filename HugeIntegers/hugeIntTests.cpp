@@ -71,27 +71,27 @@ TEST_CASE("Read Very Long Number String", "Instantiate an UnsignedHugeInt from a
     delete(newNumber);    
 }
 
-//TEST_CASE("Copy UnsignedHugeInt From Object",
-//        "Make a copy of a multiple word UnsignedHugeInt. Check that the original is not changed after the copy.") {
-//    std::string valueString = "5035049874131000489735174198161536841357152630403";
-//    UnsignedHugeInt *origNumber = new UnsignedHugeInt(valueString);
-//    UnsignedHugeInt *copy = new UnsignedHugeInt(*origNumber);
-//    CHECK(valueString == copy->to_string());
-//    delete(copy);
-//    CHECK(valueString == origNumber->to_string());
-//    delete(origNumber);
-//}
-//
-//TEST_CASE("Copy UnsignedHugeInt From Pointer",
-//        "Make a copy of a multiple word UnsignedHugeInt. Check that the original is not changed after the copy.") {
-//    std::string valueString = "4168768142106540151010354068402543681008084368374123086404534984";
-//    UnsignedHugeInt *origNumber = new UnsignedHugeInt(valueString);
-//    UnsignedHugeInt *copy = new UnsignedHugeInt(origNumber);
-//    CHECK(valueString == copy->to_string());
-//    delete(copy);
-//    CHECK(valueString == origNumber->to_string());
-//    delete(origNumber);
-//}
+TEST_CASE("Copy UnsignedHugeInt From Object",
+        "Make a copy of a multiple word UnsignedHugeInt. Check that the original is not changed after the copy.") {
+    std::string valueString = "5035049874131000489735174198161536841357152630403";
+    UnsignedHugeInt *origNumber = new UnsignedHugeInt(valueString);
+    UnsignedHugeInt *copy = new UnsignedHugeInt(*origNumber);
+    CHECK(valueString == copy->to_string());
+    delete(copy);
+    CHECK(valueString == origNumber->to_string());
+    delete(origNumber);
+}
+
+TEST_CASE("Copy UnsignedHugeInt From Pointer",
+        "Make a copy of a multiple word UnsignedHugeInt. Check that the original is not changed after the copy.") {
+    std::string valueString = "4168768142106540151010354068402543681008084368374123086404534984";
+    UnsignedHugeInt *origNumber = new UnsignedHugeInt(valueString);
+    UnsignedHugeInt *copy = new UnsignedHugeInt(origNumber);
+    CHECK(valueString == copy->to_string());
+    delete(copy);
+    CHECK(valueString == origNumber->to_string());
+    delete(origNumber);
+}
 
 TEST_CASE("Multi-word Addition", "Add two multi-word integers instantiated in different ways.") {
     UnsignedHugeInt *numA = new UnsignedHugeInt("547890553345398741");
