@@ -71,6 +71,28 @@ TEST_CASE("Read Very Long Number String", "Instantiate an UnsignedHugeInt from a
     delete(newNumber);    
 }
 
+//TEST_CASE("Copy UnsignedHugeInt From Object",
+//        "Make a copy of a multiple word UnsignedHugeInt. Check that the original is not changed after the copy.") {
+//    std::string valueString = "5035049874131000489735174198161536841357152630403";
+//    UnsignedHugeInt *origNumber = new UnsignedHugeInt(valueString);
+//    UnsignedHugeInt *copy = new UnsignedHugeInt(*origNumber);
+//    CHECK(valueString == copy->to_string());
+//    delete(copy);
+//    CHECK(valueString == origNumber->to_string());
+//    delete(origNumber);
+//}
+//
+//TEST_CASE("Copy UnsignedHugeInt From Pointer",
+//        "Make a copy of a multiple word UnsignedHugeInt. Check that the original is not changed after the copy.") {
+//    std::string valueString = "4168768142106540151010354068402543681008084368374123086404534984";
+//    UnsignedHugeInt *origNumber = new UnsignedHugeInt(valueString);
+//    UnsignedHugeInt *copy = new UnsignedHugeInt(origNumber);
+//    CHECK(valueString == copy->to_string());
+//    delete(copy);
+//    CHECK(valueString == origNumber->to_string());
+//    delete(origNumber);
+//}
+
 TEST_CASE("Multi-word Addition", "Add two multi-word integers instantiated in different ways.") {
     UnsignedHugeInt *numA = new UnsignedHugeInt("547890553345398741");
     UnsignedHugeInt numB(852109446654601259);
@@ -81,3 +103,27 @@ TEST_CASE("Multi-word Addition", "Add two multi-word integers instantiated in di
     delete(numA);
     delete(sumA);
 }
+
+TEST_CASE("Add UnsignedHugeInt to Int", "Add an UnsignedHugeInt and an integer, with carry necessary between words.") {
+    UnsignedHugeInt *numA = new UnsignedHugeInt("999999999999999962");
+    int numB = 7539;
+    std::string expectedSum = "1000000000000007501";
+    UnsignedHugeInt *sum = *numA + numB;
+    CHECK(expectedSum == sum->to_string());
+    CHECK(3 == sum->num_words());   // For nine-digit words.
+    delete(numA);
+    delete(sum);
+}
+
+// ToDo: Add a method to add an int to an UnsignedHugeInt.
+//TEST_CASE("Add Int to UnsignedHugeInt", "Add an integer and an UnsignedHugeInt, with no carry necessary between words.") {
+//    int numA = 3644562;
+//    UnsignedHugeInt *numB = new UnsignedHugeInt("5480628615623433244512");
+//    std::string expectedSum = "5480628615623436889074";
+//    UnsignedHugeInt *sum = numA + *numB;
+//    CHECK(expectedSum == sum->to_string());
+//    CHECK(3 == sum->num_words());   // For nine-digit words.
+//    delete(numB);
+//    delete(sum);
+//}
+

@@ -50,6 +50,10 @@ UnsignedHugeInt::UnsignedHugeInt(const UnsignedHugeInt& orig) {
     // ToDo: Complete this method.
 }
 
+UnsignedHugeInt::UnsignedHugeInt(const UnsignedHugeInt* orig) {
+    // ToDo: Complete this method.
+}
+
 UnsignedHugeInt::~UnsignedHugeInt() {
     HugeIntWord *thisWord = this->mostSigWord;
     HugeIntWord *wordToDelete, *nextWord;
@@ -62,6 +66,7 @@ UnsignedHugeInt::~UnsignedHugeInt() {
     }
 }
 
+// ToDo: Check that the object exists as a precondition of the operations.
 short UnsignedHugeInt::compare(const UnsignedHugeInt& numberA, const UnsignedHugeInt& numberB) {
     unsigned long long numWordsA = numberA.num_words();
     unsigned long long numWordsB = numberB.num_words();

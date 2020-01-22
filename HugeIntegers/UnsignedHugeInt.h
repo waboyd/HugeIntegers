@@ -33,6 +33,7 @@ public:
     UnsignedHugeInt(const unsigned long long value);
     UnsignedHugeInt(std::string integer_string);
     UnsignedHugeInt(const UnsignedHugeInt& orig);
+    UnsignedHugeInt(const UnsignedHugeInt* orig);
     virtual ~UnsignedHugeInt();
     
     /**
