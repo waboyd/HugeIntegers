@@ -63,11 +63,6 @@ UnsignedHugeInt::~UnsignedHugeInt() {
 }
 
 short UnsignedHugeInt::compare(const UnsignedHugeInt& numberA, const UnsignedHugeInt& numberB) {
-
-//    if (numberA == NULL || numberB == NULL) {
-//        throw std::invalid_argument("A null value was compared.");
-//    }
-
     unsigned long long numWordsA = numberA.num_words();
     unsigned long long numWordsB = numberB.num_words();
     HugeIntWord *thisWordA, *thisWordB;
@@ -170,45 +165,12 @@ UnsignedHugeInt* UnsignedHugeInt::sum_of(const UnsignedHugeInt& addendA, const U
 UnsignedHugeInt* UnsignedHugeInt::operator+(const UnsignedHugeInt& addend) const {
     UnsignedHugeInt *sum;
     
-    // ToDo: Remove these print statements.
-    std::cout << "First addend: " << this->to_string() << "\n";
-    std::cout << "Second addend: " << addend.to_string() << "\n";
-    
     sum = UnsignedHugeInt::sum_of(*this, addend);
-//    unsigned long long numSumWords = 0;
-//    unsigned long long thisWordSum;
-//    unsigned long long thisCarryValue = 0;
-//    HugeIntWord *thisAddendWordA = this->leastSigWord;
-//    HugeIntWord *thisAddendWordB = addend.
-    
-//    thisWordSum = addend % UnsignedHugeInt::word_base;
-//    thisCarryValue = addend / UnsignedHugeInt::word_base;
-//    thisWordSum += thisAddendWordA->get_value();
-//    thisCarryValue += thisWordSum / UnsignedHugeInt::word_base;
-//    thisWordSum = thisWordSum % UnsignedHugeInt::word_base;
-//    sum = new UnsignedHugeInt(thisWordSum);
-//    
-//    thisAddendWordA = thisAddendWordA->get_next_more_sig_word();
-//    
-//    while (thisAddendWordA != NULL || thisCarryValue > 0) {
-//        thisWordSum = thisCarryValue;
-//        if (thisAddendWordA != NULL) {
-//            thisWordSum += thisAddendWordA->get_value();
-//            thisAddendWordA = thisAddendWordA->get_next_more_sig_word();
-//        }
-//        thisCarryValue = thisWordSum / UnsignedHugeInt::word_base;
-//        thisWordSum = thisWordSum % UnsignedHugeInt::word_base;
-//        sum->add_word(thisWordSum);
-//    }
     return sum;
 }
 
 UnsignedHugeInt* UnsignedHugeInt::operator+(const long long addend) const {
     UnsignedHugeInt *sum;
-    
-//    std::cout << "First addend: " << this->to_string() << "\n";
-//    std::cout << "Second addend: " << addend << "\n";
-//    
     unsigned long long thisWordSum;
     unsigned long long thisCarryValue = 0;
     HugeIntWord *thisAddendWord = this->leastSigWord;
@@ -233,7 +195,6 @@ UnsignedHugeInt* UnsignedHugeInt::operator+(const long long addend) const {
         sum->add_word(thisWordSum);
     }
     return sum;
-
 }
 
 UnsignedHugeInt UnsignedHugeInt::operator-(UnsignedHugeInt minuend) const {
