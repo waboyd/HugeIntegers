@@ -9,6 +9,8 @@ UnsignedHugeInt::UnsignedHugeInt() {
     HugeIntWord *newWord = new HugeIntWord(0);
     this->mostSigWord = newWord;
     this->leastSigWord = newWord;
+    this->defined_key_1 = CHECK_VALUE_A;
+    this->defined_key_2 = CHECK_VALUE_B;
 }
 
 UnsignedHugeInt::UnsignedHugeInt(const unsigned long long value) {
@@ -16,6 +18,8 @@ UnsignedHugeInt::UnsignedHugeInt(const unsigned long long value) {
     HugeIntWord *newWord = new HugeIntWord(0);
     this->leastSigWord = newWord;
     this->mostSigWord = newWord->add_value(value);
+    this->defined_key_1 = CHECK_VALUE_A;
+    this->defined_key_2 = CHECK_VALUE_B;
 }
 
 UnsignedHugeInt::UnsignedHugeInt(std::string integer_string) {
@@ -44,17 +48,29 @@ UnsignedHugeInt::UnsignedHugeInt(std::string integer_string) {
     strcpy(thisWordChar, thisWordString.c_str());
     thisWordValue = strtoul(thisWordChar, NULL, 10);
     this->mostSigWord = thisWordObject->add_value(thisWordValue);
+    this->defined_key_1 = CHECK_VALUE_A;
+    this->defined_key_2 = CHECK_VALUE_B;
 }
 
 UnsignedHugeInt::UnsignedHugeInt(const UnsignedHugeInt& orig) {
     this->change_to_copy_of(orig);
+    this->defined_key_1 = CHECK_VALUE_A;
+    this->defined_key_2 = CHECK_VALUE_B;
 }
 
 UnsignedHugeInt::UnsignedHugeInt(const UnsignedHugeInt* orig) {
     this->change_to_copy_of(*orig);
+    this->defined_key_1 = CHECK_VALUE_A;
+    this->defined_key_2 = CHECK_VALUE_B;
 }
 
 UnsignedHugeInt::~UnsignedHugeInt() {
+    if(!this->is_defined()) {
+        delete(this->mostSigWord);
+        delete(this->leastSigWord);
+        std::cout << "Warning: The destructor was called for a non-defined UnsignedHugeInt object.\n";
+        return;
+    }
     HugeIntWord *thisWord = this->mostSigWord;
     HugeIntWord *wordToDelete, *nextWord;
     while (thisWord != NULL) {
@@ -68,6 +84,10 @@ UnsignedHugeInt::~UnsignedHugeInt() {
 
 // ToDo: Check that the object exists as a precondition of the operations.
 short UnsignedHugeInt::compare(const UnsignedHugeInt& numberA, const UnsignedHugeInt& numberB) {
+    if(!numberA.is_defined() || !numberB.is_defined()) {
+        throw std::invalid_argument("One of the numbers of the comparison operation is not defined.");
+        return 0;
+    }
     unsigned long long numWordsA = numberA.num_words();
     unsigned long long numWordsB = numberB.num_words();
     HugeIntWord *thisWordA, *thisWordB;
@@ -100,6 +120,10 @@ short UnsignedHugeInt::compare(const UnsignedHugeInt& numberA, const UnsignedHug
 }
 
 UnsignedHugeInt* UnsignedHugeInt::sum_of(const UnsignedHugeInt& addendA, const UnsignedHugeInt& addendB) {
+    if(!addendA.is_defined() || !addendB.is_defined()) {
+        throw std::invalid_argument("One of the numbers of the addition operation is not defined.");
+        return NULL;
+    }
     UnsignedHugeInt *sum;
     HugeIntWord *greaterAddendWord, *lesserAddendWord;
     HugeIntWord *sumWord, *sumMostSigWord;
@@ -169,12 +193,15 @@ UnsignedHugeInt* UnsignedHugeInt::sum_of(const UnsignedHugeInt& addendA, const U
 
 UnsignedHugeInt* UnsignedHugeInt::operator+(const UnsignedHugeInt& addend) const {
     UnsignedHugeInt *sum;
-    
     sum = UnsignedHugeInt::sum_of(*this, addend);
     return sum;
 }
 
 UnsignedHugeInt* UnsignedHugeInt::operator+(const long long addend) const {
+    if(!this->is_defined()) {
+        throw std::invalid_argument("One of the numbers of the addition operation is not defined.");
+        return NULL;
+    }
     UnsignedHugeInt *sum;
     unsigned long long thisWordSum;
     unsigned long long thisCarryValue = 0;
@@ -244,6 +271,16 @@ UnsignedHugeInt UnsignedHugeInt::operator/(long long divisor) const {
     return quotient;
 }
 
+bool UnsignedHugeInt::is_defined() const {
+    if ((this->defined_key_1 != CHECK_VALUE_A) || (this->defined_key_2 != CHECK_VALUE_B) ||
+        ((this->leastSigWord != NULL) && 
+        ((this->leastSigWord->get_next_lower_sig_word() != NULL) || (this->mostSigWord->get_next_more_sig_word() != NULL)))) {
+            throw std::invalid_argument("An UnsignedHugeInt object was used before it was defined.");
+            return false;
+    }
+    return true;
+}
+
 long UnsignedHugeInt::num_words() const {
     return (this->mostSigWord->get_word_number() + 1);
 }
@@ -257,6 +294,10 @@ HugeIntWord* UnsignedHugeInt::get_least_significant_word() const {
 }
 
 HugeIntWord* UnsignedHugeInt::remove_most_significant_word() {
+    if(!this->is_defined()) {
+        throw std::invalid_argument("An attempt was made to remove a word from a non-defined number.");
+        return NULL;
+    }
     HugeIntWord *oldMostSigWord = this->mostSigWord;
     if (oldMostSigWord == NULL) {
         throw std::logic_error("An UnsignedHugeInt object has no words or value.");
@@ -278,6 +319,10 @@ bool UnsignedHugeInt::is_prime() {
 
 std::string UnsignedHugeInt::to_string() const {
     // ToDo: Convert the words to base 10 when forming the string.
+    if(!this->is_defined()) {
+        throw std::invalid_argument("An attempt was made to retrieve the value of a non-defined UnsignedHugeInt.");
+        return "";
+    }
     std::string numberString = "", wordString;
     HugeIntWord *thisWord;
     if (this->mostSigWord == NULL)

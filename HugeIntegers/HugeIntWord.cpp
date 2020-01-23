@@ -110,12 +110,9 @@ HugeIntWord* HugeIntWord::add_value(unsigned long long addend) {
             thisNewValue = thisNewValue % HugeIntWord::base_value;
             this->value = thisNewValue;
             if (this->moreSigWord == NULL) {
-                this->moreSigWord = new HugeIntWord(0, this);
-                
-                // ToDo: Change the most significant word of the integer.
+                this->moreSigWord = new HugeIntWord(0, this);                
             }
             mostSignificantAddedWord = this->moreSigWord->add_value(carryValue);
-//            return true;
         }
         else {
             this->value = thisNewValue;
@@ -131,7 +128,6 @@ HugeIntWord* HugeIntWord::add_value(unsigned long long addend) {
             this->moreSigWord = new HugeIntWord(0, this);
         }
         mostSignificantAddedWord = this->moreSigWord->add_value(carryValue);
-//        return true;        
     }
     return mostSignificantAddedWord;
 }

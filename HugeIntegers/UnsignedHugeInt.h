@@ -24,6 +24,8 @@
 
 //#define MAXNUMWORDS 100000
 #define MAX_DIGITS_PER_WORD 9
+#define CHECK_VALUE_A   84340
+#define CHECK_VALUE_B   308424
 
 class UnsignedHugeInt {
 public:
@@ -53,6 +55,11 @@ public:
     UnsignedHugeInt operator/(UnsignedHugeInt divisor) const;
     UnsignedHugeInt operator/(long long divisor) const;
     
+    /**
+     * @brief Return true only if the object has been defined and is not null.
+     * @return True if the object is verified as properly defined.
+     */
+    bool is_defined() const;
     long num_words() const;
     HugeIntWord* get_most_significant_word() const;
     HugeIntWord* get_least_significant_word() const;
@@ -67,6 +74,7 @@ private:
     static unsigned long long max_word_value;
     static unsigned long long word_base;
     HugeIntWord *leastSigWord, *mostSigWord;
+    int defined_key_1, defined_key_2;
     
     // Private Methods
     
