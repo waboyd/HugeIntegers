@@ -84,6 +84,7 @@ private:
      * @brief Add a new most significant word with a value of 0;
      * @return Pointer to the new word that was added.
      */
+    void remove_extra_leading_words();
     HugeIntWord* add_word();
     /**
      * @brief Add new most significant words with a total value given in the parameter;
@@ -96,7 +97,6 @@ private:
      */
     HugeIntWord* add_word(HugeIntWord* new_word);
     void throw_warning(std::string message);
-    
 };
 
 // Operators involving UnsignedHugeInt, but not considered part of UnsignedHugeInt by the compiler.
