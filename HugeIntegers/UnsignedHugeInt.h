@@ -46,6 +46,7 @@ public:
      */
     static short compare(const UnsignedHugeInt& numberA, const UnsignedHugeInt& numberB);
     static UnsignedHugeInt* sum_of(const UnsignedHugeInt& addendA, const UnsignedHugeInt& addendB);
+    static UnsignedHugeInt* sum_of(const UnsignedHugeInt& addendA, const unsigned long long addendB);
     UnsignedHugeInt* operator+(const UnsignedHugeInt& addend) const;
     UnsignedHugeInt* operator+(const long long addend) const;
     UnsignedHugeInt operator-(UnsignedHugeInt minuend) const;
@@ -97,3 +98,6 @@ private:
     void throw_warning(std::string message);
     
 };
+
+// Operators involving UnsignedHugeInt, but not considered part of UnsignedHugeInt by the compiler.
+UnsignedHugeInt* operator+(const unsigned long long addendA, const UnsignedHugeInt& addendB);

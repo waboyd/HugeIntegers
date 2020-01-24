@@ -116,14 +116,14 @@ TEST_CASE("Add UnsignedHugeInt to Int", "Add an UnsignedHugeInt and an integer, 
 }
 
 // ToDo: Add a method to add an int to an UnsignedHugeInt.
-//TEST_CASE("Add Int to UnsignedHugeInt", "Add an integer and an UnsignedHugeInt, with no carry necessary between words.") {
-//    int numA = 3644562;
-//    UnsignedHugeInt *numB = new UnsignedHugeInt("5480628615623433244512");
-//    std::string expectedSum = "5480628615623436889074";
-//    UnsignedHugeInt *sum = numA + *numB;
-//    CHECK(expectedSum == sum->to_string());
-//    CHECK(3 == sum->num_words());   // For nine-digit words.
-//    delete(numB);
-//    delete(sum);
-//}
+TEST_CASE("Add Int to UnsignedHugeInt", "Add an integer and an UnsignedHugeInt, with no carry necessary between words.") {
+    int numA = 3644562;
+    UnsignedHugeInt *numB = new UnsignedHugeInt("5480628615623433244512");
+    std::string expectedSum = "5480628615623436889074";
+    UnsignedHugeInt *sum = numA + *numB;
+    CHECK(expectedSum == sum->to_string());
+    CHECK(3 == sum->num_words());   // For nine-digit words.
+    delete(numB);
+    delete(sum);
+}
 

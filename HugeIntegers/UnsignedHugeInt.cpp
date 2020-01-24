@@ -191,24 +191,18 @@ UnsignedHugeInt* UnsignedHugeInt::sum_of(const UnsignedHugeInt& addendA, const U
     return sum;
 }
 
-UnsignedHugeInt* UnsignedHugeInt::operator+(const UnsignedHugeInt& addend) const {
-    UnsignedHugeInt *sum;
-    sum = UnsignedHugeInt::sum_of(*this, addend);
-    return sum;
-}
-
-UnsignedHugeInt* UnsignedHugeInt::operator+(const long long addend) const {
-    if(!this->is_defined()) {
+UnsignedHugeInt* UnsignedHugeInt::sum_of(const UnsignedHugeInt& addendA, const unsigned long long addendB) {
+        if(!addendA.is_defined()) {
         throw std::invalid_argument("One of the numbers of the addition operation is not defined.");
         return NULL;
     }
     UnsignedHugeInt *sum;
     unsigned long long thisWordSum;
     unsigned long long thisCarryValue = 0;
-    HugeIntWord *thisAddendWord = this->leastSigWord;
+    HugeIntWord *thisAddendWord = addendA.get_least_significant_word();
     
-    thisWordSum = addend % UnsignedHugeInt::word_base;
-    thisCarryValue = addend / UnsignedHugeInt::word_base;
+    thisWordSum = addendB % UnsignedHugeInt::word_base;
+    thisCarryValue = addendB / UnsignedHugeInt::word_base;
     thisWordSum += thisAddendWord->get_value();
     thisCarryValue += thisWordSum / UnsignedHugeInt::word_base;
     thisWordSum = thisWordSum % UnsignedHugeInt::word_base;
@@ -227,6 +221,53 @@ UnsignedHugeInt* UnsignedHugeInt::operator+(const long long addend) const {
         sum->add_word(thisWordSum);
     }
     return sum;
+}
+
+UnsignedHugeInt* UnsignedHugeInt::operator+(const UnsignedHugeInt& addend) const {
+    UnsignedHugeInt *sum;
+    sum = UnsignedHugeInt::sum_of(*this, addend);
+    return sum;
+}
+
+UnsignedHugeInt* UnsignedHugeInt::operator+(const long long addend) const {
+    return UnsignedHugeInt::sum_of(this, addend);
+//    if(!this->is_defined()) {
+//        throw std::invalid_argument("One of the numbers of the addition operation is not defined.");
+//        return NULL;
+//    }
+//    UnsignedHugeInt *sum;
+//    unsigned long long thisWordSum;
+//    unsigned long long thisCarryValue = 0;
+//    HugeIntWord *thisAddendWord = this->leastSigWord;
+//    
+//    thisWordSum = addend % UnsignedHugeInt::word_base;
+//    thisCarryValue = addend / UnsignedHugeInt::word_base;
+//    thisWordSum += thisAddendWord->get_value();
+//    thisCarryValue += thisWordSum / UnsignedHugeInt::word_base;
+//    thisWordSum = thisWordSum % UnsignedHugeInt::word_base;
+//    sum = new UnsignedHugeInt(thisWordSum);
+//    
+//    thisAddendWord = thisAddendWord->get_next_more_sig_word();
+//    
+//    while (thisAddendWord != NULL || thisCarryValue > 0) {
+//        thisWordSum = thisCarryValue;
+//        if (thisAddendWord != NULL) {
+//            thisWordSum += thisAddendWord->get_value();
+//            thisAddendWord = thisAddendWord->get_next_more_sig_word();
+//        }
+//        thisCarryValue = thisWordSum / UnsignedHugeInt::word_base;
+//        thisWordSum = thisWordSum % UnsignedHugeInt::word_base;
+//        sum->add_word(thisWordSum);
+//    }
+//    return sum;
+}
+
+UnsignedHugeInt* operator+(const unsigned long long addendA, const UnsignedHugeInt& addendB) {
+    // ToDo: Complete this method.
+//    UnsignedHugeInt *sum;
+//    
+//    return sum;
+    return UnsignedHugeInt::sum_of(addendB, addendA);
 }
 
 UnsignedHugeInt UnsignedHugeInt::operator-(UnsignedHugeInt minuend) const {
