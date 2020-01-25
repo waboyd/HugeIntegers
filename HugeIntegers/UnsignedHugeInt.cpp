@@ -238,44 +238,51 @@ UnsignedHugeInt* operator+(const unsigned long long addendA, const UnsignedHugeI
     return UnsignedHugeInt::sum_of(addendB, addendA);
 }
 
-UnsignedHugeInt UnsignedHugeInt::operator-(UnsignedHugeInt minuend) const {
+UnsignedHugeInt* UnsignedHugeInt::operator-(UnsignedHugeInt subtrahend) const {
     // ToDo: Complete this method.
-    UnsignedHugeInt difference;
+    UnsignedHugeInt *difference = new UnsignedHugeInt;
     
     return difference;
 }
 
-UnsignedHugeInt UnsignedHugeInt::operator-(long long minuend) const {
+UnsignedHugeInt* UnsignedHugeInt::operator-(long long subtrahend) const {
     // ToDo: Complete this method.
-    UnsignedHugeInt difference;
+    UnsignedHugeInt *difference = new UnsignedHugeInt;
     
     return difference;
 }
 
-UnsignedHugeInt UnsignedHugeInt::operator*(UnsignedHugeInt factor) const {
+UnsignedHugeInt* operator-(const unsigned long long minuend, const UnsignedHugeInt& subtrahend) {
     // ToDo: Complete this method.
-    UnsignedHugeInt product;
+    UnsignedHugeInt *difference = new UnsignedHugeInt;
+    
+    return difference;
+}
+
+UnsignedHugeInt* UnsignedHugeInt::operator*(UnsignedHugeInt factor) const {
+    // ToDo: Complete this method.
+    UnsignedHugeInt *product;
     
     return product;
 }
 
-UnsignedHugeInt UnsignedHugeInt::operator*(long long factor) const {
+UnsignedHugeInt* UnsignedHugeInt::operator*(long long factor) const {
     // ToDo: Complete this method.
-    UnsignedHugeInt product;
+    UnsignedHugeInt *product;
     
     return product;
 }
 
-UnsignedHugeInt UnsignedHugeInt::operator/(UnsignedHugeInt divisor) const {
+UnsignedHugeInt* UnsignedHugeInt::operator/(UnsignedHugeInt divisor) const {
     // ToDo: Complete this method.
-    UnsignedHugeInt quotient;
+    UnsignedHugeInt *quotient;
     
     return quotient;
 }
 
-UnsignedHugeInt UnsignedHugeInt::operator/(long long divisor) const {
+UnsignedHugeInt* UnsignedHugeInt::operator/(long long divisor) const {
     // ToDo: Complete this method.
-    UnsignedHugeInt quotient;
+    UnsignedHugeInt *quotient;
     
     return quotient;
 }

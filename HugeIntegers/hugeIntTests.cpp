@@ -97,25 +97,21 @@ TEST_CASE("Multi-word Addition", "Add two multi-word integers instantiated in di
     UnsignedHugeInt *numA = new UnsignedHugeInt("547890553345398741");
     UnsignedHugeInt numB(852109446654601259);
     std::string expectedSum = "1400000000000000000";
-    UnsignedHugeInt *sumA;
+    UnsignedHugeInt sumA;
     sumA = *numA + numB;
-    REQUIRE(expectedSum == sumA->to_string());
+    CHECK(expectedSum == sumA.to_string());
     delete(numA);
-    delete(sumA);
 }
 
 TEST_CASE("Add UnsignedHugeInt to Int", "Add an UnsignedHugeInt and an integer, with carry necessary between words.") {
-    UnsignedHugeInt *numA = new UnsignedHugeInt("999999999999999962");
+    UnsignedHugeInt numA("999999999999999962");
     int numB = 7539;
     std::string expectedSum = "1000000000000007501";
-    UnsignedHugeInt *sum = *numA + numB;
-    CHECK(expectedSum == sum->to_string());
-    CHECK(3 == sum->num_words());   // For nine-digit words.
-    delete(numA);
-    delete(sum);
+    UnsignedHugeInt sum = numA + numB;
+    CHECK(expectedSum == sum.to_string());
+    CHECK(3 == sum.num_words());   // For nine-digit words.
 }
 
-// ToDo: Add a method to add an int to an UnsignedHugeInt.
 TEST_CASE("Add Int to UnsignedHugeInt", "Add an integer and an UnsignedHugeInt, with no carry necessary between words.") {
     int numA = 3644562;
     UnsignedHugeInt *numB = new UnsignedHugeInt("5480628615623433244512");
@@ -125,5 +121,56 @@ TEST_CASE("Add Int to UnsignedHugeInt", "Add an integer and an UnsignedHugeInt, 
     CHECK(3 == sum->num_words());   // For nine-digit words.
     delete(numB);
     delete(sum);
+}
+
+TEST_CASE("Add With Varied Numbers of Words", "Add two UnsignedHugeInts with different numbers of words and necessary carrying.") {
+    UnsignedHugeInt numA("9463748");
+    UnsignedHugeInt numB("65801648904710984337546947096703984713998974374");
+    std::string expectedSum = "65801648904710984337546947096703984714008438122";
+    UnsignedHugeInt sum = numA + numB;
+    std::string resultString = sum.to_string();
+    REQUIRE(expectedSum == resultString);
+}
+
+TEST_CASE("Subtract Without Carry", "Subtract two UnsignedHugeInt objects without carrying or borrowing across words.") {
+    UnsignedHugeInt numA("84403664049843549840495215515");
+    UnsignedHugeInt numB("16210648974686451687432164471");
+    std::string expectedString = "68193015075157098153063051044‬";
+    UnsignedHugeInt difference;
+    difference = numA - numB;
+    REQUIRE(expectedString == difference.to_string());
+}
+
+TEST_CASE("Subtract With Carry", "Subtract two UnsignedHugeInt objects with some carrying across words.") {
+    UnsignedHugeInt numA("5019403549065430584450601215460980497032190");
+    UnsignedHugeInt numB("2040654687703684065068703687401144948904977");
+    std::string expectedString = "2978748861361746519381897528059835548127213‬";
+    UnsignedHugeInt difference = numA - numB;
+    REQUIRE(expectedString == difference.to_string());
+}
+
+TEST_CASE("Subtract With Different Numbers of Words",
+        "Subtract two UnsignedHugeInt objects with a large difference in the numbers of digits.") {
+    UnsignedHugeInt numA("1139879984065103680435106871424205414004504254541");
+    UnsignedHugeInt numB("987904190075610");
+    std::string expectedString = "1139879984065103680435106871424204426100314178931‬";
+    UnsignedHugeInt difference = numA - numB;
+    REQUIRE(expectedString == difference.to_string());
+}
+
+TEST_CASE("Subtract Integer From UnsignedHugeInt", "Subtract an UnsignedHugeInt and an integer.") {
+    UnsignedHugeInt numA("49804510321988733554126");
+    unsigned long long numB = 298743419894698443;
+    std::string expectedString = "49804211578568838855683";
+    UnsignedHugeInt difference = numA - numB;
+    REQUIRE(expectedString == difference.to_string());
+}
+
+TEST_CASE("Subtract UnsignedHugeInt from Integer", "Subtract an integer and an UnsignedHugeInt.") {
+    unsigned long numA = 964388135;
+    UnsignedHugeInt numB("8106354");
+    std::string expectedString = "956281781‬‬";
+    UnsignedHugeInt difference = numA - numB;
+    REQUIRE(expectedString == difference.to_string());    
 }
 

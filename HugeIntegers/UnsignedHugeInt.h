@@ -49,12 +49,12 @@ public:
     static UnsignedHugeInt* sum_of(const UnsignedHugeInt& addendA, const unsigned long long addendB);
     UnsignedHugeInt* operator+(const UnsignedHugeInt& addend) const;
     UnsignedHugeInt* operator+(const long long addend) const;
-    UnsignedHugeInt operator-(UnsignedHugeInt minuend) const;
-    UnsignedHugeInt operator-(long long minuend) const;
-    UnsignedHugeInt operator*(UnsignedHugeInt factor) const;
-    UnsignedHugeInt operator*(long long factor) const;
-    UnsignedHugeInt operator/(UnsignedHugeInt divisor) const;
-    UnsignedHugeInt operator/(long long divisor) const;
+    UnsignedHugeInt* operator-(UnsignedHugeInt subtrahend) const;
+    UnsignedHugeInt* operator-(long long subtrahend) const;
+    UnsignedHugeInt* operator*(UnsignedHugeInt factor) const;
+    UnsignedHugeInt* operator*(long long factor) const;
+    UnsignedHugeInt* operator/(UnsignedHugeInt divisor) const;
+    UnsignedHugeInt* operator/(long long divisor) const;
     
     /**
      * @brief Return true only if the object has been defined and is not null.
@@ -101,3 +101,4 @@ private:
 
 // Operators involving UnsignedHugeInt, but not considered part of UnsignedHugeInt by the compiler.
 UnsignedHugeInt* operator+(const unsigned long long addendA, const UnsignedHugeInt& addendB);
+UnsignedHugeInt* operator-(const unsigned long long minuend, const UnsignedHugeInt& subtrahend);
