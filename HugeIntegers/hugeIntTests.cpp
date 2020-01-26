@@ -116,7 +116,7 @@ TEST_CASE("Add Int to UnsignedHugeInt", "Add an integer and an UnsignedHugeInt, 
     int numA = 3644562;
     UnsignedHugeInt *numB = new UnsignedHugeInt("5480628615623433244512");
     std::string expectedSum = "5480628615623436889074";
-    UnsignedHugeInt *sum = numA + *numB;
+    UnsignedHugeInt *sum = &(numA + *numB);
     CHECK(expectedSum == sum->to_string());
     CHECK(3 == sum->num_words());   // For nine-digit words.
     delete(numB);
@@ -135,7 +135,7 @@ TEST_CASE("Add With Varied Numbers of Words", "Add two UnsignedHugeInts with dif
 TEST_CASE("Subtract Without Carry", "Subtract two UnsignedHugeInt objects without carrying or borrowing across words.") {
     UnsignedHugeInt numA("84403664049843549840495215515");
     UnsignedHugeInt numB("16210648974686451687432164471");
-    std::string expectedString = "68193015075157098153063051044‬";
+    std::string expectedString = "68193015075157098153063051044";
     UnsignedHugeInt difference;
     difference = numA - numB;
     REQUIRE(expectedString == difference.to_string());
@@ -144,7 +144,7 @@ TEST_CASE("Subtract Without Carry", "Subtract two UnsignedHugeInt objects withou
 TEST_CASE("Subtract With Carry", "Subtract two UnsignedHugeInt objects with some carrying across words.") {
     UnsignedHugeInt numA("5019403549065430584450601215460980497032190");
     UnsignedHugeInt numB("2040654687703684065068703687401144948904977");
-    std::string expectedString = "2978748861361746519381897528059835548127213‬";
+    std::string expectedString = "2978748861361746519381897528059835548127213";
     UnsignedHugeInt difference = numA - numB;
     REQUIRE(expectedString == difference.to_string());
 }
@@ -153,7 +153,7 @@ TEST_CASE("Subtract With Different Numbers of Words",
         "Subtract two UnsignedHugeInt objects with a large difference in the numbers of digits.") {
     UnsignedHugeInt numA("1139879984065103680435106871424205414004504254541");
     UnsignedHugeInt numB("987904190075610");
-    std::string expectedString = "1139879984065103680435106871424204426100314178931‬";
+    std::string expectedString = "1139879984065103680435106871424204426100314178931";
     UnsignedHugeInt difference = numA - numB;
     REQUIRE(expectedString == difference.to_string());
 }
@@ -169,7 +169,7 @@ TEST_CASE("Subtract Integer From UnsignedHugeInt", "Subtract an UnsignedHugeInt 
 TEST_CASE("Subtract UnsignedHugeInt from Integer", "Subtract an integer and an UnsignedHugeInt.") {
     unsigned long numA = 964388135;
     UnsignedHugeInt numB("8106354");
-    std::string expectedString = "956281781‬‬";
+    std::string expectedString = "956281781";
     UnsignedHugeInt difference = numA - numB;
     REQUIRE(expectedString == difference.to_string());    
 }

@@ -45,12 +45,14 @@ public:
      * @return 1 if numberA is greater; 0 if the numbers are equal; -1 if numberB is greater.
      */
     static short compare(const UnsignedHugeInt& numberA, const UnsignedHugeInt& numberB);
-    static UnsignedHugeInt* sum_of(const UnsignedHugeInt& addendA, const UnsignedHugeInt& addendB);
-    static UnsignedHugeInt* sum_of(const UnsignedHugeInt& addendA, const unsigned long long addendB);
-    UnsignedHugeInt* operator+(const UnsignedHugeInt& addend) const;
-    UnsignedHugeInt* operator+(const long long addend) const;
-    UnsignedHugeInt* operator-(UnsignedHugeInt subtrahend) const;
-    UnsignedHugeInt* operator-(long long subtrahend) const;
+    static UnsignedHugeInt& sum_of(const UnsignedHugeInt& addendA, const UnsignedHugeInt& addendB);
+    static UnsignedHugeInt& sum_of(const UnsignedHugeInt& addendA, const unsigned long long addendB);
+    UnsignedHugeInt& operator+(const UnsignedHugeInt& addend) const;
+    UnsignedHugeInt& operator+(const long long addend) const;
+    static UnsignedHugeInt& subtract(const UnsignedHugeInt& minuend, const UnsignedHugeInt& subtrahend);
+//    UnsignedHugeInt* operator-(UnsignedHugeInt& subtrahend) const;
+    UnsignedHugeInt& operator-(UnsignedHugeInt& subtrahend) const;
+    UnsignedHugeInt& operator-(long long subtrahend) const;
     UnsignedHugeInt* operator*(UnsignedHugeInt factor) const;
     UnsignedHugeInt* operator*(long long factor) const;
     UnsignedHugeInt* operator/(UnsignedHugeInt divisor) const;
@@ -100,5 +102,5 @@ private:
 };
 
 // Operators involving UnsignedHugeInt, but not considered part of UnsignedHugeInt by the compiler.
-UnsignedHugeInt* operator+(const unsigned long long addendA, const UnsignedHugeInt& addendB);
-UnsignedHugeInt* operator-(const unsigned long long minuend, const UnsignedHugeInt& subtrahend);
+UnsignedHugeInt& operator+(const unsigned long long addendA, const UnsignedHugeInt& addendB);
+UnsignedHugeInt& operator-(const unsigned long long minuend, const UnsignedHugeInt& subtrahend);

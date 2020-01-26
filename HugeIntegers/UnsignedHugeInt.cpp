@@ -87,7 +87,6 @@ UnsignedHugeInt::~UnsignedHugeInt() {
 short UnsignedHugeInt::compare(const UnsignedHugeInt& numberA, const UnsignedHugeInt& numberB) {
     if(!numberA.is_defined() || !numberB.is_defined()) {
         throw std::invalid_argument("One of the numbers of the comparison operation is not defined.");
-        return 0;
     }
     unsigned long long numWordsA = numberA.num_words();
     unsigned long long numWordsB = numberB.num_words();
@@ -120,10 +119,9 @@ short UnsignedHugeInt::compare(const UnsignedHugeInt& numberA, const UnsignedHug
     return 0;   // The numbers are equal.
 }
 
-UnsignedHugeInt* UnsignedHugeInt::sum_of(const UnsignedHugeInt& addendA, const UnsignedHugeInt& addendB) {
+UnsignedHugeInt& UnsignedHugeInt::sum_of(const UnsignedHugeInt& addendA, const UnsignedHugeInt& addendB) {
     if(!addendA.is_defined() || !addendB.is_defined()) {
         throw std::invalid_argument("One of the numbers of the addition operation is not defined.");
-        return NULL;
     }
     UnsignedHugeInt *sum;
     HugeIntWord *greaterAddendWord, *lesserAddendWord;
@@ -189,13 +187,12 @@ UnsignedHugeInt* UnsignedHugeInt::sum_of(const UnsignedHugeInt& addendA, const U
         sumWord = sumWord->get_next_more_sig_word();        
     }
     sum->mostSigWord = sumMostSigWord;
-    return sum;
+    return *sum;
 }
 
-UnsignedHugeInt* UnsignedHugeInt::sum_of(const UnsignedHugeInt& addendA, const unsigned long long addendB) {
-        if(!addendA.is_defined()) {
+UnsignedHugeInt& UnsignedHugeInt::sum_of(const UnsignedHugeInt& addendA, const unsigned long long addendB) {
+    if(!addendA.is_defined()) {
         throw std::invalid_argument("One of the numbers of the addition operation is not defined.");
-        return NULL;
     }
     UnsignedHugeInt *sum;
     unsigned long long thisWordSum;
@@ -221,42 +218,115 @@ UnsignedHugeInt* UnsignedHugeInt::sum_of(const UnsignedHugeInt& addendA, const u
         thisWordSum = thisWordSum % UnsignedHugeInt::word_base;
         sum->add_word(thisWordSum);
     }
-    return sum;
+    return *sum;
 }
 
-UnsignedHugeInt* UnsignedHugeInt::operator+(const UnsignedHugeInt& addend) const {
-    UnsignedHugeInt *sum;
-    sum = UnsignedHugeInt::sum_of(*this, addend);
-    return sum;
+UnsignedHugeInt& UnsignedHugeInt::operator+(const UnsignedHugeInt& addend) const {
+    return UnsignedHugeInt::sum_of(*this, addend);
 }
 
-UnsignedHugeInt* UnsignedHugeInt::operator+(const long long addend) const {
+UnsignedHugeInt& UnsignedHugeInt::operator+(const long long addend) const {
     return UnsignedHugeInt::sum_of(this, addend);
 }
 
-UnsignedHugeInt* operator+(const unsigned long long addendA, const UnsignedHugeInt& addendB) {
+UnsignedHugeInt& operator+(const unsigned long long addendA, const UnsignedHugeInt& addendB) {
     return UnsignedHugeInt::sum_of(addendB, addendA);
 }
 
-UnsignedHugeInt* UnsignedHugeInt::operator-(UnsignedHugeInt subtrahend) const {
-    // ToDo: Complete this method.
-    UnsignedHugeInt *difference = new UnsignedHugeInt;
+UnsignedHugeInt& UnsignedHugeInt::subtract(const UnsignedHugeInt& minuend, const UnsignedHugeInt& subtrahend) {
+    if(!minuend.is_defined() || !subtrahend.is_defined()) {
+        throw std::invalid_argument("One of the UnsignedHugeInts of the subtraction operation is not defined.");
+    }
+    if (UnsignedHugeInt::compare(minuend, subtrahend) < 0) {
+        throw std::range_error("The subtrahend of an unsigned subtraction operation was greater than the minuend.");
+    }
     
-    return difference;
+    UnsignedHugeInt *difference;
+    HugeIntWord *minuendWord, *subtrahendWord;
+    HugeIntWord *differenceWord;
+    unsigned long long thisWordDifference, thisMinuendWordValue, thisSubtrahendWordValue, carryValue;
+    
+    // Determine the least significant word of the difference.
+    minuendWord = minuend.get_least_significant_word();
+    if (minuendWord == NULL)
+        return *(new UnsignedHugeInt((unsigned long long)0));
+    subtrahendWord = subtrahend.get_least_significant_word();
+    if (subtrahendWord == NULL)
+        return *(new UnsignedHugeInt(minuend));
+    thisMinuendWordValue = minuendWord->get_value();
+    thisSubtrahendWordValue = subtrahendWord->get_value();
+    if (thisMinuendWordValue < thisSubtrahendWordValue) {
+        carryValue = 1;
+        thisWordDifference = (UnsignedHugeInt::word_base + thisMinuendWordValue) - thisSubtrahendWordValue;
+    }
+    else {
+        carryValue = 0;
+        thisWordDifference = thisMinuendWordValue - thisSubtrahendWordValue;
+    }        
+    difference = new UnsignedHugeInt(thisWordDifference);
+    differenceWord = difference->get_least_significant_word();
+//    difference->get_least_significant_word();
+    minuendWord = minuendWord->get_next_more_sig_word();
+    subtrahendWord = subtrahendWord->get_next_more_sig_word();
+    
+    // Subtract all the words of the subtrahend.    
+    while (subtrahendWord != NULL) {
+        thisMinuendWordValue = minuendWord->get_value();
+        thisSubtrahendWordValue = subtrahendWord->get_value() + carryValue;
+        if (thisMinuendWordValue < thisSubtrahendWordValue) {
+            carryValue = 1;
+            thisWordDifference = (HugeIntWord::base_value + thisMinuendWordValue) - thisSubtrahendWordValue;
+        }
+        else {
+            carryValue = 0;
+            thisWordDifference = thisMinuendWordValue - thisSubtrahendWordValue;
+        }
+        differenceWord = difference->add_word(thisWordDifference);
+//        difference->add_word(thisWordDifference);
+        minuendWord = minuendWord->get_next_more_sig_word();
+        subtrahendWord = subtrahendWord->get_next_more_sig_word();
+    }
+    
+    // Continue carry operations from the remaining words of the menuend.
+    while (minuendWord != NULL && carryValue > 0) {
+        thisMinuendWordValue = minuendWord->get_value();
+        if (thisMinuendWordValue < carryValue) {
+            carryValue = 1;
+            thisWordDifference = (HugeIntWord::base_value + thisMinuendWordValue) - carryValue;
+        }
+        else {
+            carryValue = 0;
+            thisWordDifference = thisMinuendWordValue - carryValue;
+        }
+        differenceWord = difference->add_word(thisWordDifference);
+//        difference->add_word(thisWordDifference);
+        minuendWord = minuendWord->get_next_more_sig_word();
+    }
+    
+    // After carry operations are finished, copy the minuend words to the difference.
+    while (minuendWord != NULL) {
+        thisMinuendWordValue = minuendWord->get_value();
+        differenceWord = difference->add_word(thisMinuendWordValue);
+//        difference->add_word(thisMinuendWordValue);
+        minuendWord = minuendWord->get_next_more_sig_word();
+    }
+//    this->mostSigWord = differenceWord;
+    difference->remove_extra_leading_words();
+    return *difference;
 }
 
-UnsignedHugeInt* UnsignedHugeInt::operator-(long long subtrahend) const {
-    // ToDo: Complete this method.
-    UnsignedHugeInt *difference = new UnsignedHugeInt;
-    
-    return difference;
+UnsignedHugeInt& UnsignedHugeInt::operator-(UnsignedHugeInt& subtrahend) const {
+    return UnsignedHugeInt::subtract(*this, subtrahend);
 }
 
-UnsignedHugeInt* operator-(const unsigned long long minuend, const UnsignedHugeInt& subtrahend) {
-    // ToDo: Complete this method.
-    UnsignedHugeInt *difference = new UnsignedHugeInt;
-    
-    return difference;
+UnsignedHugeInt& UnsignedHugeInt::operator-(long long subtrahend) const {
+    UnsignedHugeInt subtrahendObject(subtrahend);
+    return UnsignedHugeInt::subtract(*this, subtrahendObject);
+}
+
+UnsignedHugeInt& operator-(const unsigned long long minuend, const UnsignedHugeInt& subtrahend) {
+    UnsignedHugeInt minuendObject(minuend);
+    return UnsignedHugeInt::subtract(minuendObject, subtrahend);
 }
 
 UnsignedHugeInt* UnsignedHugeInt::operator*(UnsignedHugeInt factor) const {
