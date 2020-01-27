@@ -50,13 +50,13 @@ public:
     UnsignedHugeInt& operator+(const UnsignedHugeInt& addend) const;
     UnsignedHugeInt& operator+(const long long addend) const;
     static UnsignedHugeInt& subtract(const UnsignedHugeInt& minuend, const UnsignedHugeInt& subtrahend);
-//    UnsignedHugeInt* operator-(UnsignedHugeInt& subtrahend) const;
     UnsignedHugeInt& operator-(UnsignedHugeInt& subtrahend) const;
     UnsignedHugeInt& operator-(long long subtrahend) const;
-    UnsignedHugeInt* operator*(UnsignedHugeInt factor) const;
-    UnsignedHugeInt* operator*(long long factor) const;
-    UnsignedHugeInt* operator/(UnsignedHugeInt divisor) const;
-    UnsignedHugeInt* operator/(long long divisor) const;
+    static UnsignedHugeInt& multiply(const UnsignedHugeInt& factorA, const UnsignedHugeInt& factorB);
+    UnsignedHugeInt& operator*(UnsignedHugeInt factor) const;
+    UnsignedHugeInt& operator*(long long factor) const;
+    UnsignedHugeInt& operator/(UnsignedHugeInt divisor) const;
+    UnsignedHugeInt& operator/(long long divisor) const;
     
     /**
      * @brief Return true only if the object has been defined and is not null.
@@ -99,6 +99,8 @@ private:
      */
     HugeIntWord* add_word(HugeIntWord* new_word);
     void throw_warning(std::string message);
+    
+    HugeIntWord* find_multiplication_subtotal(HugeIntWord* greater_factor_word, HugeIntWord* lesser_factor_word);
 };
 
 // Operators involving UnsignedHugeInt, but not considered part of UnsignedHugeInt by the compiler.

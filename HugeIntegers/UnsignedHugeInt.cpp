@@ -243,7 +243,7 @@ UnsignedHugeInt& UnsignedHugeInt::subtract(const UnsignedHugeInt& minuend, const
     
     UnsignedHugeInt *difference;
     HugeIntWord *minuendWord, *subtrahendWord;
-    HugeIntWord *differenceWord;
+//    HugeIntWord *differenceWord;
     unsigned long long thisWordDifference, thisMinuendWordValue, thisSubtrahendWordValue, carryValue;
     
     // Determine the least significant word of the difference.
@@ -264,8 +264,8 @@ UnsignedHugeInt& UnsignedHugeInt::subtract(const UnsignedHugeInt& minuend, const
         thisWordDifference = thisMinuendWordValue - thisSubtrahendWordValue;
     }        
     difference = new UnsignedHugeInt(thisWordDifference);
-    differenceWord = difference->get_least_significant_word();
-//    difference->get_least_significant_word();
+//    differenceWord = difference->get_least_significant_word();
+    difference->get_least_significant_word();
     minuendWord = minuendWord->get_next_more_sig_word();
     subtrahendWord = subtrahendWord->get_next_more_sig_word();
     
@@ -281,8 +281,8 @@ UnsignedHugeInt& UnsignedHugeInt::subtract(const UnsignedHugeInt& minuend, const
             carryValue = 0;
             thisWordDifference = thisMinuendWordValue - thisSubtrahendWordValue;
         }
-        differenceWord = difference->add_word(thisWordDifference);
-//        difference->add_word(thisWordDifference);
+//        differenceWord = difference->add_word(thisWordDifference);
+        difference->add_word(thisWordDifference);
         minuendWord = minuendWord->get_next_more_sig_word();
         subtrahendWord = subtrahendWord->get_next_more_sig_word();
     }
@@ -298,16 +298,16 @@ UnsignedHugeInt& UnsignedHugeInt::subtract(const UnsignedHugeInt& minuend, const
             carryValue = 0;
             thisWordDifference = thisMinuendWordValue - carryValue;
         }
-        differenceWord = difference->add_word(thisWordDifference);
-//        difference->add_word(thisWordDifference);
+//        differenceWord = difference->add_word(thisWordDifference);
+        difference->add_word(thisWordDifference);
         minuendWord = minuendWord->get_next_more_sig_word();
     }
     
     // After carry operations are finished, copy the minuend words to the difference.
     while (minuendWord != NULL) {
         thisMinuendWordValue = minuendWord->get_value();
-        differenceWord = difference->add_word(thisMinuendWordValue);
-//        difference->add_word(thisMinuendWordValue);
+//        differenceWord = difference->add_word(thisMinuendWordValue);
+        difference->add_word(thisMinuendWordValue);
         minuendWord = minuendWord->get_next_more_sig_word();
     }
 //    this->mostSigWord = differenceWord;
@@ -329,32 +329,40 @@ UnsignedHugeInt& operator-(const unsigned long long minuend, const UnsignedHugeI
     return UnsignedHugeInt::subtract(minuendObject, subtrahend);
 }
 
-UnsignedHugeInt* UnsignedHugeInt::operator*(UnsignedHugeInt factor) const {
-    // ToDo: Complete this method.
-    UnsignedHugeInt *product;
+UnsignedHugeInt& UnsignedHugeInt::multiply(const UnsignedHugeInt& factorA, const UnsignedHugeInt& factorB) {
+    if(!factorA.is_defined() || !factorB.is_defined()) {
+        throw std::invalid_argument("One of the numbers of the multiplication operation is not defined.");
+    }
     
-    return product;
+    return *(new UnsignedHugeInt);
 }
 
-UnsignedHugeInt* UnsignedHugeInt::operator*(long long factor) const {
+UnsignedHugeInt& UnsignedHugeInt::operator*(UnsignedHugeInt factor) const {
     // ToDo: Complete this method.
-    UnsignedHugeInt *product;
+    UnsignedHugeInt *product = new UnsignedHugeInt;
     
-    return product;
+    return *product;
 }
 
-UnsignedHugeInt* UnsignedHugeInt::operator/(UnsignedHugeInt divisor) const {
+UnsignedHugeInt& UnsignedHugeInt::operator*(long long factor) const {
     // ToDo: Complete this method.
-    UnsignedHugeInt *quotient;
+    UnsignedHugeInt *product = new UnsignedHugeInt;
     
-    return quotient;
+    return *product;
 }
 
-UnsignedHugeInt* UnsignedHugeInt::operator/(long long divisor) const {
+UnsignedHugeInt& UnsignedHugeInt::operator/(UnsignedHugeInt divisor) const {
     // ToDo: Complete this method.
-    UnsignedHugeInt *quotient;
+    UnsignedHugeInt *quotient = new UnsignedHugeInt;
     
-    return quotient;
+    return *quotient;
+}
+
+UnsignedHugeInt& UnsignedHugeInt::operator/(long long divisor) const {
+    // ToDo: Complete this method.
+    UnsignedHugeInt *quotient = new UnsignedHugeInt;
+    
+    return *quotient;
 }
 
 bool UnsignedHugeInt::is_defined() const {
@@ -488,4 +496,11 @@ HugeIntWord* UnsignedHugeInt::add_word(HugeIntWord* new_word) {
 
 void UnsignedHugeInt::throw_warning(std::string message) {
     std::cout << message << "\n";
+}
+
+HugeIntWord* find_multiplication_subtotal(HugeIntWord* greater_factor_word, HugeIntWord* lesser_factor_word) {
+    // ToDo: Complete this method.
+//    HugeIntWord *thisWordA, *thisWordB; // thisWordA is taken in descending place values.
+    
+    return new HugeIntWord(0);
 }
