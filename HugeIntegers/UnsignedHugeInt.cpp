@@ -351,6 +351,12 @@ UnsignedHugeInt& UnsignedHugeInt::operator*(long long factor) const {
     return *product;
 }
 
+UnsignedHugeInt& operator*(const unsigned long long factorA, const UnsignedHugeInt& factorB) {
+    // ToDo: Complete this method.
+    
+    return *(new UnsignedHugeInt);  // Placeholder
+}
+
 UnsignedHugeInt& UnsignedHugeInt::operator/(UnsignedHugeInt divisor) const {
     // ToDo: Complete this method.
     UnsignedHugeInt *quotient = new UnsignedHugeInt;

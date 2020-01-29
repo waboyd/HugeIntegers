@@ -174,3 +174,105 @@ TEST_CASE("Subtract UnsignedHugeInt from Integer", "Subtract an integer and an U
     REQUIRE(expectedString == difference.to_string());    
 }
 
+TEST_CASE("Multiply by Zero Object", "Multiply an UnsignedHugeInt by the UnsignedHugeInt version of 0.") {
+    std::string factorAString = "91246578687631435345469607980";
+    UnsignedHugeInt factorA(factorAString);
+    UnsignedHugeInt factorB("0");
+    UnsignedHugeInt productObject = factorA * factorB;
+    REQUIRE("0" == productObject.to_string());
+}
+
+TEST_CASE("Multiply by Zero Int", "Multiply an UnsignedHugeInt by the unsigned long long version of 0.") {
+    UnsignedHugeInt factorA("1256758579846981630625936093846");
+    int factorB = 0;
+    UnsignedHugeInt productObject = factorA * factorB;
+    REQUIRE("0" == productObject.to_string());
+}
+
+TEST_CASE("Multiply by 1 Object", "Multiply an UnsignedHugeInt by the UnsignedHugeInt version of 1.") {
+    std::string factorAString = "96934766113409766070714767322344";
+    UnsignedHugeInt factorA(factorAString);
+    UnsignedHugeInt factorB("1");
+    UnsignedHugeInt productObject = factorA * factorB;
+    REQUIRE(factorAString == productObject.to_string());
+}
+
+TEST_CASE("Multiply 1 Int by UnsignedHugeInt", "Multiply 1 as an integer by an UnsignedHugeInt object.") {
+    std::string factorBString = "22567890200060487600000000000000";
+    int factorA = 1;
+    UnsignedHugeInt factorB(factorBString);
+    UnsignedHugeInt productObject = factorA * factorB;
+    REQUIRE(factorBString == productObject.to_string());
+    
+}
+
+TEST_CASE("Multiply With 1-Word Product", "Multiply two 1-word UnsignedHugeInts to produce a 1-word product.") {
+    UnsignedHugeInt factorA(387);
+    UnsignedHugeInt factorB(74092);
+    std::string expectedProductString = "28673604";
+    std::string productString = (factorA * factorB).to_string();
+    REQUIRE(expectedProductString == productString);
+}
+
+TEST_CASE("Multiply Single-Word UnsignedHugeInts", "Multiply two 1-word UnsignedHugeInts to produce a two-word product.") {
+    UnsignedHugeInt factorA(839201258);
+    UnsignedHugeInt factorB(321205700);
+    std::string expectedProductString = "269556227516770600";
+    UnsignedHugeInt productObject = factorA * factorB;
+    REQUIRE(expectedProductString == productObject.to_string());
+}
+
+TEST_CASE("Multiply With One Multi-Word UnsignedHugeInt",
+        "Multiply a single-word UnsignedHugeInt by a multiple-word UnsignedHugeInt.") {
+    UnsignedHugeInt factorA(43609078);
+    UnsignedHugeInt factorB("295903006877313987478812358644301");
+    std::string expectedProductString = "12904057307347322110454551495483296564478";
+    UnsignedHugeInt productObject = factorA * factorB;
+    REQUIRE(expectedProductString == productObject.to_string());    
+}
+
+TEST_CASE("Multiply With Multiple Words 1",
+        "Multiply two UnsignedHugeInts with multiple words. The first factor has more words than the second.") {
+    UnsignedHugeInt factorA("4036289111111111000000000222222222");
+    UnsignedHugeInt factorB("33555555555");
+    std::string expectedProductString = "135439923503930452938271612456790115876543210";
+    UnsignedHugeInt productObject = factorA * factorB;
+    REQUIRE(expectedProductString == productObject.to_string());    
+}
+
+TEST_CASE("Multiply With Multiple Words 2",
+        "Multiply two UnsignedHugeInts with multiple words. The first factor has fewer words than the second.") {
+    UnsignedHugeInt factorA("11111000000000222222222");
+    UnsignedHugeInt factorB("1000000001000000000000000000000000003000000000000000000000000002");
+    std::string expectedProductString = "11111000011111222222222222222222000033333000000000666666666000022222000000000444444444";
+    UnsignedHugeInt productObject = factorA * factorB;
+    REQUIRE(expectedProductString == productObject.to_string());
+    
+}
+
+TEST_CASE("Multiply With Multiple Words 3",
+        "Multiply two UnsignedHugeInts with multiple words. The two factors have the same number of words.") {
+    UnsignedHugeInt factorA("3904882108479394735601"), factorB("77719417366247339025048");
+    UnsignedHugeInt resultProduct;
+    std::string expectedProductString = "303485162354901996800876009914666695076333848";
+    resultProduct = factorA * factorB;
+    REQUIRE(expectedProductString == resultProduct.to_string());
+}
+
+TEST_CASE("Multiply Int by UnsignedHugeInt",
+        "Multiply with an int as the first factor and an UnsignedHugeInt as the second factor.") {
+    int factorA = 53;
+    UnsignedHugeInt factorB("608093410947678765906739847977007364412559990534672");
+    std::string expectedProductString = "32228950780226974593057211942‬781390313865679498337616";
+    UnsignedHugeInt productObject = factorA * factorB;
+    REQUIRE(expectedProductString == productObject.to_string());    
+}
+
+TEST_CASE("Multiply UnsignedHugeInt by Int",
+        "Multiply with an UnsignedHugeInt as the first factor and an int as the second factor.") {
+    UnsignedHugeInt factorA("7586700304178956891");
+    int factorB = 2739;
+    std::string expectedProductString = "20779972133146162924449";
+    UnsignedHugeInt productObject = factorA * factorB;
+    REQUIRE(expectedProductString == productObject.to_string());        
+}

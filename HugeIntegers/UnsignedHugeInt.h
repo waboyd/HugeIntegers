@@ -106,3 +106,4 @@ private:
 // Operators involving UnsignedHugeInt, but not considered part of UnsignedHugeInt by the compiler.
 UnsignedHugeInt& operator+(const unsigned long long addendA, const UnsignedHugeInt& addendB);
 UnsignedHugeInt& operator-(const unsigned long long minuend, const UnsignedHugeInt& subtrahend);
+UnsignedHugeInt& operator*(const unsigned long long factorA, const UnsignedHugeInt& factorB);
