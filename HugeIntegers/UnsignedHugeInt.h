@@ -98,9 +98,17 @@ private:
      * @return Pointer to the new word that was added.
      */
     HugeIntWord* add_word(HugeIntWord* new_word);
+    
+    /**
+     * @brief Add a specified value at a specified word of this UnsignedHugeInt.
+     * @param location_to_add Word at which the value will be added. This word will be changed.
+     * @param value_to_add Number that will be added to the specified word.
+     * @return The least significant word that was updated.
+     */
+    HugeIntWord* add_value_at_word(HugeIntWord* location_to_add, const UnsignedHugeInt& value_to_add);
     void throw_warning(std::string message);
     
-    HugeIntWord* find_multiplication_subtotal(HugeIntWord* greater_factor_word, HugeIntWord* lesser_factor_word);
+    static UnsignedHugeInt* find_multiplication_subtotal(const HugeIntWord* greater_factor_word, const HugeIntWord* lesser_factor_word);
 };
 
 // Operators involving UnsignedHugeInt, but not considered part of UnsignedHugeInt by the compiler.

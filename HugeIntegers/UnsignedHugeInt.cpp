@@ -243,7 +243,6 @@ UnsignedHugeInt& UnsignedHugeInt::subtract(const UnsignedHugeInt& minuend, const
     
     UnsignedHugeInt *difference;
     HugeIntWord *minuendWord, *subtrahendWord;
-//    HugeIntWord *differenceWord;
     unsigned long long thisWordDifference, thisMinuendWordValue, thisSubtrahendWordValue, carryValue;
     
     // Determine the least significant word of the difference.
@@ -264,7 +263,6 @@ UnsignedHugeInt& UnsignedHugeInt::subtract(const UnsignedHugeInt& minuend, const
         thisWordDifference = thisMinuendWordValue - thisSubtrahendWordValue;
     }        
     difference = new UnsignedHugeInt(thisWordDifference);
-//    differenceWord = difference->get_least_significant_word();
     difference->get_least_significant_word();
     minuendWord = minuendWord->get_next_more_sig_word();
     subtrahendWord = subtrahendWord->get_next_more_sig_word();
@@ -281,7 +279,6 @@ UnsignedHugeInt& UnsignedHugeInt::subtract(const UnsignedHugeInt& minuend, const
             carryValue = 0;
             thisWordDifference = thisMinuendWordValue - thisSubtrahendWordValue;
         }
-//        differenceWord = difference->add_word(thisWordDifference);
         difference->add_word(thisWordDifference);
         minuendWord = minuendWord->get_next_more_sig_word();
         subtrahendWord = subtrahendWord->get_next_more_sig_word();
@@ -298,7 +295,6 @@ UnsignedHugeInt& UnsignedHugeInt::subtract(const UnsignedHugeInt& minuend, const
             carryValue = 0;
             thisWordDifference = thisMinuendWordValue - carryValue;
         }
-//        differenceWord = difference->add_word(thisWordDifference);
         difference->add_word(thisWordDifference);
         minuendWord = minuendWord->get_next_more_sig_word();
     }
@@ -306,11 +302,9 @@ UnsignedHugeInt& UnsignedHugeInt::subtract(const UnsignedHugeInt& minuend, const
     // After carry operations are finished, copy the minuend words to the difference.
     while (minuendWord != NULL) {
         thisMinuendWordValue = minuendWord->get_value();
-//        differenceWord = difference->add_word(thisMinuendWordValue);
         difference->add_word(thisMinuendWordValue);
         minuendWord = minuendWord->get_next_more_sig_word();
     }
-//    this->mostSigWord = differenceWord;
     difference->remove_extra_leading_words();
     return *difference;
 }
@@ -330,31 +324,58 @@ UnsignedHugeInt& operator-(const unsigned long long minuend, const UnsignedHugeI
 }
 
 UnsignedHugeInt& UnsignedHugeInt::multiply(const UnsignedHugeInt& factorA, const UnsignedHugeInt& factorB) {
+    // ToDo: Possibly apply multithreading to this method.
     if(!factorA.is_defined() || !factorB.is_defined()) {
         throw std::invalid_argument("One of the numbers of the multiplication operation is not defined.");
     }
+    // Find the product of the least significant word of each factor.
+    HugeIntWord *startWordA = factorA.get_least_significant_word(); // Starting words when finding a partial product.
+    HugeIntWord *startWordB = factorB.get_least_significant_word();
+    if ((startWordA == NULL) || (startWordB == NULL))
+        return *(new UnsignedHugeInt(((unsigned long long)0)));    
+    UnsignedHugeInt *totalProduct = new UnsignedHugeInt(startWordA->get_value() * startWordB->get_value());
+    HugeIntWord *totalCalcWord = totalProduct->get_least_significant_word();
+    UnsignedHugeInt *partialProduct;
     
-    return *(new UnsignedHugeInt);
+    // Find partial products while changing startWordA.
+    startWordA = startWordA->get_next_more_sig_word();
+    while (startWordA != NULL) {
+        totalCalcWord = totalCalcWord->get_next_more_sig_word();
+        partialProduct = UnsignedHugeInt::find_multiplication_subtotal(startWordA, startWordB);
+        totalCalcWord = totalProduct->add_value_at_word(totalCalcWord, *partialProduct);
+        delete(partialProduct);
+        startWordA = startWordA->get_next_more_sig_word();
+    }
+    startWordA = factorA.get_most_significant_word();
+    
+    // Find partial products while changing startWordB.
+    startWordB= startWordB->get_next_more_sig_word();
+    while (startWordB != NULL) {
+        totalCalcWord = totalCalcWord->get_next_more_sig_word();
+        partialProduct = UnsignedHugeInt::find_multiplication_subtotal(startWordA, startWordB);
+        totalCalcWord = totalProduct->add_value_at_word(totalCalcWord, *partialProduct);
+        delete(partialProduct);
+        startWordB = startWordB->get_next_more_sig_word();
+    }
+    
+    // Remove leading 0 words.
+    totalProduct->remove_extra_leading_words();
+    
+    return *totalProduct;
 }
 
 UnsignedHugeInt& UnsignedHugeInt::operator*(UnsignedHugeInt factor) const {
-    // ToDo: Complete this method.
-    UnsignedHugeInt *product = new UnsignedHugeInt;
-    
-    return *product;
+    return UnsignedHugeInt::multiply(*this, factor);
 }
 
 UnsignedHugeInt& UnsignedHugeInt::operator*(long long factor) const {
-    // ToDo: Complete this method.
-    UnsignedHugeInt *product = new UnsignedHugeInt;
-    
-    return *product;
+    UnsignedHugeInt factorObject(factor);
+    return UnsignedHugeInt::multiply(*this, factorObject);
 }
 
 UnsignedHugeInt& operator*(const unsigned long long factorA, const UnsignedHugeInt& factorB) {
-    // ToDo: Complete this method.
-    
-    return *(new UnsignedHugeInt);  // Placeholder
+    UnsignedHugeInt factorAObject(factorA);
+    return UnsignedHugeInt::multiply(factorAObject, factorB);
 }
 
 UnsignedHugeInt& UnsignedHugeInt::operator/(UnsignedHugeInt divisor) const {
@@ -500,13 +521,65 @@ HugeIntWord* UnsignedHugeInt::add_word(HugeIntWord* new_word) {
     return new_word;
 }
 
+HugeIntWord* UnsignedHugeInt::add_value_at_word(HugeIntWord* location_to_add, const UnsignedHugeInt& value_to_add) {
+    HugeIntWord *thisAddLocation;
+    const HugeIntWord *thisValueWord = value_to_add.get_least_significant_word();
+    HugeIntWord *moreSigWord;
+    HugeIntWord *wordToReturn;
+    
+    if (location_to_add == NULL) {
+        thisAddLocation = this->add_word(new HugeIntWord((unsigned long long)0));
+        wordToReturn = thisAddLocation;
+    }
+    else {
+        thisAddLocation = location_to_add;
+        wordToReturn = location_to_add;
+    }
+    
+    while (thisValueWord != NULL) {
+        if (thisAddLocation == NULL) {
+            thisAddLocation = this->add_word(thisValueWord->get_value());
+        }
+        else {
+            thisAddLocation->add_value(thisValueWord->get_value());
+        }
+        
+        thisValueWord = thisValueWord->get_next_more_sig_word();
+        thisAddLocation = thisAddLocation->get_next_more_sig_word();
+    }
+    
+    // Set the most significant word.
+    thisAddLocation = this->mostSigWord;
+    moreSigWord = thisAddLocation->get_next_more_sig_word();
+    while (moreSigWord != NULL) {
+        thisAddLocation = moreSigWord;
+        moreSigWord = moreSigWord->get_next_more_sig_word();
+    }
+    this->mostSigWord = thisAddLocation;
+    return wordToReturn;
+}
+
 void UnsignedHugeInt::throw_warning(std::string message) {
     std::cout << message << "\n";
 }
 
-HugeIntWord* find_multiplication_subtotal(HugeIntWord* greater_factor_word, HugeIntWord* lesser_factor_word) {
-    // ToDo: Complete this method.
-//    HugeIntWord *thisWordA, *thisWordB; // thisWordA is taken in descending place values.
-    
-    return new HugeIntWord(0);
+UnsignedHugeInt* UnsignedHugeInt::find_multiplication_subtotal(const HugeIntWord* greater_factor_word, const HugeIntWord* lesser_factor_word) {
+    UnsignedHugeInt *resultSubtotal = new UnsignedHugeInt(((unsigned long long)0));
+    HugeIntWord *resultLeastSigWord = resultSubtotal->get_least_significant_word();
+    const HugeIntWord *thisWordA = greater_factor_word, *thisWordB = lesser_factor_word; // thisWordA is taken in descending place values.
+    HugeIntWord *newMostSigWord, *nextWord;
+    while(thisWordA != NULL && thisWordB != NULL) {
+        resultLeastSigWord->add_value(thisWordA->get_value() * thisWordB->get_value());
+        thisWordA = thisWordA->get_next_lower_sig_word();
+        thisWordB = thisWordB->get_next_more_sig_word();
+    }
+    // Set the most significant word of the subtotal.
+    newMostSigWord = resultSubtotal->get_most_significant_word();
+    nextWord = newMostSigWord->get_next_more_sig_word();
+    while (nextWord != NULL) {
+        newMostSigWord = nextWord;
+        nextWord = nextWord->get_next_more_sig_word();
+    }
+    resultSubtotal->mostSigWord = newMostSigWord;
+    return resultSubtotal;
 }

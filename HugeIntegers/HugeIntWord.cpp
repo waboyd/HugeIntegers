@@ -34,11 +34,11 @@ unsigned long long HugeIntWord::get_word_number() const {
     return this->place_value;
 }
 
-HugeIntWord* HugeIntWord::get_next_lower_sig_word() {
+HugeIntWord* HugeIntWord::get_next_lower_sig_word() const {
     return this->lessSigWord;
 }
 
-HugeIntWord* HugeIntWord::get_next_more_sig_word() {
+HugeIntWord* HugeIntWord::get_next_more_sig_word() const {
     return this->moreSigWord;
 }
 

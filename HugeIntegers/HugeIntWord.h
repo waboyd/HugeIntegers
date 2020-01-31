@@ -33,12 +33,12 @@ protected:
 private:
     static unsigned long long max_value;
     static unsigned long long base_value;
-    HugeIntWord* get_next_lower_sig_word();
-    HugeIntWord* get_next_more_sig_word();
     void set_more_significant_word(HugeIntWord* next_word);
     HugeIntWord *lessSigWord, *moreSigWord;
     unsigned long long value;
     unsigned long long place_value;  // Location of this word in the number. 0 is least significant place.
+    HugeIntWord* get_next_lower_sig_word() const;
+    HugeIntWord* get_next_more_sig_word() const;
     void set_less_significant_word(HugeIntWord* next_word);
     void remove_more_significant_word();
     

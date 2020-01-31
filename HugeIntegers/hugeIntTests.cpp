@@ -8,6 +8,8 @@
 //TEST_CASE("Test Testing Framework", "Verify that the unit testing framework is working correctly.") {
 //    std::cout << "Start of \"Test Testing Framework.\"\n";
 //    REQUIRE(true);
+//    UnsignedHugeInt x(((long)12345));
+//    x = x + 1;
 //}
 
 TEST_CASE("Blank Number", "Instantiate an UnsignedHugeInt with an unspecified value. Its value should be 0 before modification.") {
@@ -263,7 +265,7 @@ TEST_CASE("Multiply Int by UnsignedHugeInt",
         "Multiply with an int as the first factor and an UnsignedHugeInt as the second factor.") {
     int factorA = 53;
     UnsignedHugeInt factorB("608093410947678765906739847977007364412559990534672");
-    std::string expectedProductString = "32228950780226974593057211942‬781390313865679498337616";
+    std::string expectedProductString = "32228950780226974593057211942781390313865679498337616";
     UnsignedHugeInt productObject = factorA * factorB;
     REQUIRE(expectedProductString == productObject.to_string());    
 }
