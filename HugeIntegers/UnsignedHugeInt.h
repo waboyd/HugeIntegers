@@ -55,8 +55,11 @@ public:
     static UnsignedHugeInt& multiply(const UnsignedHugeInt& factorA, const UnsignedHugeInt& factorB);
     UnsignedHugeInt& operator*(UnsignedHugeInt factor) const;
     UnsignedHugeInt& operator*(long long factor) const;
+    static std::pair<UnsignedHugeInt, UnsignedHugeInt> divide(const UnsignedHugeInt& dividend, const UnsignedHugeInt& divisor);
     UnsignedHugeInt& operator/(UnsignedHugeInt divisor) const;
     UnsignedHugeInt& operator/(long long divisor) const;
+    UnsignedHugeInt& operator%(UnsignedHugeInt divisor) const;
+    UnsignedHugeInt& operator%(long long divisor) const;
     
     /**
      * @brief Return true only if the object has been defined and is not null.
@@ -115,3 +118,5 @@ private:
 UnsignedHugeInt& operator+(const unsigned long long addendA, const UnsignedHugeInt& addendB);
 UnsignedHugeInt& operator-(const unsigned long long minuend, const UnsignedHugeInt& subtrahend);
 UnsignedHugeInt& operator*(const unsigned long long factorA, const UnsignedHugeInt& factorB);
+UnsignedHugeInt& operator/(const unsigned long long dividend, const UnsignedHugeInt& divisor);
+UnsignedHugeInt& operator%(const unsigned long long dividend, const UnsignedHugeInt& divisor);

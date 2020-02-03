@@ -4,6 +4,8 @@
 unsigned long long UnsignedHugeInt::max_word_value = 999999999;
 unsigned long long UnsignedHugeInt::word_base = UnsignedHugeInt::max_word_value + 1;
 
+// ToDo: Find the cause of this error on assignment:   An attempt was made to attach a word to replace an existing word.
+
 UnsignedHugeInt::UnsignedHugeInt() {
     // ToDo: Set maximum word value.
     HugeIntWord *newWord = new HugeIntWord(0);
@@ -378,6 +380,15 @@ UnsignedHugeInt& operator*(const unsigned long long factorA, const UnsignedHugeI
     return UnsignedHugeInt::multiply(factorAObject, factorB);
 }
 
+std::pair<UnsignedHugeInt, UnsignedHugeInt> UnsignedHugeInt::divide(const UnsignedHugeInt& dividend, const UnsignedHugeInt& divisor) {
+    UnsignedHugeInt quotient((unsigned long long)0);
+    UnsignedHugeInt remainder((unsigned long long)0);
+    std::pair<UnsignedHugeInt, UnsignedHugeInt> divisionResults;
+    divisionResults.first = quotient;
+    divisionResults.second = remainder;
+    return divisionResults;
+}
+
 UnsignedHugeInt& UnsignedHugeInt::operator/(UnsignedHugeInt divisor) const {
     // ToDo: Complete this method.
     UnsignedHugeInt *quotient = new UnsignedHugeInt;
@@ -391,6 +402,33 @@ UnsignedHugeInt& UnsignedHugeInt::operator/(long long divisor) const {
     
     return *quotient;
 }
+
+UnsignedHugeInt& UnsignedHugeInt::operator%(UnsignedHugeInt divisor) const {
+    // ToDo: Complete this method.
+    UnsignedHugeInt *remainder = new UnsignedHugeInt;
+    
+    return *remainder;
+}
+
+UnsignedHugeInt& UnsignedHugeInt::operator%(long long divisor) const {
+    // ToDo: Complete this method.
+    UnsignedHugeInt *remainder = new UnsignedHugeInt;
+    
+    return *remainder;
+}
+
+UnsignedHugeInt& operator/(const unsigned long long dividend, const UnsignedHugeInt& divisor) {
+    // ToDo: Complete this method.
+    
+    return *(new UnsignedHugeInt((unsigned long long)0));   // Placeholder.
+}
+
+UnsignedHugeInt& operator%(const unsigned long long dividend, const UnsignedHugeInt& divisor) {
+    // ToDo: Complete this method.
+    
+    return *(new UnsignedHugeInt((unsigned long long)0));   // Placeholder.
+}
+
 
 bool UnsignedHugeInt::is_defined() const {
     if ((this->defined_key_1 != CHECK_VALUE_A) || (this->defined_key_2 != CHECK_VALUE_B) ||
@@ -493,6 +531,7 @@ HugeIntWord* UnsignedHugeInt::add_word() {
 }
 
 HugeIntWord* UnsignedHugeInt::add_word(unsigned long long value) {
+    // ToDo: Check that this works for values that require more than two words.
     if (value > UnsignedHugeInt::max_word_value) {
         unsigned long carryValue = value / UnsignedHugeInt::word_base;
         unsigned long long lesserValue = value % UnsignedHugeInt::word_base;
@@ -539,9 +578,12 @@ HugeIntWord* UnsignedHugeInt::add_value_at_word(HugeIntWord* location_to_add, co
     while (thisValueWord != NULL) {
         if (thisAddLocation == NULL) {
             thisAddLocation = this->add_word(thisValueWord->get_value());
+            this->mostSigWord = thisAddLocation;
         }
         else {
-            thisAddLocation->add_value(thisValueWord->get_value());
+            moreSigWord = thisAddLocation->add_value(thisValueWord->get_value());
+            if (moreSigWord->get_next_more_sig_word() == NULL)
+                this->mostSigWord = moreSigWord;
         }
         
         thisValueWord = thisValueWord->get_next_more_sig_word();
