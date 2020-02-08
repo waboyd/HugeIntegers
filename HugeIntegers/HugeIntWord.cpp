@@ -53,7 +53,6 @@ void HugeIntWord::set_more_significant_word(HugeIntWord* next_word) {
     }
     
     this->moreSigWord = next_word;
-    this->place_value = next_word->get_word_number() + 1;
 }
 
 void HugeIntWord::set_less_significant_word(HugeIntWord* next_word) {

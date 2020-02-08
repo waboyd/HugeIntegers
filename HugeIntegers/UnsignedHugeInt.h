@@ -50,15 +50,15 @@ public:
     UnsignedHugeInt& operator+(const UnsignedHugeInt& addend) const;
     UnsignedHugeInt& operator+(const long long addend) const;
     static UnsignedHugeInt& subtract(const UnsignedHugeInt& minuend, const UnsignedHugeInt& subtrahend);
-    UnsignedHugeInt& operator-(UnsignedHugeInt& subtrahend) const;
+    UnsignedHugeInt& operator-(const UnsignedHugeInt& subtrahend) const;
     UnsignedHugeInt& operator-(long long subtrahend) const;
     static UnsignedHugeInt& multiply(const UnsignedHugeInt& factorA, const UnsignedHugeInt& factorB);
-    UnsignedHugeInt& operator*(UnsignedHugeInt factor) const;
+    UnsignedHugeInt& operator*(const UnsignedHugeInt& factor) const;
     UnsignedHugeInt& operator*(long long factor) const;
-    static std::pair<UnsignedHugeInt, UnsignedHugeInt> divide(const UnsignedHugeInt& dividend, const UnsignedHugeInt& divisor);
-    UnsignedHugeInt& operator/(UnsignedHugeInt divisor) const;
+    static std::pair<UnsignedHugeInt*, UnsignedHugeInt*> divide(const UnsignedHugeInt& dividend, const UnsignedHugeInt& divisor);
+    UnsignedHugeInt& operator/(const UnsignedHugeInt& divisor) const;
     UnsignedHugeInt& operator/(long long divisor) const;
-    UnsignedHugeInt& operator%(UnsignedHugeInt divisor) const;
+    UnsignedHugeInt& operator%(const UnsignedHugeInt& divisor) const;
     UnsignedHugeInt& operator%(long long divisor) const;
     
     /**
@@ -70,7 +70,6 @@ public:
     HugeIntWord* get_most_significant_word() const;
     HugeIntWord* get_least_significant_word() const;
     HugeIntWord* remove_most_significant_word();
-    bool is_prime();
     std::string to_string() const;
     
 protected:
@@ -103,12 +102,20 @@ private:
     HugeIntWord* add_word(HugeIntWord* new_word);
     
     /**
+     * @brief Change this number by inserting a new least significant word with the given value.
+     * @param least_significant_value The value of the new least significant word to be added.
+     * @return The least significant word of this number.
+     */
+    HugeIntWord* insert_least_significant_word(unsigned long long least_significant_value);
+    
+    /**
      * @brief Add a specified value at a specified word of this UnsignedHugeInt.
      * @param location_to_add Word at which the value will be added. This word will be changed.
      * @param value_to_add Number that will be added to the specified word.
      * @return The least significant word that was updated.
      */
     HugeIntWord* add_value_at_word(HugeIntWord* location_to_add, const UnsignedHugeInt& value_to_add);
+    static UnsignedHugeInt& integer_with_least_significant_word(HugeIntWord* least_significant_word);
     void throw_warning(std::string message);
     
     static UnsignedHugeInt* find_multiplication_subtotal(const HugeIntWord* greater_factor_word, const HugeIntWord* lesser_factor_word);

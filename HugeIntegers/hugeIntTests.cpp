@@ -298,7 +298,7 @@ TEST_CASE("Divide Zero Object by Object", "Divide 0 as an UnsignedHugeInt by ano
     std::string divisorString = "91246578687631435345469607980";
     UnsignedHugeInt divisorObject = UnsignedHugeInt(divisorString);
     UnsignedHugeInt quotientObject = dividendObject / divisorObject;
-    UnsignedHugeInt remainderObject = dividendObject % dividendObject;
+    UnsignedHugeInt remainderObject = dividendObject % divisorObject;
     REQUIRE("0" == quotientObject.to_string());
     REQUIRE("0" == remainderObject.to_string());
 }
