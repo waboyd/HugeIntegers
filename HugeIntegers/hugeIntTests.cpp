@@ -105,6 +105,117 @@ TEST_CASE("Copy UnsignedHugeInt From Pointer",
     delete(origNumber);
 }
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+TEST_CASE("Compare With One Operand Much Greater",
+        "Perform all comparson operations for a pair of UnsignedHugeInt objects when one object has more words.") {
+    UnsignedHugeInt numberA("3265874619983746598176589680046549820036879412136564499741138444077167");
+    UnsignedHugeInt numberB("709484635419812491349815318909401294408");
+    CHECK_FALSE(numberA < numberB);
+    CHECK_FALSE(numberA <= numberB);
+    CHECK(numberA > numberB);
+    CHECK(numberA >= numberB);
+    CHECK_FALSE(numberA == numberB);
+    CHECK(numberA != numberB);
+    CHECK(numberB < numberA);
+    CHECK(numberB <= numberA);
+    CHECK_FALSE(numberB > numberA);
+    CHECK_FALSE(numberB >= numberA);
+    CHECK_FALSE(numberB == numberA);
+    CHECK(numberB != numberA);    
+}
+
+TEST_CASE("Compare Objects With Same Number of Words",
+        "Perform all comparson operations for a pair of UnsignedHugeInt objects with the same number of words.") {
+    UnsignedHugeInt numberA("37109534108409873540189307182681");
+    UnsignedHugeInt numberB("817438108799000000000706371072");
+    CHECK_FALSE(numberA < numberB);
+    CHECK_FALSE(numberA <= numberB);
+    CHECK(numberA > numberB);
+    CHECK(numberA >= numberB);
+    CHECK_FALSE(numberA == numberB);
+    CHECK(numberA != numberB);
+    CHECK(numberB < numberA);
+    CHECK(numberB <= numberA);
+    CHECK_FALSE(numberB > numberA);
+    CHECK_FALSE(numberB >= numberA);
+    CHECK_FALSE(numberB == numberA);
+    CHECK(numberB != numberA);    
+}
+
+TEST_CASE("Compare Objects With the Same Value",
+        "Perform all comparson operations for a pair of UnsignedHugeInt objects with the same value.") {
+    std::string numberString = "9494004840979843503518687978991321980948410165190760354984111097365448984139108";
+    UnsignedHugeInt numberA(numberString);
+    UnsignedHugeInt numberB(numberString);
+    CHECK_FALSE(numberA < numberB);
+    CHECK(numberA <= numberB);
+    CHECK_FALSE(numberA > numberB);
+    CHECK(numberA >= numberB);
+    CHECK(numberA == numberB);
+    CHECK_FALSE(numberA != numberB);
+    CHECK_FALSE(numberB < numberA);
+    CHECK(numberB <= numberA);
+    CHECK_FALSE(numberB > numberA);
+    CHECK(numberB >= numberA);
+    CHECK(numberB == numberA);
+    CHECK_FALSE(numberB != numberA);    
+}
+
+TEST_CASE("Compare unsigned long long And Larger UnsignedHugeInt",
+        "Perform all comparson operations for an unsigned long long value and a larger UnsignedHugeInt object.") {
+    UnsignedHugeInt numberA("6479194068395");
+    unsigned long long numberB = 6479194068393;
+    CHECK_FALSE(numberA < numberB);
+    CHECK_FALSE(numberA <= numberB);
+    CHECK(numberA > numberB);
+    CHECK(numberA >= numberB);
+    CHECK_FALSE(numberA == numberB);
+    CHECK(numberA != numberB);
+    CHECK(numberB < numberA);
+    CHECK(numberB <= numberA);
+    CHECK_FALSE(numberB > numberA);
+    CHECK_FALSE(numberB >= numberA);
+    CHECK_FALSE(numberB == numberA);
+    CHECK(numberB != numberA);    
+}
+
+TEST_CASE("Compare int And Smaller UnsignedHugeInt",
+        "Perform all comparson operations for an int value and an UnsignedHugeInt object with a lower value.") {
+    UnsignedHugeInt numberA("8249348");
+    int numberB = 8249351;
+    CHECK(numberA < numberB);
+    CHECK(numberA <= numberB);
+    CHECK_FALSE(numberA > numberB);
+    CHECK_FALSE(numberA >= numberB);
+    CHECK_FALSE(numberA == numberB);
+    CHECK(numberA != numberB);
+    CHECK_FALSE(numberB < numberA);
+    CHECK_FALSE(numberB <= numberA);
+    CHECK(numberB > numberA);
+    CHECK(numberB >= numberA);
+    CHECK_FALSE(numberB == numberA);
+    CHECK(numberB != numberA);    
+}
+
+TEST_CASE("Compare unsigned long And UnsignedHugeInt With the Same Value",
+        "Perform all comparson operations for an unsigned long value and an UnsignedHugeInt object with the same value.") {
+    unsigned long numberA = 3621974892;
+    UnsignedHugeInt numberB(numberA);
+    CHECK_FALSE(numberA < numberB);
+    CHECK(numberA <= numberB);
+    CHECK_FALSE(numberA > numberB);
+    CHECK(numberA >= numberB);
+    CHECK(numberA == numberB);
+    CHECK_FALSE(numberA != numberB);
+    CHECK_FALSE(numberB < numberA);
+    CHECK(numberB <= numberA);
+    CHECK_FALSE(numberB > numberA);
+    CHECK(numberB >= numberA);
+    CHECK(numberB == numberA);
+    CHECK_FALSE(numberB != numberA);    
+}
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 TEST_CASE("Multi-word Addition", "Add two multi-word integers instantiated in different ways.") {
     UnsignedHugeInt *numA = new UnsignedHugeInt("547890553345398741");
     UnsignedHugeInt numB(852109446654601259);

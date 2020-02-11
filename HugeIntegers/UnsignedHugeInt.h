@@ -47,6 +47,18 @@ public:
     void operator=(const UnsignedHugeInt& orig);
     void operator=(const UnsignedHugeInt* orig);
     static short compare(const UnsignedHugeInt& numberA, const UnsignedHugeInt& numberB);
+    bool operator<(const UnsignedHugeInt& right_operand) const;
+    bool operator<(const unsigned long long right_operand) const;
+    bool operator<=(const UnsignedHugeInt& right_operand) const;
+    bool operator<=(const unsigned long long right_operand) const;
+    bool operator>(const UnsignedHugeInt& right_operand) const;
+    bool operator>(const unsigned long long right_operand) const;
+    bool operator>=(const UnsignedHugeInt& right_operand) const;
+    bool operator>=(const unsigned long long right_operand) const;
+    bool operator==(const UnsignedHugeInt& right_operand) const;
+    bool operator==(const unsigned long long right_operand) const;
+    bool operator!=(const UnsignedHugeInt& right_operand) const;
+    bool operator!=(const unsigned long long right_operand) const;
     static UnsignedHugeInt sum_of(const UnsignedHugeInt& addendA, const UnsignedHugeInt& addendB);
     static UnsignedHugeInt sum_of(const UnsignedHugeInt& addendA, const unsigned long long addendB);
     UnsignedHugeInt operator+(const UnsignedHugeInt& addend) const;
@@ -132,6 +144,12 @@ private:
 };
 
 // Operators involving UnsignedHugeInt, but not considered part of UnsignedHugeInt by the compiler.
+bool operator<(const unsigned long long left_operand, const UnsignedHugeInt& right_operand);
+bool operator<=(const unsigned long long left_operand, const UnsignedHugeInt& right_operand);
+bool operator>(const unsigned long long left_operand, const UnsignedHugeInt& right_operand);
+bool operator>=(const unsigned long long left_operand, const UnsignedHugeInt& right_operand);
+bool operator==(const unsigned long long left_operand, const UnsignedHugeInt& right_operand);
+bool operator!=(const unsigned long long left_operand, const UnsignedHugeInt& right_operand);
 UnsignedHugeInt operator+(const unsigned long long addendA, const UnsignedHugeInt& addendB);
 UnsignedHugeInt operator-(const unsigned long long minuend, const UnsignedHugeInt& subtrahend);
 UnsignedHugeInt operator*(const unsigned long long factorA, const UnsignedHugeInt& factorB);

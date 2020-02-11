@@ -146,6 +146,94 @@ short UnsignedHugeInt::compare(const UnsignedHugeInt& numberA, const UnsignedHug
     return 0;   // The numbers are equal.
 }
 
+bool UnsignedHugeInt::operator<(const UnsignedHugeInt& right_operand) const {
+    return false; // Placeholder
+}
+
+bool UnsignedHugeInt::operator<(const unsigned long long right_operand) const {
+    return false; // Placeholder    
+}
+
+bool operator<(const unsigned long long left_operand, const UnsignedHugeInt& right_operand) {
+    
+    return false; // Placeholder
+}
+
+bool UnsignedHugeInt::operator<=(const UnsignedHugeInt& right_operand) const {
+    
+    return false; // Placeholder
+}
+
+bool UnsignedHugeInt::operator<=(const unsigned long long right_operand) const {
+    
+    return false; // Placeholder
+}
+
+bool operator<=(const unsigned long long left_operand, const UnsignedHugeInt& right_operand) {
+    
+    return false; // Placeholder
+}
+
+bool UnsignedHugeInt::operator>(const UnsignedHugeInt& right_operand) const {
+    
+    return false; // Placeholder
+}
+
+bool UnsignedHugeInt::operator>(const unsigned long long right_operand) const {
+    
+    return false; // Placeholder
+}
+
+bool operator>(const unsigned long long left_operand, const UnsignedHugeInt& right_operand) {
+    
+    return false; // Placeholder
+}
+
+bool UnsignedHugeInt::operator>=(const UnsignedHugeInt& right_operand) const {
+    
+    return false; // Placeholder
+}
+
+bool UnsignedHugeInt::operator>=(const unsigned long long right_operand) const {
+    
+    return false; // Placeholder
+}
+
+bool operator>=(const unsigned long long left_operand, const UnsignedHugeInt& right_operand) {
+    
+    return false; // Placeholder
+}
+
+bool UnsignedHugeInt::operator==(const UnsignedHugeInt& right_operand) const {
+    
+    return false; // Placeholder
+}
+
+bool UnsignedHugeInt::operator==(const unsigned long long right_operand) const {
+    
+    return false; // Placeholder
+}
+
+bool operator==(const unsigned long long left_operand, const UnsignedHugeInt& right_operand) {
+    
+    return false; // Placeholder
+}
+
+bool UnsignedHugeInt::operator!=(const UnsignedHugeInt& right_operand) const {
+    
+    return false; // Placeholder
+}
+
+bool UnsignedHugeInt::operator!=(const unsigned long long right_operand) const {
+    
+    return false; // Placeholder
+}
+
+bool operator!=(const unsigned long long left_operand, const UnsignedHugeInt& right_operand) {
+    
+    return false; // Placeholder
+}
+
 UnsignedHugeInt UnsignedHugeInt::sum_of(const UnsignedHugeInt& addendA, const UnsignedHugeInt& addendB) {
     if(!addendA.is_defined() || !addendB.is_defined()) {
         throw std::invalid_argument("One of the numbers of the addition operation is not defined.");
