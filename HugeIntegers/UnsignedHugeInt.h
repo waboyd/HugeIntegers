@@ -44,22 +44,24 @@ public:
      * @param numberB One of the numbers to compare.
      * @return 1 if numberA is greater; 0 if the numbers are equal; -1 if numberB is greater.
      */
+    void operator=(const UnsignedHugeInt& orig);
+    void operator=(const UnsignedHugeInt* orig);
     static short compare(const UnsignedHugeInt& numberA, const UnsignedHugeInt& numberB);
-    static UnsignedHugeInt& sum_of(const UnsignedHugeInt& addendA, const UnsignedHugeInt& addendB);
-    static UnsignedHugeInt& sum_of(const UnsignedHugeInt& addendA, const unsigned long long addendB);
-    UnsignedHugeInt& operator+(const UnsignedHugeInt& addend) const;
-    UnsignedHugeInt& operator+(const long long addend) const;
-    static UnsignedHugeInt& subtract(const UnsignedHugeInt& minuend, const UnsignedHugeInt& subtrahend);
-    UnsignedHugeInt& operator-(const UnsignedHugeInt& subtrahend) const;
-    UnsignedHugeInt& operator-(long long subtrahend) const;
-    static UnsignedHugeInt& multiply(const UnsignedHugeInt& factorA, const UnsignedHugeInt& factorB);
-    UnsignedHugeInt& operator*(const UnsignedHugeInt& factor) const;
-    UnsignedHugeInt& operator*(long long factor) const;
-    static std::pair<UnsignedHugeInt*, UnsignedHugeInt*> divide(const UnsignedHugeInt& dividend, const UnsignedHugeInt& divisor);
-    UnsignedHugeInt& operator/(const UnsignedHugeInt& divisor) const;
-    UnsignedHugeInt& operator/(long long divisor) const;
-    UnsignedHugeInt& operator%(const UnsignedHugeInt& divisor) const;
-    UnsignedHugeInt& operator%(long long divisor) const;
+    static UnsignedHugeInt sum_of(const UnsignedHugeInt& addendA, const UnsignedHugeInt& addendB);
+    static UnsignedHugeInt sum_of(const UnsignedHugeInt& addendA, const unsigned long long addendB);
+    UnsignedHugeInt operator+(const UnsignedHugeInt& addend) const;
+    UnsignedHugeInt operator+(const long long addend) const;
+    static UnsignedHugeInt subtract(const UnsignedHugeInt& minuend, const UnsignedHugeInt& subtrahend);
+    UnsignedHugeInt operator-(const UnsignedHugeInt& subtrahend) const;
+    UnsignedHugeInt operator-(long long subtrahend) const;
+    static UnsignedHugeInt multiply(const UnsignedHugeInt& factorA, const UnsignedHugeInt& factorB);
+    UnsignedHugeInt operator*(const UnsignedHugeInt& factor) const;
+    UnsignedHugeInt operator*(long long factor) const;
+    static std::pair<UnsignedHugeInt, UnsignedHugeInt> divide(const UnsignedHugeInt& dividend, const UnsignedHugeInt& divisor);
+    UnsignedHugeInt operator/(const UnsignedHugeInt& divisor) const;
+    UnsignedHugeInt operator/(long long divisor) const;
+    UnsignedHugeInt operator%(const UnsignedHugeInt& divisor) const;
+    UnsignedHugeInt operator%(long long divisor) const;
     
     /**
      * @brief Return true only if the object has been defined and is not null.
@@ -71,6 +73,9 @@ public:
     HugeIntWord* get_least_significant_word() const;
     HugeIntWord* remove_most_significant_word();
     std::string to_string() const;
+    
+    // ToDo: Remove the following after development.
+    static void report_number_of_objects();
     
 protected:
 //    void set_number_of_words_to(unsigned long long number_of_words);
@@ -88,6 +93,7 @@ private:
      * @brief Add a new most significant word with a value of 0;
      * @return Pointer to the new word that was added.
      */
+    void delete_all_words();
     void remove_extra_leading_words();
     HugeIntWord* add_word();
     /**
@@ -115,15 +121,19 @@ private:
      * @return The least significant word that was updated.
      */
     HugeIntWord* add_value_at_word(HugeIntWord* location_to_add, const UnsignedHugeInt& value_to_add);
-    static UnsignedHugeInt& integer_with_least_significant_word(HugeIntWord* least_significant_word);
+    static UnsignedHugeInt integer_with_least_significant_word(HugeIntWord* least_significant_word);
     void throw_warning(std::string message);
     
-    static UnsignedHugeInt* find_multiplication_subtotal(const HugeIntWord* greater_factor_word, const HugeIntWord* lesser_factor_word);
+    static UnsignedHugeInt find_multiplication_subtotal(const HugeIntWord* greater_factor_word, const HugeIntWord* lesser_factor_word);
+    
+    // ToDo: Remove the following variables after development.
+    static unsigned int num_objects_created;
+    static unsigned int num_objects_deleted;
 };
 
 // Operators involving UnsignedHugeInt, but not considered part of UnsignedHugeInt by the compiler.
-UnsignedHugeInt& operator+(const unsigned long long addendA, const UnsignedHugeInt& addendB);
-UnsignedHugeInt& operator-(const unsigned long long minuend, const UnsignedHugeInt& subtrahend);
-UnsignedHugeInt& operator*(const unsigned long long factorA, const UnsignedHugeInt& factorB);
-UnsignedHugeInt& operator/(const unsigned long long dividend, const UnsignedHugeInt& divisor);
-UnsignedHugeInt& operator%(const unsigned long long dividend, const UnsignedHugeInt& divisor);
+UnsignedHugeInt operator+(const unsigned long long addendA, const UnsignedHugeInt& addendB);
+UnsignedHugeInt operator-(const unsigned long long minuend, const UnsignedHugeInt& subtrahend);
+UnsignedHugeInt operator*(const unsigned long long factorA, const UnsignedHugeInt& factorB);
+UnsignedHugeInt operator/(const unsigned long long dividend, const UnsignedHugeInt& divisor);
+UnsignedHugeInt operator%(const unsigned long long dividend, const UnsignedHugeInt& divisor);

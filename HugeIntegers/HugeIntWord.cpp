@@ -6,12 +6,15 @@
 //}
 unsigned long long HugeIntWord::max_value = MAX_VALUE;
 unsigned long long HugeIntWord::base_value = max_value + 1;
+unsigned int HugeIntWord::num_objects_created = 0;
+unsigned int HugeIntWord::num_objects_deleted = 0;
 
 HugeIntWord::HugeIntWord(unsigned long long value){
     this->value = value;
     this->lessSigWord = NULL;
     this->place_value = 0;
     this->moreSigWord = NULL;
+    ++HugeIntWord::num_objects_created;
 }
 
 HugeIntWord::HugeIntWord(unsigned long long value, HugeIntWord* lowerSignificantWord){
@@ -20,10 +23,12 @@ HugeIntWord::HugeIntWord(unsigned long long value, HugeIntWord* lowerSignificant
     this->place_value = lowerSignificantWord->get_word_number() + 1;
     this->moreSigWord = NULL;
     lowerSignificantWord->set_more_significant_word(this);
+    ++HugeIntWord::num_objects_created;
 }
 
 HugeIntWord::~HugeIntWord()
 {
+    ++HugeIntWord::num_objects_deleted;
 }
 
 unsigned long long HugeIntWord::get_value() const {

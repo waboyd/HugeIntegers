@@ -48,5 +48,9 @@ private:
      * @return Pointer to most significant word of the addition operation.
      */
     HugeIntWord* add_value(unsigned long long addend);
+    
+    // ToDo: Remove the following variables after development.
+    static unsigned int num_objects_created;
+    static unsigned int num_objects_deleted;
 };
 

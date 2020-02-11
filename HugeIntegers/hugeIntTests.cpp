@@ -71,8 +71,6 @@ TEST_CASE("Read String With Extra Leading Zeros", "Instantiate an UnsignedHugeIn
 }
 
 TEST_CASE("Read Very Long Number String", "Instantiate an UnsignedHugeInt from a number string with more than 500 digits.") {
-//    std::string testString = "123" "456" "789";
-//    std::cout << testString << "\n";
     std::string valueString =
         "76987112145678580852966410509967726809179346411100046467164386844187379451136687874455113894146219846543798465435145"
         "35416798604610498654654135410584968904546541034836489940997401132480551322222222222224087487063549840687353337884814"
@@ -130,7 +128,7 @@ TEST_CASE("Add Int to UnsignedHugeInt", "Add an integer and an UnsignedHugeInt, 
     int numA = 3644562;
     UnsignedHugeInt *numB = new UnsignedHugeInt("5480628615623433244512");
     std::string expectedSum = "5480628615623436889074";
-    UnsignedHugeInt *sum = &(numA + *numB);
+    UnsignedHugeInt *sum = new UnsignedHugeInt(numA + *numB);
     CHECK(expectedSum == sum->to_string());
     CHECK(3 == sum->num_words());   // For nine-digit words.
     delete(numB);
@@ -290,8 +288,6 @@ TEST_CASE("Multiply UnsignedHugeInt by Int",
     UnsignedHugeInt productObject = factorA * factorB;
     REQUIRE(expectedProductString == productObject.to_string());        
 }
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 TEST_CASE("Divide Zero Object by Object", "Divide 0 as an UnsignedHugeInt by another UnsignedHugeInt.") {
     UnsignedHugeInt dividendObject = UnsignedHugeInt((unsigned long long)0);
@@ -482,4 +478,14 @@ TEST_CASE("Divide When Dividend Has Smaller Leading Word",
     UnsignedHugeInt remainder = dividend % divisor;
     REQUIRE(expectedQuotientString == quotient.to_string());
     REQUIRE(expectedRemainderString == remainder.to_string());
+}
+
+//TEST_CASE("Assign New Value", "Assign a new value to an existing UnsignedHugeInt object.") {
+//    UnsignedHugeInt x;
+//    x = UnsignedHugeInt(873692) + UnsignedHugeInt(3498);    
+//}
+
+TEST_CASE("Memory Leak Check",
+        "Check that the number of UnsignedHugeInt objects created is the same as the number of objects destroyed.") {
+    UnsignedHugeInt::report_number_of_objects();
 }
