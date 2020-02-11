@@ -640,16 +640,13 @@ HugeIntWord* UnsignedHugeInt::add_word() {
 }
 
 HugeIntWord* UnsignedHugeInt::add_word(unsigned long long value) {
-    // ToDo: Check that this works for values that require more than two words.
     if (value > UnsignedHugeInt::max_word_value) {
-        unsigned long carryValue = value / UnsignedHugeInt::word_base;
-        unsigned long long lesserValue = value % UnsignedHugeInt::word_base;
-        HugeIntWord *lesserWord, *greaterWord;
-        lesserWord = new HugeIntWord(lesserValue);
-        greaterWord = new HugeIntWord(carryValue, lesserWord);
-        this->add_word(lesserWord);
-        this->add_word(greaterWord);
-        return greaterWord;
+        HugeIntWord *newLesserWord, *newGreaterWord;
+        newLesserWord = new HugeIntWord((unsigned long long)0);
+        newGreaterWord = newLesserWord->add_value(value);
+        this->add_word(newLesserWord);
+        this->mostSigWord = newGreaterWord;
+        return newGreaterWord;
     }
     else {
         HugeIntWord *newWord = new HugeIntWord(value);
