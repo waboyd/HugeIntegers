@@ -62,18 +62,18 @@ public:
     static UnsignedHugeInt sum_of(const UnsignedHugeInt& addendA, const UnsignedHugeInt& addendB);
     static UnsignedHugeInt sum_of(const UnsignedHugeInt& addendA, const unsigned long long addendB);
     UnsignedHugeInt operator+(const UnsignedHugeInt& addend) const;
-    UnsignedHugeInt operator+(const long long addend) const;
+    UnsignedHugeInt operator+(const unsigned long long addend) const;
     static UnsignedHugeInt subtract(const UnsignedHugeInt& minuend, const UnsignedHugeInt& subtrahend);
     UnsignedHugeInt operator-(const UnsignedHugeInt& subtrahend) const;
-    UnsignedHugeInt operator-(long long subtrahend) const;
+    UnsignedHugeInt operator-(const unsigned long long subtrahend) const;
     static UnsignedHugeInt multiply(const UnsignedHugeInt& factorA, const UnsignedHugeInt& factorB);
     UnsignedHugeInt operator*(const UnsignedHugeInt& factor) const;
-    UnsignedHugeInt operator*(long long factor) const;
+    UnsignedHugeInt operator*(const unsigned long long factor) const;
     static std::pair<UnsignedHugeInt, UnsignedHugeInt> divide(const UnsignedHugeInt& dividend, const UnsignedHugeInt& divisor);
     UnsignedHugeInt operator/(const UnsignedHugeInt& divisor) const;
-    UnsignedHugeInt operator/(long long divisor) const;
+    UnsignedHugeInt operator/(const unsigned long long divisor) const;
     UnsignedHugeInt operator%(const UnsignedHugeInt& divisor) const;
-    UnsignedHugeInt operator%(long long divisor) const;
+    UnsignedHugeInt operator%(const unsigned long long divisor) const;
     
     /**
      * @brief Return true only if the object has been defined and is not null.
@@ -112,7 +112,7 @@ private:
      * @brief Add new most significant words with a total value given in the parameter;
      * @return Pointer to the most significant new word that was added.
      */
-    HugeIntWord* add_word(unsigned long long value);
+    HugeIntWord* add_word(const unsigned long long value);
     /**
      * @brief Add the word given in the parameter as the new most significant word;
      * @return Pointer to the new word that was added.

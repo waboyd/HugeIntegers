@@ -105,7 +105,6 @@ TEST_CASE("Copy UnsignedHugeInt From Pointer",
     delete(origNumber);
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 TEST_CASE("Compare With One Operand Much Greater",
         "Perform all comparson operations for a pair of UnsignedHugeInt objects when one object has more words.") {
     UnsignedHugeInt numberA("3265874619983746598176589680046549820036879412136564499741138444077167");
@@ -214,7 +213,6 @@ TEST_CASE("Compare unsigned long And UnsignedHugeInt With the Same Value",
     CHECK(numberB == numberA);
     CHECK_FALSE(numberB != numberA);    
 }
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 TEST_CASE("Multi-word Addition", "Add two multi-word integers instantiated in different ways.") {
     UnsignedHugeInt *numA = new UnsignedHugeInt("547890553345398741");

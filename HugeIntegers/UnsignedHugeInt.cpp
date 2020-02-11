@@ -147,91 +147,75 @@ short UnsignedHugeInt::compare(const UnsignedHugeInt& numberA, const UnsignedHug
 }
 
 bool UnsignedHugeInt::operator<(const UnsignedHugeInt& right_operand) const {
-    return false; // Placeholder
+    return UnsignedHugeInt::compare(*this, right_operand) < 0;
 }
 
 bool UnsignedHugeInt::operator<(const unsigned long long right_operand) const {
-    return false; // Placeholder    
+    return UnsignedHugeInt::compare(*this, UnsignedHugeInt(right_operand)) < 0;    
 }
 
 bool operator<(const unsigned long long left_operand, const UnsignedHugeInt& right_operand) {
-    
-    return false; // Placeholder
+    return UnsignedHugeInt::compare(UnsignedHugeInt(left_operand), right_operand) < 0;
 }
 
 bool UnsignedHugeInt::operator<=(const UnsignedHugeInt& right_operand) const {
-    
-    return false; // Placeholder
+    return UnsignedHugeInt::compare(*this, right_operand) <= 0;
 }
 
 bool UnsignedHugeInt::operator<=(const unsigned long long right_operand) const {
-    
-    return false; // Placeholder
+    return UnsignedHugeInt::compare(*this, UnsignedHugeInt(right_operand)) <= 0;    
 }
 
 bool operator<=(const unsigned long long left_operand, const UnsignedHugeInt& right_operand) {
-    
-    return false; // Placeholder
+    return UnsignedHugeInt::compare(UnsignedHugeInt(left_operand), right_operand) <= 0;
 }
 
 bool UnsignedHugeInt::operator>(const UnsignedHugeInt& right_operand) const {
-    
-    return false; // Placeholder
+    return UnsignedHugeInt::compare(*this, right_operand) > 0;
 }
 
 bool UnsignedHugeInt::operator>(const unsigned long long right_operand) const {
-    
-    return false; // Placeholder
+    return UnsignedHugeInt::compare(*this, UnsignedHugeInt(right_operand)) > 0;    
 }
 
 bool operator>(const unsigned long long left_operand, const UnsignedHugeInt& right_operand) {
-    
-    return false; // Placeholder
+    return UnsignedHugeInt::compare(UnsignedHugeInt(left_operand), right_operand) > 0;
 }
 
 bool UnsignedHugeInt::operator>=(const UnsignedHugeInt& right_operand) const {
-    
-    return false; // Placeholder
+    return UnsignedHugeInt::compare(*this, right_operand) >= 0;
 }
 
 bool UnsignedHugeInt::operator>=(const unsigned long long right_operand) const {
-    
-    return false; // Placeholder
+    return UnsignedHugeInt::compare(*this, UnsignedHugeInt(right_operand)) >= 0;    
 }
 
 bool operator>=(const unsigned long long left_operand, const UnsignedHugeInt& right_operand) {
-    
-    return false; // Placeholder
+    return UnsignedHugeInt::compare(UnsignedHugeInt(left_operand), right_operand) >= 0;
 }
 
 bool UnsignedHugeInt::operator==(const UnsignedHugeInt& right_operand) const {
-    
-    return false; // Placeholder
+    return UnsignedHugeInt::compare(*this, right_operand) == 0;
 }
 
 bool UnsignedHugeInt::operator==(const unsigned long long right_operand) const {
-    
-    return false; // Placeholder
+    return UnsignedHugeInt::compare(*this, UnsignedHugeInt(right_operand)) == 0;    
 }
 
 bool operator==(const unsigned long long left_operand, const UnsignedHugeInt& right_operand) {
-    
-    return false; // Placeholder
+    return UnsignedHugeInt::compare(UnsignedHugeInt(left_operand), right_operand) == 0;
 }
 
 bool UnsignedHugeInt::operator!=(const UnsignedHugeInt& right_operand) const {
-    
-    return false; // Placeholder
+    return UnsignedHugeInt::compare(*this, right_operand) != 0;
 }
 
 bool UnsignedHugeInt::operator!=(const unsigned long long right_operand) const {
-    
-    return false; // Placeholder
+    return UnsignedHugeInt::compare(*this, UnsignedHugeInt(right_operand)) != 0;    
 }
 
 bool operator!=(const unsigned long long left_operand, const UnsignedHugeInt& right_operand) {
-    
-    return false; // Placeholder
+    return UnsignedHugeInt::compare(UnsignedHugeInt(left_operand), right_operand) != 0;
 }
 
 UnsignedHugeInt UnsignedHugeInt::sum_of(const UnsignedHugeInt& addendA, const UnsignedHugeInt& addendB) {
@@ -339,7 +323,7 @@ UnsignedHugeInt UnsignedHugeInt::operator+(const UnsignedHugeInt& addend) const 
     return UnsignedHugeInt::sum_of(*this, addend);
 }
 
-UnsignedHugeInt UnsignedHugeInt::operator+(const long long addend) const {
+UnsignedHugeInt UnsignedHugeInt::operator+(const unsigned long long addend) const {
     return UnsignedHugeInt::sum_of(this, addend);
 }
 
@@ -426,7 +410,7 @@ UnsignedHugeInt UnsignedHugeInt::operator-(const UnsignedHugeInt& subtrahend) co
     return UnsignedHugeInt::subtract(*this, subtrahend);
 }
 
-UnsignedHugeInt UnsignedHugeInt::operator-(long long subtrahend) const {
+UnsignedHugeInt UnsignedHugeInt::operator-(const unsigned long long subtrahend) const {
     UnsignedHugeInt subtrahendObject(subtrahend);
     return UnsignedHugeInt::subtract(*this, subtrahendObject);
 }
@@ -479,7 +463,7 @@ UnsignedHugeInt UnsignedHugeInt::operator*(const UnsignedHugeInt& factor) const 
     return UnsignedHugeInt::multiply(*this, factor);
 }
 
-UnsignedHugeInt UnsignedHugeInt::operator*(long long factor) const {
+UnsignedHugeInt UnsignedHugeInt::operator*(const unsigned long long factor) const {
     UnsignedHugeInt factorObject(factor);
     return UnsignedHugeInt::multiply(*this, factorObject);
 }
@@ -595,7 +579,7 @@ UnsignedHugeInt UnsignedHugeInt::operator/(const UnsignedHugeInt& divisor) const
     return UnsignedHugeInt::divide(*this, divisor).first;
 }
 
-UnsignedHugeInt UnsignedHugeInt::operator/(long long divisor) const {
+UnsignedHugeInt UnsignedHugeInt::operator/(const unsigned long long divisor) const {
     UnsignedHugeInt divisorObject(divisor);
     return UnsignedHugeInt::divide(*this, divisorObject).first;
 }
@@ -609,7 +593,7 @@ UnsignedHugeInt UnsignedHugeInt::operator%(const UnsignedHugeInt& divisor) const
     return UnsignedHugeInt::divide(*this, divisor).second;
 }
 
-UnsignedHugeInt UnsignedHugeInt::operator%(long long divisor) const {
+UnsignedHugeInt UnsignedHugeInt::operator%(const unsigned long long divisor) const {
     UnsignedHugeInt divisorObject(divisor);
     return UnsignedHugeInt::divide(*this, divisorObject).second;
 }
@@ -727,7 +711,7 @@ HugeIntWord* UnsignedHugeInt::add_word() {
     return this->add_word((unsigned long long)0);
 }
 
-HugeIntWord* UnsignedHugeInt::add_word(unsigned long long value) {
+HugeIntWord* UnsignedHugeInt::add_word(const unsigned long long value) {
     if (value > UnsignedHugeInt::max_word_value) {
         HugeIntWord *newLesserWord, *newGreaterWord;
         newLesserWord = new HugeIntWord((unsigned long long)0);
