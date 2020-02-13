@@ -345,10 +345,10 @@ UnsignedHugeInt UnsignedHugeInt::subtract(const UnsignedHugeInt& minuend, const 
     // Determine the least significant word of the difference.
     minuendWord = minuend.get_least_significant_word();
     if (minuendWord == NULL)
-        return *(new UnsignedHugeInt((unsigned long long)0));
+        return UnsignedHugeInt((unsigned long long)0);
     subtrahendWord = subtrahend.get_least_significant_word();
     if (subtrahendWord == NULL)
-        return *(new UnsignedHugeInt(minuend));
+        return UnsignedHugeInt(minuend);
     thisMinuendWordValue = minuendWord->get_value();
     thisSubtrahendWordValue = subtrahendWord->get_value();
     if (thisMinuendWordValue < thisSubtrahendWordValue) {
@@ -645,13 +645,56 @@ UnsignedHugeInt& UnsignedHugeInt::operator+=(const unsigned long long addend) {
 }
 
 UnsignedHugeInt& UnsignedHugeInt::operator-=(const UnsignedHugeInt subtrahend) {
-    // ToDo: Complete this method.
+    if(!this->is_defined() || !subtrahend.is_defined()) {
+        throw std::invalid_argument("One of the UnsignedHugeInt objects of the compound subtraction operation is not defined.");
+    }
+    if (UnsignedHugeInt::compare(*this, subtrahend) < 0) {
+        throw std::range_error("The subtrahend of an unsigned compound subtraction operation was greater than the minuend.");
+    }
+    
+    HugeIntWord *minuendWord, *subtrahendWord;
+    unsigned long long thisWordDifference, thisMinuendWordValue, thisSubtrahendWordValue, carryValue(0);
+    
+    minuendWord = this->get_least_significant_word();
+    subtrahendWord = subtrahend.get_least_significant_word();
+
+    // Subtract all the words of the subtrahend.    
+    while (subtrahendWord != NULL) {
+        thisMinuendWordValue = minuendWord->get_value();
+        thisSubtrahendWordValue = subtrahendWord->get_value() + carryValue;
+        if (thisMinuendWordValue < thisSubtrahendWordValue) {
+            carryValue = 1;
+            thisWordDifference = (HugeIntWord::base_value + thisMinuendWordValue) - thisSubtrahendWordValue;
+        }
+        else {
+            carryValue = 0;
+            thisWordDifference = thisMinuendWordValue - thisSubtrahendWordValue;
+        }
+        minuendWord->value = thisWordDifference;
+        minuendWord = minuendWord->get_next_more_sig_word();
+        subtrahendWord = subtrahendWord->get_next_more_sig_word();
+    }
+    
+    // Continue carry operations from the remaining words of the menuend.
+    while (carryValue > 0 && minuendWord != NULL) {
+        thisMinuendWordValue = minuendWord->get_value();
+        if (thisMinuendWordValue < carryValue) {
+            thisWordDifference = (HugeIntWord::base_value + thisMinuendWordValue) - carryValue;
+            carryValue = 1;
+        }
+        else {
+            thisWordDifference = thisMinuendWordValue - carryValue;
+            carryValue = 0;
+        }
+        minuendWord->value = thisWordDifference;
+        minuendWord = minuendWord->get_next_more_sig_word();
+    }
+    this->remove_extra_leading_words();
     return *this;
 }
 
 UnsignedHugeInt& UnsignedHugeInt::operator-=(const unsigned long long subtrahend) {
-    // ToDo: Complete this method.
-    return *this;
+    return *this -= UnsignedHugeInt(subtrahend);
 }
 
 UnsignedHugeInt& UnsignedHugeInt::operator*=(const UnsignedHugeInt factor) {
