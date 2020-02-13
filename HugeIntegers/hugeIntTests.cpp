@@ -5,24 +5,31 @@
 
 //#include <iostream>
 
-//TEST_CASE("Test Testing Framework", "Verify that the unit testing framework is working correctly.") {
+TEST_CASE("Test Testing Framework", "Verify that the unit testing framework is working correctly.") {
 ////    std::cout << "Start of \"Test Testing Framework.\"\n";
 ////    REQUIRE(true);
 ////    UnsignedHugeInt x(((long)12345));
 ////    x = x + 1;
 //
-//    std::string divisorString = "6554312049000133281882220402049873270410072549068031968389704";
-//    std::string quotientString = "840640682610246068368403846840542054725039972001140443335770549044287126981";
-//    std::string remainderString = "5407986409887025840698752784053370987408949870456968640387078";
-//    UnsignedHugeInt divisor(divisorString), quotient(quotientString), remainder(remainderString);
-//    UnsignedHugeInt dividend = (divisor * quotient) + remainder;
-//    std::cout << "------------------------------------------------------------------------------------------------\n";
-//    std::cout << "dividend: " << dividend.to_string() << "\n";
-//    std::cout << "divisor: " << divisor.to_string() << "\n";
-//    std::cout << "quotient: " << quotient.to_string() << "\n";
-//    std::cout << "remainder: " << remainder.to_string() << "\n";
-//    std::cout << "------------------------------------------------------------------------------------------------\n";
-//}
+    std::string divisorString = "389084";
+    std::string quotientString = "35109870984004427504859379840710122994";
+    std::string remainderString = "389047";
+    UnsignedHugeInt divisor(divisorString), quotient(quotientString), remainder(remainderString);
+    UnsignedHugeInt dividend = (divisor * quotient) + remainder;
+    std::cout << "------------------------------------------------------------------------------------------------\n";
+    std::cout << "dividend: " << dividend.to_string() << "\n";
+    std::cout << "divisor: " << divisor.to_string() << "\n";
+    std::cout << "quotient: " << quotient.to_string() << "\n";
+    std::cout << "remainder: " << remainder.to_string() << "\n";
+    std::cout << "------------------------------------------------------------------------------------------------\n";
+
+//    int a(5);
+//    int b = ++a;
+//    int c = a++;
+//    std::cout << "a: " << a << "\n";
+//    std::cout << "b: " << b << "\n";
+//    std::cout << "c: " << c << "\n";
+}
 
 TEST_CASE("Blank Number", "Instantiate an UnsignedHugeInt with an unspecified value. Its value should be 0 before modification.") {
     UnsignedHugeInt newNumber;
@@ -589,10 +596,134 @@ TEST_CASE("Divide When Dividend Has Smaller Leading Word",
     REQUIRE(expectedRemainderString == remainder.to_string());
 }
 
-//TEST_CASE("Assign New Value", "Assign a new value to an existing UnsignedHugeInt object.") {
-//    UnsignedHugeInt x;
-//    x = UnsignedHugeInt(873692) + UnsignedHugeInt(3498);    
-//}
+TEST_CASE("Compound Addition of UnsignedHugeInt Object", "Use the += operator to add an UnsignedHugeInt object.") {
+    UnsignedHugeInt x("453170093496799874983745234209856870938475309870189");
+    UnsignedHugeInt y("3475029378098745343984760987340985709384894598731520938476849");
+    std::string expectedSumString = "3475029378551915437481560862324730943594751469669996248347038";
+    UnsignedHugeInt z = x += y;
+    REQUIRE(expectedSumString == x.to_string());
+    REQUIRE(expectedSumString == z.to_string());
+}
+
+TEST_CASE("Compound Addition of int", "Use the += operator to add an int to an UnsignedHugeInt.") {
+    UnsignedHugeInt x("83450480039870687434908999574635");
+    int y(824309);
+    std::string expectedSumString = "83450480039870687434909000398944";
+    UnsignedHugeInt z = x += y;
+    REQUIRE(expectedSumString == x.to_string());
+    REQUIRE(expectedSumString == z.to_string());    
+}
+
+TEST_CASE("Compound Subtraction of UnsignedHugeInt Object", "Use the -= operator to subtract an UnsignedHugeInt object.") {
+    UnsignedHugeInt x("3475029378551915437481560862324730943594751469669996248347038");
+    UnsignedHugeInt y("3475029378098745343984760987340985709384894598731520938476849");
+    std::string expectedDifferenceString = "453170093496799874983745234209856870938475309870189";
+    UnsignedHugeInt z = x -= y;
+    REQUIRE(expectedDifferenceString == x.to_string());
+    REQUIRE(expectedDifferenceString == z.to_string());
+}
+
+TEST_CASE("Compound Subtraction of int", "Use the -= operator to subtract an int from an UnsignedHugeInt.") {
+    UnsignedHugeInt x("83450480039870687434909000398944");
+    int y(824309);
+    std::string expectedDifferenceString = "83450480039870687434908999574635";
+    UnsignedHugeInt z = x -= y;
+    REQUIRE(expectedDifferenceString == x.to_string());
+    REQUIRE(expectedDifferenceString == z.to_string());    
+}
+
+TEST_CASE("Compound Multiplication of UnsignedHugeInt Object", "Use the *= operator to multiply UnsignedHugeInt objects.") {
+    UnsignedHugeInt x("348906840332448298731088632654088404038");
+    UnsignedHugeInt y("207340940496987406598409874");
+    std::string expectedProductString = "72342672420362048481573680294368720190366115486890872873240671212";
+    UnsignedHugeInt z = x *= y;
+    REQUIRE(expectedProductString == x.to_string());
+    REQUIRE(expectedProductString == z.to_string());
+}
+
+TEST_CASE("Compound Multiplication of int", "Use the *= operator to multiply an int by an UnsignedHugeInt.") {
+    UnsignedHugeInt x("8071397034440481098522194019338068408749094");
+    int y(98407);
+    std::string expectedProductString = "794281967968184423462273546861001297899772093258";
+    UnsignedHugeInt z = x *= y;
+    REQUIRE(expectedProductString == x.to_string());
+    REQUIRE(expectedProductString == z.to_string());        
+}
+
+TEST_CASE("Compound Integer Division of UnsignedHugeIntObject", "Use the /= operator to divide UnsignedHugeInt objects.") {
+    UnsignedHugeInt x("22690029771660997484299435939247602551803671407171961949271");
+    UnsignedHugeInt y("464065108316103871012683213940");
+    std::string expectedQuotientString = "48894065434036885468779840680";
+    UnsignedHugeInt z = x /= y;
+    REQUIRE(expectedQuotientString == x.to_string());
+    REQUIRE(expectedQuotientString == z.to_string());        
+}
+
+TEST_CASE("Compound Modulus Division of UnsignedHugeIntObject", "Use the %= operator to divide UnsignedHugeInt objects.") {
+    UnsignedHugeInt x("22690029771660997484299435939247602551803671407171961949271");
+    UnsignedHugeInt y("464065108316103871012683213940");
+    std::string expectedRemainderString = "99403049840587217068406870071";
+    UnsignedHugeInt z = x %= y;
+    REQUIRE(expectedRemainderString == x.to_string());
+    REQUIRE(expectedRemainderString == z.to_string());        
+}
+
+TEST_CASE("Compound Integer Division of int", "Use the /= operator to divide an UnsignedHugeInt object by an int.") {
+    UnsignedHugeInt x("13660689041940378671300706945942857495386543");
+    int y = 389084;
+    std::string expectedQuotientString = "35109870984004427504859379840710122994";
+    UnsignedHugeInt z = x /= y;
+    REQUIRE(expectedQuotientString == x.to_string());
+    REQUIRE(expectedQuotientString == z.to_string());            
+}
+
+TEST_CASE("Compound Modulus Division of int", "Use the %= operator to divide an UnsignedHugeInt object by an int.") {
+    UnsignedHugeInt x("13660689041940378671300706945942857495386543");
+    int y = 389084;
+    std::string expectedRemainderString = "389047";
+    UnsignedHugeInt z = x %= y;
+    REQUIRE(expectedRemainderString == x.to_string());
+    REQUIRE(expectedRemainderString == z.to_string());            
+}
+
+TEST_CASE("Increment Prefix With New Word Carry",
+        "Use the ++ prefix operator to increment an UnsignedHugeInt object. A new word needs to be created for the resulting amount.") {
+    UnsignedHugeInt x("999999999999999999999999999");
+    std::string expectedResultString = "1000000000000000000000000000";
+    UnsignedHugeInt y = ++x;
+    REQUIRE(expectedResultString == x.to_string());
+    REQUIRE(expectedResultString == y.to_string());
+}
+
+TEST_CASE("Increment Suffix With One Word Carry",
+        "Use the ++ suffix operator to increment an UnsignedHugeInt object. An value must be carried across one word.") {
+    std::string origValueString = "38403540471159079999999999";
+    std::string expectedResultString = "38403540471159080000000000";
+    UnsignedHugeInt x(origValueString);
+    UnsignedHugeInt y = x++;
+    REQUIRE(expectedResultString == x.to_string());
+    REQUIRE(origValueString == y.to_string());
+}
+
+TEST_CASE("Decrement Prefix With Word Removal",
+        "Use the -- prefix operator to decrement an UnsignedHugeInt object. A word needs to be removed from the resulting amount.") {
+    UnsignedHugeInt x("1000000000000000000000000000");
+    std::string expectedResultString = "999999999999999999999999999";
+    UnsignedHugeInt y = --x;
+    REQUIRE(expectedResultString == x.to_string());
+    REQUIRE(x.num_words() == 3);
+    REQUIRE(expectedResultString == y.to_string());
+}
+
+TEST_CASE("Decrement Suffix With One Word Carry",
+        "Use the -- suffix operator to decrement an UnsignedHugeInt object. Some regrouping across words is required.") {
+    std::string origValueString = "38403540471159080000000000";
+    std::string expectedResultString = "38403540471159079999999999";
+    UnsignedHugeInt x(origValueString);
+    UnsignedHugeInt y = x--;
+    REQUIRE(expectedResultString == x.to_string());
+    REQUIRE(origValueString == y.to_string());
+}
 
 TEST_CASE("Memory Leak Check",
         "Check that the number of UnsignedHugeInt objects created is the same as the number of objects destroyed.") {

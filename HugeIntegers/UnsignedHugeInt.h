@@ -38,14 +38,16 @@ public:
     UnsignedHugeInt(const UnsignedHugeInt* orig);
     virtual ~UnsignedHugeInt();
     
+    // ToDo: Change the return types of the assignment operators to references to the result.
+
+    void operator=(const UnsignedHugeInt& orig);
+    void operator=(const UnsignedHugeInt* orig);
     /**
      * @brief Determine which of the two numbers is greater.
      * @param numberA One of the numbers to compare.
      * @param numberB One of the numbers to compare.
      * @return 1 if numberA is greater; 0 if the numbers are equal; -1 if numberB is greater.
      */
-    void operator=(const UnsignedHugeInt& orig);
-    void operator=(const UnsignedHugeInt* orig);
     static short compare(const UnsignedHugeInt& numberA, const UnsignedHugeInt& numberB);
     bool operator<(const UnsignedHugeInt& right_operand) const;
     bool operator<(const unsigned long long right_operand) const;
@@ -74,7 +76,21 @@ public:
     UnsignedHugeInt operator/(const unsigned long long divisor) const;
     UnsignedHugeInt operator%(const UnsignedHugeInt& divisor) const;
     UnsignedHugeInt operator%(const unsigned long long divisor) const;
-    
+    UnsignedHugeInt& operator+=(const UnsignedHugeInt addend);
+    UnsignedHugeInt& operator+=(const unsigned long long addend);
+    UnsignedHugeInt& operator-=(const UnsignedHugeInt subtrahend);
+    UnsignedHugeInt& operator-=(const unsigned long long subtrahend);
+    UnsignedHugeInt& operator*=(const UnsignedHugeInt factor);
+    UnsignedHugeInt& operator*=(const unsigned long long factor);
+    UnsignedHugeInt& operator/=(const UnsignedHugeInt divisor);
+    UnsignedHugeInt& operator/=(const unsigned long long divisor);
+    UnsignedHugeInt& operator%=(const UnsignedHugeInt divisor);
+    UnsignedHugeInt& operator%=(const unsigned long long divisor);
+    UnsignedHugeInt& operator++();
+    UnsignedHugeInt operator++(int dummy);
+    UnsignedHugeInt& operator--();
+    UnsignedHugeInt operator--(int dummy);
+        
     /**
      * @brief Return true only if the object has been defined and is not null.
      * @return True if the object is verified as properly defined.

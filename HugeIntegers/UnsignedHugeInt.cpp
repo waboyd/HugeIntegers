@@ -603,6 +603,75 @@ UnsignedHugeInt operator%(const unsigned long long dividend, const UnsignedHugeI
     return UnsignedHugeInt::divide(dividendObject, divisor).second;
 }
 
+UnsignedHugeInt& UnsignedHugeInt::operator+=(const UnsignedHugeInt addend) {
+    // ToDo: Complete this method.
+    return *this;
+}
+
+UnsignedHugeInt& UnsignedHugeInt::operator+=(const unsigned long long addend) {
+    // ToDo: Complete this method.
+    return *this;
+}
+
+UnsignedHugeInt& UnsignedHugeInt::operator-=(const UnsignedHugeInt subtrahend) {
+    // ToDo: Complete this method.
+    return *this;
+}
+
+UnsignedHugeInt& UnsignedHugeInt::operator-=(const unsigned long long subtrahend) {
+    // ToDo: Complete this method.
+    return *this;
+}
+
+UnsignedHugeInt& UnsignedHugeInt::operator*=(const UnsignedHugeInt factor) {
+    // ToDo: Complete this method.
+    return *this;
+}
+
+UnsignedHugeInt& UnsignedHugeInt::operator*=(const unsigned long long factor) {
+    // ToDo: Complete this method.
+    return *this;
+}
+
+UnsignedHugeInt& UnsignedHugeInt::operator/=(const UnsignedHugeInt divisor) {
+    // ToDo: Complete this method.
+    return *this;
+}
+
+UnsignedHugeInt& UnsignedHugeInt::operator/=(const unsigned long long divisor) {
+    // ToDo: Complete this method.
+    return *this;
+}
+
+UnsignedHugeInt& UnsignedHugeInt::operator%=(const UnsignedHugeInt divisor) {
+    // ToDo: Complete this method.
+    return *this;
+}
+
+UnsignedHugeInt& UnsignedHugeInt::operator%=(const unsigned long long divisor) {
+    // ToDo: Complete this method.
+    return *this;
+}
+
+UnsignedHugeInt& UnsignedHugeInt::operator++() {
+    // ToDo: Complete this method.
+    return *this;
+}
+
+UnsignedHugeInt UnsignedHugeInt::operator++(int dummy) {
+    // ToDo: Complete this method.
+    return *this;
+}
+
+UnsignedHugeInt& UnsignedHugeInt::operator--() {
+    // ToDo: Complete this method.
+    return *this;
+}
+
+UnsignedHugeInt UnsignedHugeInt::operator--(int dummy) {
+    // ToDo: Complete this method.
+    return *this;
+}
 
 bool UnsignedHugeInt::is_defined() const {
     if ((this->defined_key_1 != CHECK_VALUE_A) || (this->defined_key_2 != CHECK_VALUE_B) ||
