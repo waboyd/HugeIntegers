@@ -5,23 +5,23 @@
 
 //#include <iostream>
 
-TEST_CASE("Test Testing Framework", "Verify that the unit testing framework is working correctly.") {
+//TEST_CASE("Test Testing Framework", "Verify that the unit testing framework is working correctly.") {
 ////    std::cout << "Start of \"Test Testing Framework.\"\n";
 ////    REQUIRE(true);
 ////    UnsignedHugeInt x(((long)12345));
 ////    x = x + 1;
 //
-    std::string divisorString = "389084";
-    std::string quotientString = "35109870984004427504859379840710122994";
-    std::string remainderString = "389047";
-    UnsignedHugeInt divisor(divisorString), quotient(quotientString), remainder(remainderString);
-    UnsignedHugeInt dividend = (divisor * quotient) + remainder;
-    std::cout << "------------------------------------------------------------------------------------------------\n";
-    std::cout << "dividend: " << dividend.to_string() << "\n";
-    std::cout << "divisor: " << divisor.to_string() << "\n";
-    std::cout << "quotient: " << quotient.to_string() << "\n";
-    std::cout << "remainder: " << remainder.to_string() << "\n";
-    std::cout << "------------------------------------------------------------------------------------------------\n";
+//    std::string divisorString = "";
+//    std::string quotientString = "";
+//    std::string remainderString = "";
+//    UnsignedHugeInt divisor(divisorString), quotient(quotientString), remainder(remainderString);
+//    UnsignedHugeInt dividend = (divisor * quotient) + remainder;
+//    std::cout << "------------------------------------------------------------------------------------------------\n";
+//    std::cout << "dividend: " << dividend.to_string() << "\n";
+//    std::cout << "divisor: " << divisor.to_string() << "\n";
+//    std::cout << "quotient: " << quotient.to_string() << "\n";
+//    std::cout << "remainder: " << remainder.to_string() << "\n";
+//    std::cout << "------------------------------------------------------------------------------------------------\n";
 
 //    int a(5);
 //    int b = ++a;
@@ -29,7 +29,7 @@ TEST_CASE("Test Testing Framework", "Verify that the unit testing framework is w
 //    std::cout << "a: " << a << "\n";
 //    std::cout << "b: " << b << "\n";
 //    std::cout << "c: " << c << "\n";
-}
+//}
 
 TEST_CASE("Blank Number", "Instantiate an UnsignedHugeInt with an unspecified value. Its value should be 0 before modification.") {
     UnsignedHugeInt newNumber;

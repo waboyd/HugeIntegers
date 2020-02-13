@@ -604,12 +604,43 @@ UnsignedHugeInt operator%(const unsigned long long dividend, const UnsignedHugeI
 }
 
 UnsignedHugeInt& UnsignedHugeInt::operator+=(const UnsignedHugeInt addend) {
-    // ToDo: Complete this method.
+    if(!this->is_defined() || !addend.is_defined()) {
+        throw std::invalid_argument("One of the numbers of the compound addition operation is not defined.");
+    }
+    HugeIntWord *thisWord = this->leastSigWord;
+    HugeIntWord *addendWord = addend.get_least_significant_word();
+    
+    while (addendWord != NULL) {
+        if (thisWord != NULL) {
+            thisWord->add_value(addendWord->get_value());
+        }
+        else {
+            thisWord = this->add_word(addendWord->get_value());
+            this->mostSigWord = thisWord;
+        }
+        thisWord = thisWord->get_next_more_sig_word();
+        addendWord = addendWord->get_next_more_sig_word();
+    }
+    // Set the most significant word.
+    HugeIntWord *nextWord = this->mostSigWord->get_next_more_sig_word();
+    while(nextWord != NULL) {
+        this->mostSigWord = nextWord;
+        nextWord = nextWord->get_next_more_sig_word();
+    }
     return *this;
 }
 
 UnsignedHugeInt& UnsignedHugeInt::operator+=(const unsigned long long addend) {
-    // ToDo: Complete this method.
+    if(!this->is_defined()) {
+        throw std::invalid_argument("The UnsignedHugeInt object was not defined before compound addition.");
+    }
+    this->leastSigWord->add_value(addend);
+    // Set the most significant word.
+    HugeIntWord *nextWord = this->mostSigWord->get_next_more_sig_word();
+    while(nextWord != NULL) {
+        this->mostSigWord = nextWord;
+        nextWord = nextWord->get_next_more_sig_word();
+    }
     return *this;
 }
 
