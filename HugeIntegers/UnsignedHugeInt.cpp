@@ -465,6 +465,7 @@ UnsignedHugeInt UnsignedHugeInt::operator*(const UnsignedHugeInt& factor) const 
 
 UnsignedHugeInt UnsignedHugeInt::operator*(const unsigned long long factor) const {
     UnsignedHugeInt factorObject(factor);
+    // ToDo: Optimize this method for multiplication by a factor of a size smaller than the word base.
     return UnsignedHugeInt::multiply(*this, factorObject);
 }
 
@@ -603,7 +604,7 @@ UnsignedHugeInt operator%(const unsigned long long dividend, const UnsignedHugeI
     return UnsignedHugeInt::divide(dividendObject, divisor).second;
 }
 
-UnsignedHugeInt& UnsignedHugeInt::operator+=(const UnsignedHugeInt addend) {
+UnsignedHugeInt& UnsignedHugeInt::operator+=(const UnsignedHugeInt& addend) {
     if(!this->is_defined() || !addend.is_defined()) {
         throw std::invalid_argument("One of the numbers of the compound addition operation is not defined.");
     }
@@ -644,7 +645,7 @@ UnsignedHugeInt& UnsignedHugeInt::operator+=(const unsigned long long addend) {
     return *this;
 }
 
-UnsignedHugeInt& UnsignedHugeInt::operator-=(const UnsignedHugeInt subtrahend) {
+UnsignedHugeInt& UnsignedHugeInt::operator-=(const UnsignedHugeInt& subtrahend) {
     if(!this->is_defined() || !subtrahend.is_defined()) {
         throw std::invalid_argument("One of the UnsignedHugeInt objects of the compound subtraction operation is not defined.");
     }
@@ -697,33 +698,34 @@ UnsignedHugeInt& UnsignedHugeInt::operator-=(const unsigned long long subtrahend
     return *this -= UnsignedHugeInt(subtrahend);
 }
 
-UnsignedHugeInt& UnsignedHugeInt::operator*=(const UnsignedHugeInt factor) {
-    // ToDo: Complete this method.
+UnsignedHugeInt& UnsignedHugeInt::operator*=(const UnsignedHugeInt& factor) {
+    *this = UnsignedHugeInt::multiply(*this, factor);
     return *this;
 }
 
 UnsignedHugeInt& UnsignedHugeInt::operator*=(const unsigned long long factor) {
-    // ToDo: Complete this method.
+    // ToDo: Optimize this method for multiplication by a factor smaller than the word base.
+    *this = UnsignedHugeInt::multiply(*this, UnsignedHugeInt(factor));
     return *this;
 }
 
-UnsignedHugeInt& UnsignedHugeInt::operator/=(const UnsignedHugeInt divisor) {
-    // ToDo: Complete this method.
+UnsignedHugeInt& UnsignedHugeInt::operator/=(const UnsignedHugeInt& divisor) {
+    *this = UnsignedHugeInt::divide(*this, divisor).first;
     return *this;
 }
 
 UnsignedHugeInt& UnsignedHugeInt::operator/=(const unsigned long long divisor) {
-    // ToDo: Complete this method.
+    *this = UnsignedHugeInt::divide(*this, UnsignedHugeInt(divisor)).first;
     return *this;
 }
 
-UnsignedHugeInt& UnsignedHugeInt::operator%=(const UnsignedHugeInt divisor) {
-    // ToDo: Complete this method.
+UnsignedHugeInt& UnsignedHugeInt::operator%=(const UnsignedHugeInt& divisor) {
+    *this = UnsignedHugeInt::divide(*this, divisor).second;
     return *this;
 }
 
 UnsignedHugeInt& UnsignedHugeInt::operator%=(const unsigned long long divisor) {
-    // ToDo: Complete this method.
+    *this = UnsignedHugeInt::divide(*this, UnsignedHugeInt(divisor)).second;
     return *this;
 }
 
