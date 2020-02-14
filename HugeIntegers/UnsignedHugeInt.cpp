@@ -730,23 +730,66 @@ UnsignedHugeInt& UnsignedHugeInt::operator%=(const unsigned long long divisor) {
 }
 
 UnsignedHugeInt& UnsignedHugeInt::operator++() {
-    // ToDo: Complete this method.
+    if(!this->is_defined()) {
+        throw std::invalid_argument("The UnsignedHugeInt object was not defined before incrementing.");
+    }
+    this->leastSigWord->add_value(1);
+    // Set the most significant word.
+    HugeIntWord *nextWord = this->mostSigWord->get_next_more_sig_word();
+    while(nextWord != NULL) {
+        this->mostSigWord = nextWord;
+        nextWord = nextWord->get_next_more_sig_word();
+    }
     return *this;
 }
 
 UnsignedHugeInt UnsignedHugeInt::operator++(int dummy) {
-    // ToDo: Complete this method.
-    return *this;
+    if(!this->is_defined()) {
+        throw std::invalid_argument("The UnsignedHugeInt object was not defined before incrementing.");
+    }
+    UnsignedHugeInt originalValue(this);
+    this->leastSigWord->add_value(1);
+    // Set the most significant word.
+    HugeIntWord *nextWord = this->mostSigWord->get_next_more_sig_word();
+    while(nextWord != NULL) {
+        this->mostSigWord = nextWord;
+        nextWord = nextWord->get_next_more_sig_word();
+    }
+    return originalValue;
 }
 
 UnsignedHugeInt& UnsignedHugeInt::operator--() {
     // ToDo: Complete this method.
+    if(!this->is_defined()) {
+        throw std::invalid_argument("The UnsignedHugeInt object was not defined before decrementing.");
+    }
+    if ((this->num_words() <= 1) && (this->leastSigWord->get_value() < 1)) {
+        throw std::range_error("An unsigned integer equal to 0 was decremented.");
+    }
+    HugeIntWord *minuendWord;
+    unsigned long long thisMinuendWordValue;
+    minuendWord = this->get_least_significant_word();
+
+    // Subtract all the words of the subtrahend.    
+    while (minuendWord != NULL) {
+        thisMinuendWordValue = minuendWord->get_value();
+        if (thisMinuendWordValue < 1) {
+            minuendWord->value = HugeIntWord::base_value - 1;
+        }
+        else {
+            minuendWord->value = thisMinuendWordValue - 1;
+            break;
+        }
+        minuendWord = minuendWord->get_next_more_sig_word();
+    }
+    this->remove_extra_leading_words();
     return *this;
 }
 
 UnsignedHugeInt UnsignedHugeInt::operator--(int dummy) {
-    // ToDo: Complete this method.
-    return *this;
+    UnsignedHugeInt originalValue(this);
+    --*this;
+    return originalValue;
 }
 
 bool UnsignedHugeInt::is_defined() const {
