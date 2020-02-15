@@ -40,8 +40,10 @@ public:
     
     // ToDo: Change the return types of the assignment operators to references to the result.
 
-    void operator=(const UnsignedHugeInt& orig);
-    void operator=(const UnsignedHugeInt* orig);
+    UnsignedHugeInt& operator=(const UnsignedHugeInt& orig);
+    UnsignedHugeInt& operator=(const UnsignedHugeInt* orig);
+    UnsignedHugeInt& operator=(const unsigned long long value);
+    UnsignedHugeInt& operator=(const std::string value_string);
     /**
      * @brief Determine which of the two numbers is greater.
      * @param numberA One of the numbers to compare.
@@ -117,6 +119,7 @@ private:
     // Private Methods
     
     void change_to_copy_of(const UnsignedHugeInt& orig);
+    void set_value_from_string(std::string integer_string);
     /**
      * @brief Add a new most significant word with a value of 0;
      * @return Pointer to the new word that was added.

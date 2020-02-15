@@ -27,32 +27,7 @@ UnsignedHugeInt::UnsignedHugeInt(const unsigned long long value) {
 }
 
 UnsignedHugeInt::UnsignedHugeInt(std::string integer_string) {
-    // ToDo: handle bases that are not a power of 10.
-    std::string thisWordString;
-    char thisWordChar[MAX_DIGITS_PER_WORD + 1];
-    unsigned long long thisWordValue;
-    unsigned long long thisWordIndex = integer_string.length();
-    HugeIntWord *thisWordObject = new HugeIntWord(0);
-    HugeIntWord *newWordObject;
-    this->leastSigWord = thisWordObject;
-    
-    // Add words for the least significant words.
-    while (thisWordIndex > MAX_DIGITS_PER_WORD) {
-        thisWordIndex -= MAX_DIGITS_PER_WORD;
-        thisWordString = integer_string.substr(thisWordIndex, MAX_DIGITS_PER_WORD);
-        strcpy(thisWordChar, thisWordString.c_str());
-        thisWordValue = strtoul(thisWordChar, NULL, 10);
-        thisWordObject->add_value(thisWordValue);
-        newWordObject = new HugeIntWord(0, thisWordObject);
-        thisWordObject = newWordObject;
-    }
-    
-    // Set the most significant word.
-    thisWordString = integer_string.substr(0, thisWordIndex);
-    strcpy(thisWordChar, thisWordString.c_str());
-    thisWordValue = strtoul(thisWordChar, NULL, 10);
-    this->mostSigWord = thisWordObject->add_value(thisWordValue);
-    this->remove_extra_leading_words();
+    this->set_value_from_string(integer_string);
     this->defined_key_1 = CHECK_VALUE_A;
     this->defined_key_2 = CHECK_VALUE_B;
     ++UnsignedHugeInt::num_objects_created;
@@ -85,9 +60,9 @@ UnsignedHugeInt::~UnsignedHugeInt() {
     ++UnsignedHugeInt::num_objects_deleted;
 }
 
-void UnsignedHugeInt::operator=(const UnsignedHugeInt& orig) {
+UnsignedHugeInt& UnsignedHugeInt::operator=(const UnsignedHugeInt& orig) {
     if (this == &orig)
-        return;
+        return *this;
     if(this->is_defined()) {
         this->delete_all_words();
         ++UnsignedHugeInt::num_objects_deleted;
@@ -96,11 +71,12 @@ void UnsignedHugeInt::operator=(const UnsignedHugeInt& orig) {
     this->defined_key_1 = CHECK_VALUE_A;
     this->defined_key_2 = CHECK_VALUE_B;
     ++UnsignedHugeInt::num_objects_created;
+    return *this;
 }
 
-void UnsignedHugeInt::operator=(const UnsignedHugeInt* orig) {
+UnsignedHugeInt& UnsignedHugeInt::operator=(const UnsignedHugeInt* orig) {
     if (this == orig)
-        return;
+        return *this;
     if(this->is_defined()) {
         this->delete_all_words();
         ++UnsignedHugeInt::num_objects_deleted;
@@ -109,6 +85,31 @@ void UnsignedHugeInt::operator=(const UnsignedHugeInt* orig) {
     this->defined_key_1 = CHECK_VALUE_A;
     this->defined_key_2 = CHECK_VALUE_B;
     ++UnsignedHugeInt::num_objects_created;
+    return *this;
+}
+
+UnsignedHugeInt& UnsignedHugeInt::operator=(const unsigned long long value) {
+    if(this->is_defined()) {
+        this->delete_all_words();
+        ++UnsignedHugeInt::num_objects_deleted;
+    }
+    HugeIntWord *newWord = new HugeIntWord(0);
+    this->leastSigWord = newWord;
+    this->mostSigWord = newWord->add_value(value);
+    this->defined_key_1 = CHECK_VALUE_A;
+    this->defined_key_2 = CHECK_VALUE_B;
+    ++UnsignedHugeInt::num_objects_created;
+    return *this;
+}
+
+UnsignedHugeInt& UnsignedHugeInt::operator=(const std::string value_string) {
+    if(this->is_defined()) {
+        this->delete_all_words();
+        ++UnsignedHugeInt::num_objects_deleted;
+    }
+    this->set_value_from_string(value_string);
+    ++UnsignedHugeInt::num_objects_created;
+    return *this;
 }
 
 short UnsignedHugeInt::compare(const UnsignedHugeInt& numberA, const UnsignedHugeInt& numberB) {
@@ -429,7 +430,7 @@ UnsignedHugeInt UnsignedHugeInt::multiply(const UnsignedHugeInt& factorA, const 
     HugeIntWord *startWordA = factorA.get_least_significant_word(); // Starting words when finding a partial product.
     HugeIntWord *startWordB = factorB.get_least_significant_word();
     if ((startWordA == NULL) || (startWordB == NULL))
-        return *(new UnsignedHugeInt(((unsigned long long)0)));    
+        return UnsignedHugeInt((unsigned long long)0);    
     UnsignedHugeInt totalProduct(startWordA->get_value() * startWordB->get_value());
     HugeIntWord *totalCalcWord = totalProduct.get_least_significant_word();
     UnsignedHugeInt partialProduct;
@@ -874,6 +875,35 @@ void UnsignedHugeInt::change_to_copy_of(const UnsignedHugeInt& orig) {
         thisOrigWord = thisOrigWord->get_next_more_sig_word();
     }
     this->mostSigWord = thisCopyWord;
+}
+
+void UnsignedHugeInt::set_value_from_string(std::string integer_string) {
+    // ToDo: handle bases that are not a power of 10.
+    std::string thisWordString;
+    char thisWordChar[MAX_DIGITS_PER_WORD + 1];
+    unsigned long long thisWordValue;
+    unsigned long long thisWordIndex = integer_string.length();
+    HugeIntWord *thisWordObject = new HugeIntWord(0);
+    HugeIntWord *newWordObject;
+    this->leastSigWord = thisWordObject;
+    
+    // Add words for the least significant words.
+    while (thisWordIndex > MAX_DIGITS_PER_WORD) {
+        thisWordIndex -= MAX_DIGITS_PER_WORD;
+        thisWordString = integer_string.substr(thisWordIndex, MAX_DIGITS_PER_WORD);
+        strcpy(thisWordChar, thisWordString.c_str());
+        thisWordValue = strtoul(thisWordChar, NULL, 10);
+        thisWordObject->add_value(thisWordValue);
+        newWordObject = new HugeIntWord(0, thisWordObject);
+        thisWordObject = newWordObject;
+    }
+    
+    // Set the most significant word.
+    thisWordString = integer_string.substr(0, thisWordIndex);
+    strcpy(thisWordChar, thisWordString.c_str());
+    thisWordValue = strtoul(thisWordChar, NULL, 10);
+    this->mostSigWord = thisWordObject->add_value(thisWordValue);
+    this->remove_extra_leading_words();
 }
 
 void UnsignedHugeInt::delete_all_words() {

@@ -3,7 +3,7 @@
 
 #include "UnsignedHugeInt.h"
 
-//#include <iostream>
+//#include <iostclTabCtrlream>
 
 //TEST_CASE("Test Testing Framework", "Verify that the unit testing framework is working correctly.") {
 ////    std::cout << "Start of \"Test Testing Framework.\"\n";
@@ -110,6 +110,26 @@ TEST_CASE("Copy UnsignedHugeInt From Pointer",
     delete(copy);
     CHECK(valueString == origNumber->to_string());
     delete(origNumber);
+}
+
+TEST_CASE("Change Value Using int Assignment", "Declare an UnsignedHugeInt object, then change the value by setting it to an int.") {
+    UnsignedHugeInt x("107096857973904791587293709587456899847878969002071");
+    x = 884951;
+    std::string expectedValueString = "884951";
+    CHECK(expectedValueString == x.to_string());
+}
+
+TEST_CASE("Set Equal to String", "Change the value of an UnsignedHugeInt object by using the assignment to string operation.") {
+    std::string value1 = "354064900797000673870687196";
+    std::string value2 = "77987000354400898674339870116476073540893968707325846";
+    std::string value3 = "7893404410970";
+    UnsignedHugeInt x;
+    x = value1;
+    CHECK(value1 == x.to_string());
+    x = value2;
+    CHECK(value2 == x.to_string());
+    x = value3;
+    CHECK(value3 == x.to_string());
 }
 
 TEST_CASE("Compare With One Operand Much Greater",
