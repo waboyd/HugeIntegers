@@ -122,7 +122,7 @@ TEST_CASE("Change Value Using int Assignment", "Declare an UnsignedHugeInt objec
 TEST_CASE("Set Equal to String", "Change the value of an UnsignedHugeInt object by using the assignment to string operation.") {
     std::string value1 = "354064900797000673870687196";
     std::string value2 = "77987000354400898674339870116476073540893968707325846";
-    std::string value3 = "7893404410970";
+    std::string value3 = "7893404";
     UnsignedHugeInt x;
     x = value1;
     CHECK(value1 == x.to_string());

@@ -153,7 +153,6 @@ private:
      */
     HugeIntWord* add_value_at_word(HugeIntWord* location_to_add, const UnsignedHugeInt& value_to_add);
     static UnsignedHugeInt integer_with_least_significant_word(HugeIntWord* least_significant_word);
-    void throw_warning(std::string message);
     
     static UnsignedHugeInt find_multiplication_subtotal(const HugeIntWord* greater_factor_word, const HugeIntWord* lesser_factor_word);
     

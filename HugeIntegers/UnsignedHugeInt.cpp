@@ -883,26 +883,37 @@ void UnsignedHugeInt::set_value_from_string(std::string integer_string) {
     char thisWordChar[MAX_DIGITS_PER_WORD + 1];
     unsigned long long thisWordValue;
     unsigned long long thisWordIndex = integer_string.length();
-    HugeIntWord *thisWordObject = new HugeIntWord(0);
     HugeIntWord *newWordObject;
-    this->leastSigWord = thisWordObject;
     
-    // Add words for the least significant words.
+    // Set the least significant word.
+    if (thisWordIndex <= MAX_DIGITS_PER_WORD) {
+        thisWordString = integer_string.substr(0, thisWordIndex);
+        strcpy(thisWordChar, thisWordString.c_str());
+        thisWordValue = strtoul(thisWordChar, NULL, 10);
+        this->mostSigWord = this->leastSigWord = new HugeIntWord(thisWordValue);
+        return;
+    }
+    thisWordIndex -= MAX_DIGITS_PER_WORD;
+    thisWordString = integer_string.substr(thisWordIndex, MAX_DIGITS_PER_WORD);
+    strcpy(thisWordChar, thisWordString.c_str());
+    thisWordValue = strtoul(thisWordChar, NULL, 10);
+    newWordObject = new HugeIntWord(thisWordValue);
+    this->leastSigWord = newWordObject;
+    
+    // Add the medium significant words.
     while (thisWordIndex > MAX_DIGITS_PER_WORD) {
         thisWordIndex -= MAX_DIGITS_PER_WORD;
         thisWordString = integer_string.substr(thisWordIndex, MAX_DIGITS_PER_WORD);
         strcpy(thisWordChar, thisWordString.c_str());
         thisWordValue = strtoul(thisWordChar, NULL, 10);
-        thisWordObject->add_value(thisWordValue);
-        newWordObject = new HugeIntWord(0, thisWordObject);
-        thisWordObject = newWordObject;
+        newWordObject = new HugeIntWord(thisWordValue, newWordObject);
     }
     
     // Set the most significant word.
     thisWordString = integer_string.substr(0, thisWordIndex);
     strcpy(thisWordChar, thisWordString.c_str());
     thisWordValue = strtoul(thisWordChar, NULL, 10);
-    this->mostSigWord = thisWordObject->add_value(thisWordValue);
+    this->mostSigWord = new HugeIntWord(thisWordValue, newWordObject);
     this->remove_extra_leading_words();
 }
 
@@ -1023,11 +1034,6 @@ UnsignedHugeInt UnsignedHugeInt::integer_with_least_significant_word(HugeIntWord
         thisWord = thisWord->get_next_more_sig_word();
     }
     return newNumber;
-}
-
-
-void UnsignedHugeInt::throw_warning(std::string message) {
-    std::cout << message << "\n";
 }
 
 UnsignedHugeInt UnsignedHugeInt::find_multiplication_subtotal(const HugeIntWord* greater_factor_word, const HugeIntWord* lesser_factor_word) {
