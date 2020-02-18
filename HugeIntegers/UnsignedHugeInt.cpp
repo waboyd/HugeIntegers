@@ -793,6 +793,22 @@ UnsignedHugeInt UnsignedHugeInt::operator--(int dummy) {
     return originalValue;
 }
 
+void UnsignedHugeInt::read_from_text_file(std::string file_path) {
+    // ToDo: Complete this method.
+}
+
+void UnsignedHugeInt::read_from_text_file(FILE* integer_file) {
+    // ToDo: Complete this method.
+}
+
+void UnsignedHugeInt::write_to_text_file(std::string file_path) {
+    // ToDo: Complete this method.
+}
+
+void UnsignedHugeInt::write_to_text_file(FILE* integer_file) {
+    // ToDo: Complete this method.    
+}
+
 bool UnsignedHugeInt::is_defined() const {
     if ((this->defined_key_1 != CHECK_VALUE_A) || (this->defined_key_2 != CHECK_VALUE_B) ||
         ((this->leastSigWord != NULL) && 

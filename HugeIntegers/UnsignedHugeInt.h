@@ -38,12 +38,16 @@ public:
     UnsignedHugeInt(const UnsignedHugeInt* orig);
     virtual ~UnsignedHugeInt();
     
-    // ToDo: Change the return types of the assignment operators to references to the result.
+    void read_from_text_file(std::string file_path);
+    void read_from_text_file(FILE* integer_file);
+    void write_to_text_file(std::string file_path);
+    void write_to_text_file(FILE* integer_file);
 
     UnsignedHugeInt& operator=(const UnsignedHugeInt& orig);
     UnsignedHugeInt& operator=(const UnsignedHugeInt* orig);
     UnsignedHugeInt& operator=(const unsigned long long value);
     UnsignedHugeInt& operator=(const std::string value_string);
+    
     /**
      * @brief Determine which of the two numbers is greater.
      * @param numberA One of the numbers to compare.

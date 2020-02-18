@@ -5,7 +5,7 @@
 
 //#include <iostclTabCtrlream>
 
-//TEST_CASE("Test Testing Framework", "Verify that the unit testing framework is working correctly.") {
+TEST_CASE("Test Testing Framework", "Verify that the unit testing framework is working correctly.") {
 ////    std::cout << "Start of \"Test Testing Framework.\"\n";
 ////    REQUIRE(true);
 ////    UnsignedHugeInt x(((long)12345));
@@ -29,7 +29,10 @@
 //    std::cout << "a: " << a << "\n";
 //    std::cout << "b: " << b << "\n";
 //    std::cout << "c: " << c << "\n";
-//}
+
+    UnsignedHugeInt testInt1("5970947234234");
+    std::cout << "testInt1: " << testInt1.to_string() << "\n";
+}
 
 TEST_CASE("Blank Number", "Instantiate an UnsignedHugeInt with an unspecified value. Its value should be 0 before modification.") {
     UnsignedHugeInt newNumber;
@@ -130,6 +133,49 @@ TEST_CASE("Set Equal to String", "Change the value of an UnsignedHugeInt object 
     CHECK(value2 == x.to_string());
     x = value3;
     CHECK(value3 == x.to_string());
+}
+
+TEST_CASE("Read From Text File 1", "Take the value of an UnsignedHugeInt object from a text file.") {
+    std::string filePath = ".\\TestFiles\\smallInt.txt";
+    std::string expectedValueString = "19843";
+    UnsignedHugeInt x;
+    FILE *testTextFile = fopen(filePath.c_str(), "r");
+    x.read_from_text_file(testTextFile);
+    fclose(testTextFile);
+    REQUIRE(expectedValueString == x.to_string());
+}
+
+TEST_CASE("Read From Text File 2", "Take the value of an UnsignedHugeInt object from a text file.") {
+    std::string filePath = ".\\TestFiles\\oneLineInt.txt";
+    std::string expectedValueString = "730984055406875409847684032487198406875407354458765804141708026";
+    UnsignedHugeInt x;
+    x.read_from_text_file(filePath);
+    REQUIRE(expectedValueString == x.to_string());    
+}
+
+TEST_CASE("Read From Text File 3", "Take the value of an UnsignedHugeInt object from a text file.") {
+    std::string filePath = ".\\TestFiles\\twoLineInt.txt";
+    std::string expectedValueString = "820498354354904968439898403871842520506525012000844863354646"
+            "85441064524354878348484999654074035247887357479873228725855787149401870063865530630257"
+            "6983601830000135725";
+    UnsignedHugeInt x;
+    FILE *testTextFile = fopen(filePath.c_str(), "r");
+    x.read_from_text_file(testTextFile);
+    fclose(testTextFile);
+    REQUIRE(expectedValueString == x.to_string());    
+}
+
+TEST_CASE("Read From Text File 4", "Take the value of an UnsignedHugeInt object from a text file.") {
+    std::string filePath = ".\\TestFiles\\fiveLineInt.txt";
+    std::string expectedValueString = "209680437196854065847012871284085415840151068475405282745820"
+    "1254976846987675242669958404021029535743871849065098876984153103251870528574141835463840987551"
+    "1554986303489046876984248051881657053577512838715405488754654687406986713212587165408970078200"
+    "7063608736644408998977104350866871587078038236048068176837184025718540486084487685865761687686"
+    "5874846608623688707587680468754687687287046517336715546984384154541175200435713521084842187154"
+    "0741652";
+    UnsignedHugeInt x;
+    x.read_from_text_file(filePath);
+    REQUIRE(expectedValueString == x.to_string());        
 }
 
 TEST_CASE("Compare With One Operand Much Greater",
