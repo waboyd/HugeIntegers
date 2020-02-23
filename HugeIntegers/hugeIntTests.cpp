@@ -178,6 +178,151 @@ TEST_CASE("Read From Text File 4", "Take the value of an UnsignedHugeInt object 
     REQUIRE(expectedValueString == x.to_string());        
 }
 
+TEST_CASE("Write to Text File 1", "Write a one-word UnsignedHugeInt to a text file.") {
+    UnsignedHugeInt x(58961);
+    std::string expectedString = "58961";
+    char textFilePath[50] = ".\\TestFiles\\tempTestFile1.txt";
+    
+    // Delete the file before writing if it already exists.
+    remove(textFilePath);
+    
+    // Use the write_to_text_file method to write the number to a text file.'
+    FILE *writeTextFile = fopen(textFilePath, "w");
+    x.write_to_text_file(writeTextFile);
+    fclose(writeTextFile);
+    
+    // Read the text file and compare its text to the expected string.
+    FILE *readTextFile = fopen(textFilePath, "r");
+    char readBuffer[101];
+    char digitBuffer[101];
+    unsigned int numCharsRead;
+    unsigned int readCharIndex, digitCharIndex;
+    std::string stringFromFile = "";
+    numCharsRead = fread(readBuffer, sizeof(char), 100, readTextFile);
+    while(numCharsRead > 0) {
+        // Take only the digits from the read buffer to create the digit buffer.
+        digitCharIndex = 0;
+        for (readCharIndex = 0; readCharIndex < numCharsRead; ++readCharIndex) {
+            if (isdigit(readBuffer[readCharIndex])) {
+                digitBuffer[digitCharIndex] = readBuffer[readCharIndex];
+                ++digitCharIndex;
+            }
+        }
+        digitBuffer[digitCharIndex] = '\0';
+        // Attach the digit buffer to the string from the file.
+        stringFromFile += std::string(digitBuffer);
+        // Read more from the file.
+        numCharsRead = fread(readBuffer, sizeof(char), 100, readTextFile);
+    }
+    fclose(readTextFile);
+    remove(textFilePath);
+    
+    REQUIRE(expectedString == stringFromFile);
+}
+
+TEST_CASE("Write to Text File 2", "Write a multi-word UnsignedHugeInt to a text file, with some words equal to 0.") {
+    std::string numberString = "46770498402019870000000000000000000096403210483580970000000000369670048940368706";
+    UnsignedHugeInt x(numberString);
+    char textFilePath[50] = ".\\TestFiles\\tempTestFile2.txt";
+    
+    // Delete the file before writing if it already exists.
+    remove(textFilePath);
+    
+    // Use the write_to_text_file method to write the number to a text file.'
+    x.write_to_text_file(textFilePath);
+    
+    // Read the text file and compare its text to the expected string.
+    FILE *readTextFile = fopen(textFilePath, "r");
+    char readBuffer[101];
+    char digitBuffer[101];
+    unsigned int numCharsRead;
+    unsigned int readCharIndex, digitCharIndex;
+    std::string stringFromFile = "";
+    numCharsRead = fread(readBuffer, sizeof(char), 100, readTextFile);
+    while(numCharsRead > 0) {
+        // Take only the digits from the read buffer to create the digit buffer.
+        digitCharIndex = 0;
+        for (readCharIndex = 0; readCharIndex < numCharsRead; ++readCharIndex) {
+            if (isdigit(readBuffer[readCharIndex])) {
+                digitBuffer[digitCharIndex] = readBuffer[readCharIndex];
+                ++digitCharIndex;
+            }
+        }
+        digitBuffer[digitCharIndex] = '\0';
+        // Attach the digit buffer to the string from the file.
+        stringFromFile += std::string(digitBuffer);
+        // Read more from the file.
+        numCharsRead = fread(readBuffer, sizeof(char), 100, readTextFile);
+    }
+    fclose(readTextFile);
+    remove(textFilePath);
+    REQUIRE(numberString == stringFromFile);
+}
+
+TEST_CASE("Write to Text File 3", "Write a several hundred digit UnsignedHugeInt to a text file.") {
+    std::string numberString = 
+        "1809940760898948310000000000000000000004089784635409879064984068974346896894070894654672463549694104984712355"
+        "9498473764065409864064876513335684604077908464178867605898010808801654144552000687976856737656816728308729843"
+        "6769874140051032498464654613040345846410066738768746015576826840638469848668665434343899258782251550400168337"
+        "7789798673543756068741159874027803568766840587604774568822408413485998048015504004484335098840087852287198038"
+        "67089403568729878478505453574040687522145544063666867078412825";    
+    UnsignedHugeInt x(numberString);
+    char textFilePath[50] = ".\\TestFiles\\tempTestFile3.txt";
+    
+    // Delete the file before writing if it already exists.
+    remove(textFilePath);
+    
+    // Use the write_to_text_file method to write the number to a text file.'
+    x.write_to_text_file(textFilePath);
+    
+    // Read the text file and compare its text to the expected string.
+    FILE *readTextFile = fopen(textFilePath, "r");
+    char readBuffer[101];
+    char digitBuffer[101];
+    unsigned int numCharsRead;
+    unsigned int readCharIndex, digitCharIndex;
+    std::string stringFromFile = "";
+    numCharsRead = fread(readBuffer, sizeof(char), 100, readTextFile);
+    while(numCharsRead > 0) {
+        // Take only the digits from the read buffer to create the digit buffer.
+        digitCharIndex = 0;
+        for (readCharIndex = 0; readCharIndex < numCharsRead; ++readCharIndex) {
+            if (isdigit(readBuffer[readCharIndex])) {
+                digitBuffer[digitCharIndex] = readBuffer[readCharIndex];
+                ++digitCharIndex;
+            }
+        }
+        digitBuffer[digitCharIndex] = '\0';
+        // Attach the digit buffer to the string from the file.
+        stringFromFile += std::string(digitBuffer);
+        // Read more from the file.
+        numCharsRead = fread(readBuffer, sizeof(char), 100, readTextFile);
+    }
+    fclose(readTextFile);
+    remove(textFilePath);
+    REQUIRE(numberString == stringFromFile);
+}
+
+TEST_CASE("Write and Read a Text File",
+        "Write the value of an UnsignedHugeInt object to a text file, then read the value in another object.") {
+    std::string numberString =
+        "930483399891090987068767079033879870035406640470078447098828120489984068812624801980"
+        "987008489046403357096840484040899815062105409240984068737096849400159400809400488810"
+        "000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+        "000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+        "000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+        "000000000000000000000000000000000000000000000000018743574153568004808089000000049840"
+        "098435740";
+    std::string textFilePath = ".\\TestFiles\\tempTestFile4.txt";
+    UnsignedHugeInt x(numberString);
+    UnsignedHugeInt y;
+    remove(textFilePath.c_str());
+    x.write_to_text_file(textFilePath);
+    y.read_from_text_file(textFilePath);
+    remove(textFilePath.c_str());
+    REQUIRE(numberString == y.to_string());
+}
+
 TEST_CASE("Compare With One Operand Much Greater",
         "Perform all comparson operations for a pair of UnsignedHugeInt objects when one object has more words.") {
     UnsignedHugeInt numberA("3265874619983746598176589680046549820036879412136564499741138444077167");

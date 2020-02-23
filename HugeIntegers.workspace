@@ -1,17 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Workspace Name="HugeIntegers" Database="" Version="10.0.0">
   <Project Name="HugeIntegers" Path="HugeIntegers/HugeIntegers.project" Active="Yes"/>
-  <Project Name="CppPractice" Path="../CppPractice/CppPractice.project" Active="No"/>
   <BuildMatrix>
     <WorkspaceConfiguration Name="Debug" Selected="yes">
       <Environment/>
       <Project Name="HugeIntegers" ConfigName="Debug"/>
-      <Project Name="CppPractice" ConfigName="Debug"/>
     </WorkspaceConfiguration>
     <WorkspaceConfiguration Name="Release" Selected="yes">
       <Environment/>
       <Project Name="HugeIntegers" ConfigName="Release"/>
-      <Project Name="CppPractice" ConfigName="Release"/>
     </WorkspaceConfiguration>
   </BuildMatrix>
 </CodeLite_Workspace>
