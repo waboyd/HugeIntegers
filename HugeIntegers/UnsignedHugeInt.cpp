@@ -794,11 +794,128 @@ UnsignedHugeInt UnsignedHugeInt::operator--(int dummy) {
 }
 
 void UnsignedHugeInt::read_from_text_file(std::string file_path) {
-    // ToDo: Complete this method.
+    FILE *readTextFile = fopen(file_path.c_str(), "r");
+    if (readTextFile == NULL)
+        std::invalid_argument("The file with the given path could not be opened.");
+    read_from_text_file(readTextFile);
+    fclose(readTextFile);
 }
 
 void UnsignedHugeInt::read_from_text_file(FILE* integer_file) {
-    // ToDo: Complete this method.
+    if (integer_file == NULL)
+        throw std::invalid_argument("A null file pointer was given as an argument.");
+    this->delete_all_words();
+    this->mostSigWord = this->leastSigWord = NULL;
+    char readBuffer[READ_BUFFER_SIZE + 1];
+    char digitBuffer[READ_BUFFER_SIZE + MAX_DIGITS_PER_WORD + 1];
+    char wordString[MAX_DIGITS_PER_WORD + 1] = "\0";
+    unsigned int remainderLength = 0;
+    unsigned int numCharsRead;
+    unsigned int readBufferIndex, digitBufferIndex;
+    char thisChar;
+    unsigned long long wordValue;
+    HugeIntWord *newMostSigWord = this->leastSigWord;
+    bool isFirstWordEmpty = true;
+    unsigned long long filePositionAfterRead;
+
+    // Check the number of characters in the file.
+    fseek(integer_file, 0, SEEK_END);
+    unsigned long long numCharsToRead = ftell(integer_file);
+
+    // Read from the file in reverse order.
+    wordString[MAX_NUMBER_OF_DIGITS] = '\0';
+    while(numCharsToRead > READ_BUFFER_SIZE) {
+        numCharsToRead -= READ_BUFFER_SIZE;
+        fseek(integer_file, numCharsToRead, SEEK_SET);
+        numCharsRead = fread(readBuffer, sizeof(char), READ_BUFFER_SIZE, integer_file);
+        filePositionAfterRead = ftell(integer_file);
+        numCharsRead -= (filePositionAfterRead - numCharsToRead) - READ_BUFFER_SIZE;    // Ignore characters that were read twice.
+
+        // Take only the digits from the read buffer to create the digit buffer.
+        digitBufferIndex = 0;
+        for (readBufferIndex = 0; readBufferIndex < numCharsRead; ++readBufferIndex) {
+            thisChar = readBuffer[readBufferIndex];
+            if (isdigit(thisChar)) {
+                digitBuffer[digitBufferIndex] = thisChar;
+                ++digitBufferIndex;
+            }
+        }
+        digitBuffer[digitBufferIndex] = '\0';
+        // Attach the remaining digits from the previous buffer to this digit buffer.
+        strcat(digitBuffer, wordString);
+        digitBufferIndex += remainderLength;
+        // Set the words of this UnsignedHugeInt object from the digit buffer.
+        while (digitBufferIndex > MAX_DIGITS_PER_WORD) {
+            digitBufferIndex -= MAX_DIGITS_PER_WORD;
+            strncpy(wordString, digitBuffer + digitBufferIndex, MAX_DIGITS_PER_WORD);
+            wordValue = strtoul(wordString, NULL, 10);
+            if (isFirstWordEmpty) {
+                newMostSigWord = new HugeIntWord(wordValue);
+                this->leastSigWord = newMostSigWord;
+                isFirstWordEmpty = false;
+            }
+            else {
+                newMostSigWord = new HugeIntWord(wordValue, newMostSigWord);
+            }
+        }
+        // Save the remaining digits for the next buffer.
+        strncpy(wordString, digitBuffer, digitBufferIndex);
+        wordString[digitBufferIndex] = '\0';
+        remainderLength = digitBufferIndex;
+    }
+
+    // Read the most significant digits from the file.
+    fseek(integer_file, 0, SEEK_SET);
+    numCharsRead = fread(readBuffer, sizeof(char), numCharsToRead, integer_file);
+    filePositionAfterRead = ftell(integer_file);
+    numCharsRead -= (filePositionAfterRead - numCharsToRead);    // Ignore characters that were read twice.
+
+    // Take only the digits from the read buffer to create the digit buffer.
+    digitBufferIndex = 0;
+    for (readBufferIndex = 0; readBufferIndex < numCharsRead; ++readBufferIndex) {
+        thisChar = readBuffer[readBufferIndex];
+        if (isdigit(thisChar)) {
+            digitBuffer[digitBufferIndex] = thisChar;
+            ++digitBufferIndex;
+        }
+    }
+    digitBuffer[digitBufferIndex] = '\0';
+    strcat(digitBuffer, wordString);
+    digitBufferIndex += remainderLength;
+    
+    if (strlen(digitBuffer) == 0) {
+        this->mostSigWord = newMostSigWord;
+        this->remove_extra_leading_words();
+        return;
+    }
+    // Add the least significant words from the buffer.
+    while (digitBufferIndex > MAX_DIGITS_PER_WORD) {
+        digitBufferIndex -= MAX_DIGITS_PER_WORD;
+        strncpy(wordString, digitBuffer + digitBufferIndex, MAX_DIGITS_PER_WORD);
+        wordValue = strtoul(wordString, NULL, 10);
+        if (isFirstWordEmpty) {
+            newMostSigWord = new HugeIntWord(wordValue);
+            this->leastSigWord = newMostSigWord;
+            isFirstWordEmpty = false;
+        }
+        else {
+            newMostSigWord = new HugeIntWord(wordValue, newMostSigWord);
+        }
+    }
+    
+    // Set the most significant word.
+    strncpy(wordString, digitBuffer, digitBufferIndex);
+    wordString[digitBufferIndex] = '\0';
+    wordValue = strtoul(wordString, NULL, 10);
+    if (isFirstWordEmpty) {
+        newMostSigWord = new HugeIntWord(wordValue);
+        this->leastSigWord = newMostSigWord;
+    }
+    else {
+        newMostSigWord = new HugeIntWord(wordValue, newMostSigWord);
+    }
+    this->mostSigWord = newMostSigWord;
+    this->remove_extra_leading_words();    
 }
 
 void UnsignedHugeInt::write_to_text_file(std::string file_path) {
@@ -820,6 +937,8 @@ bool UnsignedHugeInt::is_defined() const {
 }
 
 long UnsignedHugeInt::num_words() const {
+    if (this->mostSigWord == NULL)
+        return 0;
     return (this->mostSigWord->get_word_number() + 1);
 }
 
@@ -854,7 +973,6 @@ std::string UnsignedHugeInt::to_string() const {
     // ToDo: Convert the words to base 10 when forming the string.
     if(!this->is_defined()) {
         throw std::invalid_argument("An attempt was made to retrieve the value of a non-defined UnsignedHugeInt.");
-        return "";
     }
     std::string numberString = "", wordString;
     HugeIntWord *thisWord;

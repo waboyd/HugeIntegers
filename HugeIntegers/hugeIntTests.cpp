@@ -3,9 +3,7 @@
 
 #include "UnsignedHugeInt.h"
 
-//#include <iostclTabCtrlream>
-
-TEST_CASE("Test Testing Framework", "Verify that the unit testing framework is working correctly.") {
+//TEST_CASE("Test Testing Framework", "Verify that the unit testing framework is working correctly.") {
 ////    std::cout << "Start of \"Test Testing Framework.\"\n";
 ////    REQUIRE(true);
 ////    UnsignedHugeInt x(((long)12345));
@@ -30,9 +28,10 @@ TEST_CASE("Test Testing Framework", "Verify that the unit testing framework is w
 //    std::cout << "b: " << b << "\n";
 //    std::cout << "c: " << c << "\n";
 
-    UnsignedHugeInt testInt1("5970947234234");
-    std::cout << "testInt1: " << testInt1.to_string() << "\n";
-}
+//    UnsignedHugeInt testInt1("5970947234234");
+//    std::cout << "testInt1: " << testInt1.to_string() << "\n";
+
+//}
 
 TEST_CASE("Blank Number", "Instantiate an UnsignedHugeInt with an unspecified value. Its value should be 0 before modification.") {
     UnsignedHugeInt newNumber;
@@ -136,7 +135,7 @@ TEST_CASE("Set Equal to String", "Change the value of an UnsignedHugeInt object 
 }
 
 TEST_CASE("Read From Text File 1", "Take the value of an UnsignedHugeInt object from a text file.") {
-    std::string filePath = ".\\TestFiles\\smallInt.txt";
+    std::string filePath = "..\\TestFiles\\smallInt.txt";
     std::string expectedValueString = "19843";
     UnsignedHugeInt x;
     FILE *testTextFile = fopen(filePath.c_str(), "r");
@@ -146,7 +145,7 @@ TEST_CASE("Read From Text File 1", "Take the value of an UnsignedHugeInt object 
 }
 
 TEST_CASE("Read From Text File 2", "Take the value of an UnsignedHugeInt object from a text file.") {
-    std::string filePath = ".\\TestFiles\\oneLineInt.txt";
+    std::string filePath = "..\\TestFiles\\oneLineInt.txt";
     std::string expectedValueString = "730984055406875409847684032487198406875407354458765804141708026";
     UnsignedHugeInt x;
     x.read_from_text_file(filePath);
@@ -154,7 +153,7 @@ TEST_CASE("Read From Text File 2", "Take the value of an UnsignedHugeInt object 
 }
 
 TEST_CASE("Read From Text File 3", "Take the value of an UnsignedHugeInt object from a text file.") {
-    std::string filePath = ".\\TestFiles\\twoLineInt.txt";
+    std::string filePath = "..\\TestFiles\\twoLineInt.txt";
     std::string expectedValueString = "820498354354904968439898403871842520506525012000844863354646"
             "85441064524354878348484999654074035247887357479873228725855787149401870063865530630257"
             "6983601830000135725";
@@ -166,7 +165,7 @@ TEST_CASE("Read From Text File 3", "Take the value of an UnsignedHugeInt object 
 }
 
 TEST_CASE("Read From Text File 4", "Take the value of an UnsignedHugeInt object from a text file.") {
-    std::string filePath = ".\\TestFiles\\fiveLineInt.txt";
+    std::string filePath = "..\\TestFiles\\fiveLineInt.txt";
     std::string expectedValueString = "209680437196854065847012871284085415840151068475405282745820"
     "1254976846987675242669958404021029535743871849065098876984153103251870528574141835463840987551"
     "1554986303489046876984248051881657053577512838715405488754654687406986713212587165408970078200"
@@ -181,7 +180,7 @@ TEST_CASE("Read From Text File 4", "Take the value of an UnsignedHugeInt object 
 TEST_CASE("Write to Text File 1", "Write a one-word UnsignedHugeInt to a text file.") {
     UnsignedHugeInt x(58961);
     std::string expectedString = "58961";
-    char textFilePath[50] = ".\\TestFiles\\tempTestFile1.txt";
+    char textFilePath[50] = "..\\TestFiles\\tempTestFile1.txt";
     
     // Delete the file before writing if it already exists.
     remove(textFilePath);
@@ -223,7 +222,7 @@ TEST_CASE("Write to Text File 1", "Write a one-word UnsignedHugeInt to a text fi
 TEST_CASE("Write to Text File 2", "Write a multi-word UnsignedHugeInt to a text file, with some words equal to 0.") {
     std::string numberString = "46770498402019870000000000000000000096403210483580970000000000369670048940368706";
     UnsignedHugeInt x(numberString);
-    char textFilePath[50] = ".\\TestFiles\\tempTestFile2.txt";
+    char textFilePath[50] = "..\\TestFiles\\tempTestFile2.txt";
     
     // Delete the file before writing if it already exists.
     remove(textFilePath);
@@ -267,7 +266,7 @@ TEST_CASE("Write to Text File 3", "Write a several hundred digit UnsignedHugeInt
         "7789798673543756068741159874027803568766840587604774568822408413485998048015504004484335098840087852287198038"
         "67089403568729878478505453574040687522145544063666867078412825";    
     UnsignedHugeInt x(numberString);
-    char textFilePath[50] = ".\\TestFiles\\tempTestFile3.txt";
+    char textFilePath[50] = "..\\TestFiles\\tempTestFile3.txt";
     
     // Delete the file before writing if it already exists.
     remove(textFilePath);
@@ -313,7 +312,7 @@ TEST_CASE("Write and Read a Text File",
         "000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
         "000000000000000000000000000000000000000000000000018743574153568004808089000000049840"
         "098435740";
-    std::string textFilePath = ".\\TestFiles\\tempTestFile4.txt";
+    std::string textFilePath = "..\\TestFiles\\tempTestFile4.txt";
     UnsignedHugeInt x(numberString);
     UnsignedHugeInt y;
     remove(textFilePath.c_str());

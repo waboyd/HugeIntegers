@@ -26,6 +26,8 @@
 #define MAX_DIGITS_PER_WORD 9
 #define CHECK_VALUE_A   84340
 #define CHECK_VALUE_B   308424
+#define READ_BUFFER_SIZE    20
+#define WRITE_BUFFER_NUM_WORDS  16
 
 class UnsignedHugeInt {
 public:
