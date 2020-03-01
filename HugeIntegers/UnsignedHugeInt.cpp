@@ -760,7 +760,6 @@ UnsignedHugeInt UnsignedHugeInt::operator++(int dummy) {
 }
 
 UnsignedHugeInt& UnsignedHugeInt::operator--() {
-    // ToDo: Complete this method.
     if(!this->is_defined()) {
         throw std::invalid_argument("The UnsignedHugeInt object was not defined before decrementing.");
     }
@@ -919,11 +918,36 @@ void UnsignedHugeInt::read_from_text_file(FILE* integer_file) {
 }
 
 void UnsignedHugeInt::write_to_text_file(std::string file_path) {
-    // ToDo: Complete this method.
+    // Prevent writing to an existing file.
+    if (stat(file_path.c_str(), NULL) >= 0)
+        std::invalid_argument("An attempt was made to write an UnsignedHugeInt value to an existing file.");
+    FILE *writeTextFile = fopen(file_path.c_str(), "w");
+    this->write_to_text_file(writeTextFile);
+    fclose(writeTextFile);
 }
 
 void UnsignedHugeInt::write_to_text_file(FILE* integer_file) {
-    // ToDo: Complete this method.    
+    if (integer_file == NULL)
+        throw std::invalid_argument("A null file pointer was given as an argument.");
+    if (!this->is_defined()) {
+        throw std::invalid_argument("The UnsignedHugeInt object was not defined the command to write to a file.");
+    }
+    std::string bufferString;
+    HugeIntWord *thisWord = this->mostSigWord;
+    unsigned int i;
+    
+    while (thisWord != NULL) {
+        bufferString = "";
+        for (i = 0; i < WRITE_BUFFER_NUM_WORDS; ++i) {
+            bufferString += thisWord->to_string();
+            thisWord = thisWord->get_next_lower_sig_word();
+            if (thisWord == NULL) {
+                fputs(bufferString.c_str(), integer_file);
+                return;
+            }
+        }
+        fputs(bufferString.c_str(), integer_file);
+    }
 }
 
 bool UnsignedHugeInt::is_defined() const {
