@@ -29,7 +29,7 @@
 //    std::cout << "c: " << c << "\n";
 
 //    UnsignedHugeInt testInt1("5970947234234");
-//    std::cout << "testInt1: " << testInt1.to_string() << "\n";
+//    std::cout << "testInt1: " << testInt1 << "\n";
 
 //}
 

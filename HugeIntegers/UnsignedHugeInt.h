@@ -45,6 +45,8 @@ public:
     void read_from_text_file(FILE* integer_file);
     void write_to_text_file(std::string file_path);
     void write_to_text_file(FILE* integer_file);
+    
+    operator std::string() const;
 
     UnsignedHugeInt& operator=(const UnsignedHugeInt& orig);
     UnsignedHugeInt& operator=(const UnsignedHugeInt* orig);
@@ -162,7 +164,7 @@ private:
     static UnsignedHugeInt integer_with_least_significant_word(HugeIntWord* least_significant_word);
     
     static UnsignedHugeInt find_multiplication_subtotal(const HugeIntWord* greater_factor_word, const HugeIntWord* lesser_factor_word);
-    
+
     // ToDo: Remove the following variables after development.
     static unsigned int num_objects_created;
     static unsigned int num_objects_deleted;
@@ -180,3 +182,4 @@ UnsignedHugeInt operator-(const unsigned long long minuend, const UnsignedHugeIn
 UnsignedHugeInt operator*(const unsigned long long factorA, const UnsignedHugeInt& factorB);
 UnsignedHugeInt operator/(const unsigned long long dividend, const UnsignedHugeInt& divisor);
 UnsignedHugeInt operator%(const unsigned long long dividend, const UnsignedHugeInt& divisor);
+std::ostream& operator<<(std::ostream& out_stream, const UnsignedHugeInt& huge_int_object);    

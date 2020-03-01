@@ -60,6 +60,10 @@ UnsignedHugeInt::~UnsignedHugeInt() {
     ++UnsignedHugeInt::num_objects_deleted;
 }
 
+UnsignedHugeInt::operator std::string() const {
+    return this->to_string();
+}
+
 UnsignedHugeInt& UnsignedHugeInt::operator=(const UnsignedHugeInt& orig) {
     if (this == &orig)
         return *this;
@@ -1215,7 +1219,10 @@ UnsignedHugeInt UnsignedHugeInt::find_multiplication_subtotal(const HugeIntWord*
     return resultSubtotal;
 }
 
-
+std::ostream& operator<<(std::ostream& out_stream, const UnsignedHugeInt& huge_int_object) {
+    out_stream << huge_int_object.to_string();
+    return out_stream;
+}
 
 
 
