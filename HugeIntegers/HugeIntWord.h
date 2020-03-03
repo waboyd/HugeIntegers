@@ -15,11 +15,11 @@ class HugeIntWord
     
 public:
 //    HugeIntWord();
-    HugeIntWord(unsigned long long value);
-    HugeIntWord(unsigned long long value, HugeIntWord* lowerSignificantWord);
+    HugeIntWord(unsigned long value);
+    HugeIntWord(unsigned long value, HugeIntWord* lowerSignificantWord);
     ~HugeIntWord();
     
-    unsigned long long get_value() const;
+    unsigned long get_value() const;
     unsigned long long get_word_number() const;
     /**
      * @brief Return the next less significant word (segment) of the number.
@@ -31,11 +31,11 @@ public:
 protected:
     
 private:
-    static unsigned long long max_value;
-    static unsigned long long base_value;
+    static unsigned long max_value;
+    static unsigned long base_value;
     void set_more_significant_word(HugeIntWord* next_word);
     HugeIntWord *lessSigWord, *moreSigWord;
-    unsigned long long value;
+    unsigned long value;
     unsigned long long place_value;  // Location of this word in the number. 0 is least significant place.
     HugeIntWord* get_next_lower_sig_word() const;
     HugeIntWord* get_next_more_sig_word() const;

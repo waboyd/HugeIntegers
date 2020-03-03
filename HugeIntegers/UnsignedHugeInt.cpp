@@ -1,7 +1,7 @@
 #include "UnsignedHugeInt.h"
 
 // ToDo: Set the max_word_value in UnsignedHugeInt and HugeIntWord.
-unsigned long long UnsignedHugeInt::max_word_value = 999999999;
+unsigned long UnsignedHugeInt::max_word_value = 999999999;
 unsigned long long UnsignedHugeInt::word_base = UnsignedHugeInt::max_word_value + 1;
 unsigned int UnsignedHugeInt::num_objects_created = 0;
 unsigned int UnsignedHugeInt::num_objects_deleted = 0;
@@ -123,7 +123,7 @@ short UnsignedHugeInt::compare(const UnsignedHugeInt& numberA, const UnsignedHug
     unsigned long long numWordsA = numberA.num_words();
     unsigned long long numWordsB = numberB.num_words();
     HugeIntWord *thisWordA, *thisWordB;
-    unsigned long long wordValueA, wordValueB;
+    unsigned long wordValueA, wordValueB;
     
     thisWordA = numberA.get_most_significant_word();
     thisWordB = numberB.get_most_significant_word();
@@ -229,7 +229,8 @@ UnsignedHugeInt UnsignedHugeInt::sum_of(const UnsignedHugeInt& addendA, const Un
     }
     HugeIntWord *greaterAddendWord, *lesserAddendWord;
     HugeIntWord *sumWord, *sumMostSigWord;
-    unsigned long long thisWordSum, carryValue = 0;
+    unsigned long long thisWordSum;
+    unsigned long carryValue = 0;
     
     if (addendB.num_words() > addendA.num_words()) {
         greaterAddendWord = addendB.get_least_significant_word();
@@ -299,7 +300,7 @@ UnsignedHugeInt UnsignedHugeInt::sum_of(const UnsignedHugeInt& addendA, const un
         throw std::invalid_argument("One of the numbers of the addition operation is not defined.");
     }
     unsigned long long thisWordSum;
-    unsigned long long thisCarryValue = 0;
+    unsigned long thisCarryValue = 0;
     HugeIntWord *thisAddendWord = addendA.get_least_significant_word();
     
     thisWordSum = addendB % UnsignedHugeInt::word_base;
@@ -345,7 +346,8 @@ UnsignedHugeInt UnsignedHugeInt::subtract(const UnsignedHugeInt& minuend, const 
     }
     
     HugeIntWord *minuendWord, *subtrahendWord;
-    unsigned long long thisWordDifference, thisMinuendWordValue, thisSubtrahendWordValue, carryValue;
+    unsigned long long thisMinuendWordValue;
+    unsigned long thisWordDifference, thisSubtrahendWordValue, carryValue;
     
     // Determine the least significant word of the difference.
     minuendWord = minuend.get_least_significant_word();
@@ -435,7 +437,7 @@ UnsignedHugeInt UnsignedHugeInt::multiply(const UnsignedHugeInt& factorA, const 
     HugeIntWord *startWordB = factorB.get_least_significant_word();
     if ((startWordA == NULL) || (startWordB == NULL))
         return UnsignedHugeInt((unsigned long long)0);    
-    UnsignedHugeInt totalProduct(startWordA->get_value() * startWordB->get_value());
+    UnsignedHugeInt totalProduct((unsigned long long)startWordA->get_value() * startWordB->get_value());
     HugeIntWord *totalCalcWord = totalProduct.get_least_significant_word();
     UnsignedHugeInt partialProduct;
     
@@ -558,7 +560,7 @@ std::pair<UnsignedHugeInt, UnsignedHugeInt> UnsignedHugeInt::divide(const Unsign
                 (((double)remainderEstimateWord->get_next_lower_sig_word()->get_value()) / UnsignedHugeInt::word_base);
         else
             dividendLowerEstimate = remainderEstimateWord->get_value();
-        quotientWordEstimate = (unsigned long long)(dividendLowerEstimate / divisorUpperEstimate);
+        quotientWordEstimate = (unsigned long)(dividendLowerEstimate / divisorUpperEstimate);
 
         // Multiply the quotient word by the divisor, and subtract the product from the remainder.
         subRemainder = UnsignedHugeInt::subtract(subRemainder, UnsignedHugeInt::multiply(divisor, UnsignedHugeInt(quotientWordEstimate)));
@@ -1129,7 +1131,7 @@ HugeIntWord* UnsignedHugeInt::add_word(HugeIntWord* new_word) {
     return new_word;
 }
 
-HugeIntWord* UnsignedHugeInt::insert_least_significant_word(unsigned long long least_significant_value) {
+HugeIntWord* UnsignedHugeInt::insert_least_significant_word(unsigned long least_significant_value) {
     if (this->mostSigWord->get_word_number() == 0 && this->mostSigWord->get_value() == 0) {
         return this->leastSigWord->add_value(least_significant_value);
     }
@@ -1154,7 +1156,7 @@ HugeIntWord* UnsignedHugeInt::add_value_at_word(HugeIntWord* location_to_add, co
     HugeIntWord *wordToReturn;
     
     if (location_to_add == NULL) {
-        thisAddLocation = this->add_word(new HugeIntWord((unsigned long long)0));
+        thisAddLocation = this->add_word(new HugeIntWord((unsigned long)0));
         wordToReturn = thisAddLocation;
     }
     else {
@@ -1188,7 +1190,7 @@ HugeIntWord* UnsignedHugeInt::add_value_at_word(HugeIntWord* location_to_add, co
     return wordToReturn;
 }
 
-UnsignedHugeInt UnsignedHugeInt::integer_with_least_significant_word(HugeIntWord* least_significant_word) {
+UnsignedHugeInt UnsignedHugeInt::integer_with_least_significant_word(const HugeIntWord* least_significant_word) {
     UnsignedHugeInt newNumber(least_significant_word->get_value());
     HugeIntWord *thisWord = least_significant_word->get_next_more_sig_word();
     while (thisWord != NULL) {
@@ -1204,7 +1206,7 @@ UnsignedHugeInt UnsignedHugeInt::find_multiplication_subtotal(const HugeIntWord*
     const HugeIntWord *thisWordA = greater_factor_word, *thisWordB = lesser_factor_word; // thisWordA is taken in descending place values.
     HugeIntWord *newMostSigWord, *nextWord;
     while(thisWordA != NULL && thisWordB != NULL) {
-        resultLeastSigWord->add_value(thisWordA->get_value() * thisWordB->get_value());
+        resultLeastSigWord->add_value((unsigned long long)thisWordA->get_value() * thisWordB->get_value());
         thisWordA = thisWordA->get_next_lower_sig_word();
         thisWordB = thisWordB->get_next_more_sig_word();
     }

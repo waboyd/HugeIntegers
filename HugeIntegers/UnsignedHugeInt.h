@@ -117,24 +117,18 @@ public:
     static void report_number_of_objects();
     
 protected:
-//    void set_number_of_words_to(unsigned long long number_of_words);
-    
-private:
-    static unsigned long long max_word_value;
+    static unsigned long max_word_value;
     static unsigned long long word_base;
-    HugeIntWord *leastSigWord, *mostSigWord;
-    int defined_key_1, defined_key_2;
-    
-    // Private Methods
-    
+
+    // Protected Methods
     void change_to_copy_of(const UnsignedHugeInt& orig);
     void set_value_from_string(std::string integer_string);
+    void delete_all_words();
+    void remove_extra_leading_words();
     /**
      * @brief Add a new most significant word with a value of 0;
      * @return Pointer to the new word that was added.
      */
-    void delete_all_words();
-    void remove_extra_leading_words();
     HugeIntWord* add_word();
     /**
      * @brief Add new most significant words with a total value given in the parameter;
@@ -146,14 +140,19 @@ private:
      * @return Pointer to the new word that was added.
      */
     HugeIntWord* add_word(HugeIntWord* new_word);
-    
     /**
      * @brief Change this number by inserting a new least significant word with the given value.
      * @param least_significant_value The value of the new least significant word to be added.
      * @return The least significant word of this number.
      */
-    HugeIntWord* insert_least_significant_word(unsigned long long least_significant_value);
+    HugeIntWord* insert_least_significant_word(unsigned long least_significant_value);
+
+private:
+    HugeIntWord *leastSigWord, *mostSigWord;
+    int defined_key_1, defined_key_2;
     
+    // Private Methods
+
     /**
      * @brief Add a specified value at a specified word of this UnsignedHugeInt.
      * @param location_to_add Word at which the value will be added. This word will be changed.
@@ -161,7 +160,7 @@ private:
      * @return The least significant word that was updated.
      */
     HugeIntWord* add_value_at_word(HugeIntWord* location_to_add, const UnsignedHugeInt& value_to_add);
-    static UnsignedHugeInt integer_with_least_significant_word(HugeIntWord* least_significant_word);
+    static UnsignedHugeInt integer_with_least_significant_word(const HugeIntWord* least_significant_word);
     
     static UnsignedHugeInt find_multiplication_subtotal(const HugeIntWord* greater_factor_word, const HugeIntWord* lesser_factor_word);
 

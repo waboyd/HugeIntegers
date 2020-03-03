@@ -686,256 +686,256 @@ TEST_CASE("Divide 2-Word and 1-Word Objects, No Remainder", "Divide a 2-word Uns
     REQUIRE(expectedRemainderString == remainderObject.to_string());
 }
 
-TEST_CASE("Divide Multi-Word Objects, No Remainder",
-        "Divide a multiple-word UnsignedHugeInt by a multiple-word UnsignedHugeInt, resulting in a one-word quotient with no remainder.") {
-    UnsignedHugeInt dividend("12904057307347322110454551495483296564478");
-    UnsignedHugeInt divisor("295903006877313987478812358644301");
-    std::string expectedQuotientString = "43609078";
-    std::string expectedRemainderString = "0";
-    UnsignedHugeInt quotientObject = dividend / divisor;
-    UnsignedHugeInt remainderObject = dividend % divisor;
-    REQUIRE(expectedQuotientString == quotientObject.to_string());
-    REQUIRE(expectedRemainderString == remainderObject.to_string());
-}
+//TEST_CASE("Divide Multi-Word Objects, No Remainder",
+//        "Divide a multiple-word UnsignedHugeInt by a multiple-word UnsignedHugeInt, resulting in a one-word quotient with no remainder.") {
+//    UnsignedHugeInt dividend("12904057307347322110454551495483296564478");
+//    UnsignedHugeInt divisor("295903006877313987478812358644301");
+//    std::string expectedQuotientString = "43609078";
+//    std::string expectedRemainderString = "0";
+//    UnsignedHugeInt quotientObject = dividend / divisor;
+//    UnsignedHugeInt remainderObject = dividend % divisor;
+//    REQUIRE(expectedQuotientString == quotientObject.to_string());
+//    REQUIRE(expectedRemainderString == remainderObject.to_string());
+//}
 
-TEST_CASE("Divide With Multiple Words 1, No Remainder",
-        "Divide two UnsignedHugeInts with multiple words to give a multiple-word quotient and no remainder.") {
-    UnsignedHugeInt dividend("135439923503930452938271612456790115876543210");
-    UnsignedHugeInt divisor("33555555555");
-    std::string expectedQuotientString = "4036289111111111000000000222222222";
-    std::string expectedRemainderString = "0";
-    UnsignedHugeInt quotientObject = dividend / divisor;
-    UnsignedHugeInt remainderObject = dividend % divisor;
-    REQUIRE(expectedQuotientString == quotientObject.to_string());
-    REQUIRE(expectedRemainderString == remainderObject.to_string());
-}
+//TEST_CASE("Divide With Multiple Words 1, No Remainder",
+//        "Divide two UnsignedHugeInts with multiple words to give a multiple-word quotient and no remainder.") {
+//    UnsignedHugeInt dividend("135439923503930452938271612456790115876543210");
+//    UnsignedHugeInt divisor("33555555555");
+//    std::string expectedQuotientString = "4036289111111111000000000222222222";
+//    std::string expectedRemainderString = "0";
+//    UnsignedHugeInt quotientObject = dividend / divisor;
+//    UnsignedHugeInt remainderObject = dividend % divisor;
+//    REQUIRE(expectedQuotientString == quotientObject.to_string());
+//    REQUIRE(expectedRemainderString == remainderObject.to_string());
+//}
+//
+//TEST_CASE("Divide With Multiple Words 2, No Remainder",
+//        "Divide two UnsignedHugeInts with multiple words to give a multiple-word quotient and no remainder.") {
+//    UnsignedHugeInt dividend("11111000011111222222222222222222000033333000000000666666666000022222000000000444444444");
+//    UnsignedHugeInt divisor("11111000000000222222222");
+//    std::string expectedQuotientString = "1000000001000000000000000000000000003000000000000000000000000002";
+//    std::string expectedRemainderString = "0";
+//    UnsignedHugeInt quotientObject = dividend / divisor;
+//    UnsignedHugeInt remainderObject = dividend % divisor;
+//    REQUIRE(expectedQuotientString == quotientObject.to_string());
+//    REQUIRE(expectedRemainderString == remainderObject.to_string());
+//}
+//
+//TEST_CASE("Divide With Multiple Words 3, No Remainder",
+//        "Divide two UnsignedHugeInts with multiple words to give a multiple-word quotient and no remainder.") {
+//    UnsignedHugeInt dividend("303485162354901996800876009914666695076333848");
+//    UnsignedHugeInt divisor("3904882108479394735601");
+//    std::string expectedQuotientString = "77719417366247339025048";
+//    std::string expectedRemainderString = "0";
+//    UnsignedHugeInt quotientObject = dividend / divisor;
+//    UnsignedHugeInt remainderObject = dividend % divisor;
+//    REQUIRE(expectedQuotientString == quotientObject.to_string());
+//    REQUIRE(expectedRemainderString == remainderObject.to_string());
+//}
+//
+//TEST_CASE("Divide UnsignedHugeInt by int, No Remainder",
+//        "Divide an UnsignedHugeInt object by an int with no remainder.") {
+//    UnsignedHugeInt dividend("32228950780226974593057211942781390313865679498337616");
+//    int divisor = 53;
+//    std::string expectedQuotientString = "608093410947678765906739847977007364412559990534672";
+//    std::string expectedRemainderString = "0";
+//    UnsignedHugeInt quotientObject = dividend / divisor;
+//    UnsignedHugeInt remainderObject = dividend % divisor;
+//    REQUIRE(expectedQuotientString == quotientObject.to_string());
+//    REQUIRE(expectedRemainderString == remainderObject.to_string());
+//}
+//
+//TEST_CASE("Divide int by UnsignedHugeInt",
+//        "Divide an int by an UnsignedHugeInt object with a remainder.") {
+//    int dividend = 4146809;
+//    UnsignedHugeInt divisor("5822");
+//    std::string expectedQuotientString = "712";
+//    std::string expectedRemainderString = "1545";
+//    UnsignedHugeInt quotientObject = dividend / divisor;
+//    UnsignedHugeInt remainderObject = dividend % divisor;
+//    REQUIRE(expectedQuotientString == quotientObject.to_string());
+//    REQUIRE(expectedRemainderString == remainderObject.to_string());
+//}
+//
+//TEST_CASE("Divide With Larger Divisor Than Dividend",
+//        "Divide UnsignedHugeInt objects with a dividend that is smaller than the divisor.") {
+//    std::string dividendString = "33710909407863207838429574";
+//    UnsignedHugeInt dividendObject(dividendString);
+//    UnsignedHugeInt divisorObject("20497935407798540156054654045863");
+//    std::string expectedQuotientString = "0";
+//    UnsignedHugeInt quotientObject = dividendObject / divisorObject;
+//    UnsignedHugeInt remainderObject = dividendObject % divisorObject;
+//    REQUIRE(expectedQuotientString == quotientObject.to_string());
+//    REQUIRE(dividendString == remainderObject.to_string());
+//}
+//
+//TEST_CASE("Divide When Dividend Has Larger Leading Word",
+//        "Divide two multiple-word numbers when the dividend has a larger most significant word.") {
+//    UnsignedHugeInt dividend("34439523087848407030863994604698753459391024108814539914893647574670983");
+//    UnsignedHugeInt divisor("490835769086406957529787032881424");
+//    std::string expectedQuotientString = "70165063870448401116698903495822728293";
+//    std::string expectedRemainderString = "98401987043578500698735741751";
+//    UnsignedHugeInt quotient = dividend / divisor;
+//    UnsignedHugeInt remainder = dividend % divisor;
+//    REQUIRE(expectedQuotientString == quotient.to_string());
+//    REQUIRE(expectedRemainderString == remainder.to_string());
+//}
+//
+//TEST_CASE("Divide With Equal Numbers of Words", "Divide when the dividend and divisor have the same number of words.") {
+//    UnsignedHugeInt dividend("65961407394495106412076083420039946078887226492362236931");
+//    UnsignedHugeInt divisor("21987135798165035468765405408737987053735409873871798741");
+//    std::string expectedQuotientString = "3";
+//    std::string expectedRemainderString = "5779867193825984917680996870746840708";
+//    UnsignedHugeInt quotient = dividend / divisor;
+//    UnsignedHugeInt remainder = dividend % divisor;
+//    REQUIRE(expectedQuotientString == quotient.to_string());
+//    REQUIRE(expectedRemainderString == remainder.to_string());
+//}
+//
+//TEST_CASE("Divide When Dividend Has Smaller Leading Word",
+//        "Divide two multiple-word numbers when the divisor has a larger most significant word.") {
+//    
+//    UnsignedHugeInt dividend("5509821354912032618934356441443044776045079125139752582608797800812931419959231230851725532294994544766478795484040792889795167781390702");
+//    UnsignedHugeInt divisor("6554312049000133281882220402049873270410072549068031968389704");
+//    std::string expectedQuotientString = "840640682610246068368403846840542054725039972001140443335770549044287126981";
+//    std::string expectedRemainderString = "5407986409887025840698752784053370987408949870456968640387078";
+//    UnsignedHugeInt quotient = dividend / divisor;
+//    UnsignedHugeInt remainder = dividend % divisor;
+//    REQUIRE(expectedQuotientString == quotient.to_string());
+//    REQUIRE(expectedRemainderString == remainder.to_string());
+//}
 
-TEST_CASE("Divide With Multiple Words 2, No Remainder",
-        "Divide two UnsignedHugeInts with multiple words to give a multiple-word quotient and no remainder.") {
-    UnsignedHugeInt dividend("11111000011111222222222222222222000033333000000000666666666000022222000000000444444444");
-    UnsignedHugeInt divisor("11111000000000222222222");
-    std::string expectedQuotientString = "1000000001000000000000000000000000003000000000000000000000000002";
-    std::string expectedRemainderString = "0";
-    UnsignedHugeInt quotientObject = dividend / divisor;
-    UnsignedHugeInt remainderObject = dividend % divisor;
-    REQUIRE(expectedQuotientString == quotientObject.to_string());
-    REQUIRE(expectedRemainderString == remainderObject.to_string());
-}
-
-TEST_CASE("Divide With Multiple Words 3, No Remainder",
-        "Divide two UnsignedHugeInts with multiple words to give a multiple-word quotient and no remainder.") {
-    UnsignedHugeInt dividend("303485162354901996800876009914666695076333848");
-    UnsignedHugeInt divisor("3904882108479394735601");
-    std::string expectedQuotientString = "77719417366247339025048";
-    std::string expectedRemainderString = "0";
-    UnsignedHugeInt quotientObject = dividend / divisor;
-    UnsignedHugeInt remainderObject = dividend % divisor;
-    REQUIRE(expectedQuotientString == quotientObject.to_string());
-    REQUIRE(expectedRemainderString == remainderObject.to_string());
-}
-
-TEST_CASE("Divide UnsignedHugeInt by int, No Remainder",
-        "Divide an UnsignedHugeInt object by an int with no remainder.") {
-    UnsignedHugeInt dividend("32228950780226974593057211942781390313865679498337616");
-    int divisor = 53;
-    std::string expectedQuotientString = "608093410947678765906739847977007364412559990534672";
-    std::string expectedRemainderString = "0";
-    UnsignedHugeInt quotientObject = dividend / divisor;
-    UnsignedHugeInt remainderObject = dividend % divisor;
-    REQUIRE(expectedQuotientString == quotientObject.to_string());
-    REQUIRE(expectedRemainderString == remainderObject.to_string());
-}
-
-TEST_CASE("Divide int by UnsignedHugeInt",
-        "Divide an int by an UnsignedHugeInt object with a remainder.") {
-    int dividend = 4146809;
-    UnsignedHugeInt divisor("5822");
-    std::string expectedQuotientString = "712";
-    std::string expectedRemainderString = "1545";
-    UnsignedHugeInt quotientObject = dividend / divisor;
-    UnsignedHugeInt remainderObject = dividend % divisor;
-    REQUIRE(expectedQuotientString == quotientObject.to_string());
-    REQUIRE(expectedRemainderString == remainderObject.to_string());
-}
-
-TEST_CASE("Divide With Larger Divisor Than Dividend",
-        "Divide UnsignedHugeInt objects with a dividend that is smaller than the divisor.") {
-    std::string dividendString = "33710909407863207838429574";
-    UnsignedHugeInt dividendObject(dividendString);
-    UnsignedHugeInt divisorObject("20497935407798540156054654045863");
-    std::string expectedQuotientString = "0";
-    UnsignedHugeInt quotientObject = dividendObject / divisorObject;
-    UnsignedHugeInt remainderObject = dividendObject % divisorObject;
-    REQUIRE(expectedQuotientString == quotientObject.to_string());
-    REQUIRE(dividendString == remainderObject.to_string());
-}
-
-TEST_CASE("Divide When Dividend Has Larger Leading Word",
-        "Divide two multiple-word numbers when the dividend has a larger most significant word.") {
-    UnsignedHugeInt dividend("34439523087848407030863994604698753459391024108814539914893647574670983");
-    UnsignedHugeInt divisor("490835769086406957529787032881424");
-    std::string expectedQuotientString = "70165063870448401116698903495822728293";
-    std::string expectedRemainderString = "98401987043578500698735741751";
-    UnsignedHugeInt quotient = dividend / divisor;
-    UnsignedHugeInt remainder = dividend % divisor;
-    REQUIRE(expectedQuotientString == quotient.to_string());
-    REQUIRE(expectedRemainderString == remainder.to_string());
-}
-
-TEST_CASE("Divide With Equal Numbers of Words", "Divide when the dividend and divisor have the same number of words.") {
-    UnsignedHugeInt dividend("65961407394495106412076083420039946078887226492362236931");
-    UnsignedHugeInt divisor("21987135798165035468765405408737987053735409873871798741");
-    std::string expectedQuotientString = "3";
-    std::string expectedRemainderString = "5779867193825984917680996870746840708";
-    UnsignedHugeInt quotient = dividend / divisor;
-    UnsignedHugeInt remainder = dividend % divisor;
-    REQUIRE(expectedQuotientString == quotient.to_string());
-    REQUIRE(expectedRemainderString == remainder.to_string());
-}
-
-TEST_CASE("Divide When Dividend Has Smaller Leading Word",
-        "Divide two multiple-word numbers when the divisor has a larger most significant word.") {
-    
-    UnsignedHugeInt dividend("5509821354912032618934356441443044776045079125139752582608797800812931419959231230851725532294994544766478795484040792889795167781390702");
-    UnsignedHugeInt divisor("6554312049000133281882220402049873270410072549068031968389704");
-    std::string expectedQuotientString = "840640682610246068368403846840542054725039972001140443335770549044287126981";
-    std::string expectedRemainderString = "5407986409887025840698752784053370987408949870456968640387078";
-    UnsignedHugeInt quotient = dividend / divisor;
-    UnsignedHugeInt remainder = dividend % divisor;
-    REQUIRE(expectedQuotientString == quotient.to_string());
-    REQUIRE(expectedRemainderString == remainder.to_string());
-}
-
-TEST_CASE("Compound Addition of UnsignedHugeInt Object", "Use the += operator to add an UnsignedHugeInt object.") {
-    UnsignedHugeInt x("453170093496799874983745234209856870938475309870189");
-    UnsignedHugeInt y("3475029378098745343984760987340985709384894598731520938476849");
-    std::string expectedSumString = "3475029378551915437481560862324730943594751469669996248347038";
-    UnsignedHugeInt z = x += y;
-    REQUIRE(expectedSumString == x.to_string());
-    REQUIRE(expectedSumString == z.to_string());
-}
-
-TEST_CASE("Compound Addition of int", "Use the += operator to add an int to an UnsignedHugeInt.") {
-    UnsignedHugeInt x("83450480039870687434908999574635");
-    int y(824309);
-    std::string expectedSumString = "83450480039870687434909000398944";
-    UnsignedHugeInt z = x += y;
-    REQUIRE(expectedSumString == x.to_string());
-    REQUIRE(expectedSumString == z.to_string());    
-}
-
-TEST_CASE("Compound Subtraction of UnsignedHugeInt Object", "Use the -= operator to subtract an UnsignedHugeInt object.") {
-    UnsignedHugeInt x("3475029378551915437481560862324730943594751469669996248347038");
-    UnsignedHugeInt y("3475029378098745343984760987340985709384894598731520938476849");
-    std::string expectedDifferenceString = "453170093496799874983745234209856870938475309870189";
-    UnsignedHugeInt z = x -= y;
-    REQUIRE(expectedDifferenceString == x.to_string());
-    REQUIRE(expectedDifferenceString == z.to_string());
-}
-
-TEST_CASE("Compound Subtraction of int", "Use the -= operator to subtract an int from an UnsignedHugeInt.") {
-    UnsignedHugeInt x("83450480039870687434909000398944");
-    int y(824309);
-    std::string expectedDifferenceString = "83450480039870687434908999574635";
-    UnsignedHugeInt z = x -= y;
-    REQUIRE(expectedDifferenceString == x.to_string());
-    REQUIRE(expectedDifferenceString == z.to_string());    
-}
-
-TEST_CASE("Compound Multiplication of UnsignedHugeInt Object", "Use the *= operator to multiply UnsignedHugeInt objects.") {
-    UnsignedHugeInt x("348906840332448298731088632654088404038");
-    UnsignedHugeInt y("207340940496987406598409874");
-    std::string expectedProductString = "72342672420362048481573680294368720190366115486890872873240671212";
-    UnsignedHugeInt z = x *= y;
-    REQUIRE(expectedProductString == x.to_string());
-    REQUIRE(expectedProductString == z.to_string());
-}
-
-TEST_CASE("Compound Multiplication of int", "Use the *= operator to multiply an int by an UnsignedHugeInt.") {
-    UnsignedHugeInt x("8071397034440481098522194019338068408749094");
-    int y(98407);
-    std::string expectedProductString = "794281967968184423462273546861001297899772093258";
-    UnsignedHugeInt z = x *= y;
-    REQUIRE(expectedProductString == x.to_string());
-    REQUIRE(expectedProductString == z.to_string());        
-}
-
-TEST_CASE("Compound Integer Division of UnsignedHugeIntObject", "Use the /= operator to divide UnsignedHugeInt objects.") {
-    UnsignedHugeInt x("22690029771660997484299435939247602551803671407171961949271");
-    UnsignedHugeInt y("464065108316103871012683213940");
-    std::string expectedQuotientString = "48894065434036885468779840680";
-    UnsignedHugeInt z = x /= y;
-    REQUIRE(expectedQuotientString == x.to_string());
-    REQUIRE(expectedQuotientString == z.to_string());        
-}
-
-TEST_CASE("Compound Modulus Division of UnsignedHugeIntObject", "Use the %= operator to divide UnsignedHugeInt objects.") {
-    UnsignedHugeInt x("22690029771660997484299435939247602551803671407171961949271");
-    UnsignedHugeInt y("464065108316103871012683213940");
-    std::string expectedRemainderString = "99403049840587217068406870071";
-    UnsignedHugeInt z = x %= y;
-    REQUIRE(expectedRemainderString == x.to_string());
-    REQUIRE(expectedRemainderString == z.to_string());        
-}
-
-TEST_CASE("Compound Integer Division of int", "Use the /= operator to divide an UnsignedHugeInt object by an int.") {
-    UnsignedHugeInt x("13660689041940378671300706945942857495386543");
-    int y = 389084;
-    std::string expectedQuotientString = "35109870984004427504859379840710122994";
-    UnsignedHugeInt z = x /= y;
-    REQUIRE(expectedQuotientString == x.to_string());
-    REQUIRE(expectedQuotientString == z.to_string());            
-}
-
-TEST_CASE("Compound Modulus Division of int", "Use the %= operator to divide an UnsignedHugeInt object by an int.") {
-    UnsignedHugeInt x("13660689041940378671300706945942857495386543");
-    int y = 389084;
-    std::string expectedRemainderString = "389047";
-    UnsignedHugeInt z = x %= y;
-    REQUIRE(expectedRemainderString == x.to_string());
-    REQUIRE(expectedRemainderString == z.to_string());            
-}
-
-TEST_CASE("Increment Prefix With New Word Carry",
-        "Use the ++ prefix operator to increment an UnsignedHugeInt object. A new word needs to be created for the resulting amount.") {
-    UnsignedHugeInt x("999999999999999999999999999");
-    std::string expectedResultString = "1000000000000000000000000000";
-    UnsignedHugeInt y = ++x;
-    REQUIRE(expectedResultString == x.to_string());
-    REQUIRE(expectedResultString == y.to_string());
-}
-
-TEST_CASE("Increment Suffix With One Word Carry",
-        "Use the ++ suffix operator to increment an UnsignedHugeInt object. An value must be carried across one word.") {
-    std::string origValueString = "38403540471159079999999999";
-    std::string expectedResultString = "38403540471159080000000000";
-    UnsignedHugeInt x(origValueString);
-    UnsignedHugeInt y = x++;
-    REQUIRE(expectedResultString == x.to_string());
-    REQUIRE(origValueString == y.to_string());
-}
-
-TEST_CASE("Decrement Prefix With Word Removal",
-        "Use the -- prefix operator to decrement an UnsignedHugeInt object. A word needs to be removed from the resulting amount.") {
-    UnsignedHugeInt x("1000000000000000000000000000");
-    std::string expectedResultString = "999999999999999999999999999";
-    UnsignedHugeInt y = --x;
-    REQUIRE(expectedResultString == x.to_string());
-    REQUIRE(x.num_words() == 3);
-    REQUIRE(expectedResultString == y.to_string());
-}
-
-TEST_CASE("Decrement Suffix With One Word Carry",
-        "Use the -- suffix operator to decrement an UnsignedHugeInt object. Some regrouping across words is required.") {
-    std::string origValueString = "38403540471159080000000000";
-    std::string expectedResultString = "38403540471159079999999999";
-    UnsignedHugeInt x(origValueString);
-    UnsignedHugeInt y = x--;
-    REQUIRE(expectedResultString == x.to_string());
-    REQUIRE(origValueString == y.to_string());
-}
-
-TEST_CASE("Memory Leak Check",
-        "Check that the number of UnsignedHugeInt objects created is the same as the number of objects destroyed.") {
-    UnsignedHugeInt::report_number_of_objects();
-}
+//TEST_CASE("Compound Addition of UnsignedHugeInt Object", "Use the += operator to add an UnsignedHugeInt object.") {
+//    UnsignedHugeInt x("453170093496799874983745234209856870938475309870189");
+//    UnsignedHugeInt y("3475029378098745343984760987340985709384894598731520938476849");
+//    std::string expectedSumString = "3475029378551915437481560862324730943594751469669996248347038";
+//    UnsignedHugeInt z = x += y;
+//    REQUIRE(expectedSumString == x.to_string());
+//    REQUIRE(expectedSumString == z.to_string());
+//}
+//
+//TEST_CASE("Compound Addition of int", "Use the += operator to add an int to an UnsignedHugeInt.") {
+//    UnsignedHugeInt x("83450480039870687434908999574635");
+//    int y(824309);
+//    std::string expectedSumString = "83450480039870687434909000398944";
+//    UnsignedHugeInt z = x += y;
+//    REQUIRE(expectedSumString == x.to_string());
+//    REQUIRE(expectedSumString == z.to_string());    
+//}
+//
+//TEST_CASE("Compound Subtraction of UnsignedHugeInt Object", "Use the -= operator to subtract an UnsignedHugeInt object.") {
+//    UnsignedHugeInt x("3475029378551915437481560862324730943594751469669996248347038");
+//    UnsignedHugeInt y("3475029378098745343984760987340985709384894598731520938476849");
+//    std::string expectedDifferenceString = "453170093496799874983745234209856870938475309870189";
+//    UnsignedHugeInt z = x -= y;
+//    REQUIRE(expectedDifferenceString == x.to_string());
+//    REQUIRE(expectedDifferenceString == z.to_string());
+//}
+//
+//TEST_CASE("Compound Subtraction of int", "Use the -= operator to subtract an int from an UnsignedHugeInt.") {
+//    UnsignedHugeInt x("83450480039870687434909000398944");
+//    int y(824309);
+//    std::string expectedDifferenceString = "83450480039870687434908999574635";
+//    UnsignedHugeInt z = x -= y;
+//    REQUIRE(expectedDifferenceString == x.to_string());
+//    REQUIRE(expectedDifferenceString == z.to_string());    
+//}
+//
+//TEST_CASE("Compound Multiplication of UnsignedHugeInt Object", "Use the *= operator to multiply UnsignedHugeInt objects.") {
+//    UnsignedHugeInt x("348906840332448298731088632654088404038");
+//    UnsignedHugeInt y("207340940496987406598409874");
+//    std::string expectedProductString = "72342672420362048481573680294368720190366115486890872873240671212";
+//    UnsignedHugeInt z = x *= y;
+//    REQUIRE(expectedProductString == x.to_string());
+//    REQUIRE(expectedProductString == z.to_string());
+//}
+//
+//TEST_CASE("Compound Multiplication of int", "Use the *= operator to multiply an int by an UnsignedHugeInt.") {
+//    UnsignedHugeInt x("8071397034440481098522194019338068408749094");
+//    int y(98407);
+//    std::string expectedProductString = "794281967968184423462273546861001297899772093258";
+//    UnsignedHugeInt z = x *= y;
+//    REQUIRE(expectedProductString == x.to_string());
+//    REQUIRE(expectedProductString == z.to_string());        
+//}
+//
+//TEST_CASE("Compound Integer Division of UnsignedHugeIntObject", "Use the /= operator to divide UnsignedHugeInt objects.") {
+//    UnsignedHugeInt x("22690029771660997484299435939247602551803671407171961949271");
+//    UnsignedHugeInt y("464065108316103871012683213940");
+//    std::string expectedQuotientString = "48894065434036885468779840680";
+//    UnsignedHugeInt z = x /= y;
+//    REQUIRE(expectedQuotientString == x.to_string());
+//    REQUIRE(expectedQuotientString == z.to_string());        
+//}
+//
+//TEST_CASE("Compound Modulus Division of UnsignedHugeIntObject", "Use the %= operator to divide UnsignedHugeInt objects.") {
+//    UnsignedHugeInt x("22690029771660997484299435939247602551803671407171961949271");
+//    UnsignedHugeInt y("464065108316103871012683213940");
+//    std::string expectedRemainderString = "99403049840587217068406870071";
+//    UnsignedHugeInt z = x %= y;
+//    REQUIRE(expectedRemainderString == x.to_string());
+//    REQUIRE(expectedRemainderString == z.to_string());        
+//}
+//
+//TEST_CASE("Compound Integer Division of int", "Use the /= operator to divide an UnsignedHugeInt object by an int.") {
+//    UnsignedHugeInt x("13660689041940378671300706945942857495386543");
+//    int y = 389084;
+//    std::string expectedQuotientString = "35109870984004427504859379840710122994";
+//    UnsignedHugeInt z = x /= y;
+//    REQUIRE(expectedQuotientString == x.to_string());
+//    REQUIRE(expectedQuotientString == z.to_string());            
+//}
+//
+//TEST_CASE("Compound Modulus Division of int", "Use the %= operator to divide an UnsignedHugeInt object by an int.") {
+//    UnsignedHugeInt x("13660689041940378671300706945942857495386543");
+//    int y = 389084;
+//    std::string expectedRemainderString = "389047";
+//    UnsignedHugeInt z = x %= y;
+//    REQUIRE(expectedRemainderString == x.to_string());
+//    REQUIRE(expectedRemainderString == z.to_string());            
+//}
+//
+//TEST_CASE("Increment Prefix With New Word Carry",
+//        "Use the ++ prefix operator to increment an UnsignedHugeInt object. A new word needs to be created for the resulting amount.") {
+//    UnsignedHugeInt x("999999999999999999999999999");
+//    std::string expectedResultString = "1000000000000000000000000000";
+//    UnsignedHugeInt y = ++x;
+//    REQUIRE(expectedResultString == x.to_string());
+//    REQUIRE(expectedResultString == y.to_string());
+//}
+//
+//TEST_CASE("Increment Suffix With One Word Carry",
+//        "Use the ++ suffix operator to increment an UnsignedHugeInt object. An value must be carried across one word.") {
+//    std::string origValueString = "38403540471159079999999999";
+//    std::string expectedResultString = "38403540471159080000000000";
+//    UnsignedHugeInt x(origValueString);
+//    UnsignedHugeInt y = x++;
+//    REQUIRE(expectedResultString == x.to_string());
+//    REQUIRE(origValueString == y.to_string());
+//}
+//
+//TEST_CASE("Decrement Prefix With Word Removal",
+//        "Use the -- prefix operator to decrement an UnsignedHugeInt object. A word needs to be removed from the resulting amount.") {
+//    UnsignedHugeInt x("1000000000000000000000000000");
+//    std::string expectedResultString = "999999999999999999999999999";
+//    UnsignedHugeInt y = --x;
+//    REQUIRE(expectedResultString == x.to_string());
+//    REQUIRE(x.num_words() == 3);
+//    REQUIRE(expectedResultString == y.to_string());
+//}
+//
+//TEST_CASE("Decrement Suffix With One Word Carry",
+//        "Use the -- suffix operator to decrement an UnsignedHugeInt object. Some regrouping across words is required.") {
+//    std::string origValueString = "38403540471159080000000000";
+//    std::string expectedResultString = "38403540471159079999999999";
+//    UnsignedHugeInt x(origValueString);
+//    UnsignedHugeInt y = x--;
+//    REQUIRE(expectedResultString == x.to_string());
+//    REQUIRE(origValueString == y.to_string());
+//}
+//
+//TEST_CASE("Memory Leak Check",
+//        "Check that the number of UnsignedHugeInt objects created is the same as the number of objects destroyed.") {
+//    UnsignedHugeInt::report_number_of_objects();
+//}

@@ -4,12 +4,12 @@
 //{
 //    
 //}
-unsigned long long HugeIntWord::max_value = MAX_VALUE;
-unsigned long long HugeIntWord::base_value = max_value + 1;
+unsigned long HugeIntWord::max_value = MAX_VALUE;
+unsigned long HugeIntWord::base_value = max_value + 1;
 unsigned int HugeIntWord::num_objects_created = 0;
 unsigned int HugeIntWord::num_objects_deleted = 0;
 
-HugeIntWord::HugeIntWord(unsigned long long value){
+HugeIntWord::HugeIntWord(unsigned long value){
     this->value = value;
     this->lessSigWord = NULL;
     this->place_value = 0;
@@ -17,7 +17,7 @@ HugeIntWord::HugeIntWord(unsigned long long value){
     ++HugeIntWord::num_objects_created;
 }
 
-HugeIntWord::HugeIntWord(unsigned long long value, HugeIntWord* lowerSignificantWord){
+HugeIntWord::HugeIntWord(unsigned long value, HugeIntWord* lowerSignificantWord){
     this->value = value;
     this->lessSigWord = lowerSignificantWord;
     this->place_value = lowerSignificantWord->get_word_number() + 1;
@@ -31,7 +31,7 @@ HugeIntWord::~HugeIntWord()
     ++HugeIntWord::num_objects_deleted;
 }
 
-unsigned long long HugeIntWord::get_value() const {
+unsigned long HugeIntWord::get_value() const {
     return this->value;
 }
 
@@ -106,7 +106,7 @@ std::string HugeIntWord::to_string() {
 HugeIntWord* HugeIntWord::add_value(unsigned long long addend) {
     HugeIntWord *mostSignificantAddedWord;
     unsigned long long thisNewValue;
-    unsigned long long carryValue;
+    unsigned long carryValue;
     if (addend <= HugeIntWord::max_value) {
         thisNewValue = this->value + addend;
         if (thisNewValue > HugeIntWord::max_value) {
