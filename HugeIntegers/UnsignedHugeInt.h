@@ -45,6 +45,8 @@ public:
     void read_from_text_file(FILE* integer_file);
     void write_to_text_file(std::string file_path);
     void write_to_text_file(FILE* integer_file);
+    void read_from_binary_file(std::string file_path);
+    void write_to_binary_file(std::string file_path);
     
     operator std::string() const;
 

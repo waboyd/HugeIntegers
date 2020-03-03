@@ -891,6 +891,8 @@ void UnsignedHugeInt::read_from_text_file(FILE* integer_file) {
     if (strlen(digitBuffer) == 0) {
         this->mostSigWord = newMostSigWord;
         this->remove_extra_leading_words();
+        this->defined_key_1 = CHECK_VALUE_A;
+        this->defined_key_2 = CHECK_VALUE_B;
         return;
     }
     // Add the least significant words from the buffer.
@@ -921,6 +923,8 @@ void UnsignedHugeInt::read_from_text_file(FILE* integer_file) {
     }
     this->mostSigWord = newMostSigWord;
     this->remove_extra_leading_words();    
+    this->defined_key_1 = CHECK_VALUE_A;
+    this->defined_key_2 = CHECK_VALUE_B;
 }
 
 void UnsignedHugeInt::write_to_text_file(std::string file_path) {
@@ -954,6 +958,14 @@ void UnsignedHugeInt::write_to_text_file(FILE* integer_file) {
         }
         fputs(bufferString.c_str(), integer_file);
     }
+}
+
+void UnsignedHugeInt::read_from_binary_file(std::string file_path) {
+    // ToDo: Complete this method.
+}
+
+void UnsignedHugeInt::write_to_binary_file(std::string file_path) {
+    // ToDo: Complete this method.
 }
 
 bool UnsignedHugeInt::is_defined() const {
@@ -1000,7 +1012,6 @@ HugeIntWord* UnsignedHugeInt::remove_most_significant_word() {
 }
 
 std::string UnsignedHugeInt::to_string() const {
-    // ToDo: Convert the words to base 10 when forming the string.
     if(!this->is_defined()) {
         throw std::invalid_argument("An attempt was made to retrieve the value of a non-defined UnsignedHugeInt.");
     }

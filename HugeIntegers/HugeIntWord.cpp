@@ -86,7 +86,6 @@ void HugeIntWord::remove_more_significant_word() {
 }
 
 std::string HugeIntWord::to_string() {
-    // ToDo: Convert the words to base 10 when forming the string.
     std::ostringstream numberToStringStream;
     std::string numberString;
     std::string formattedNumberString;
