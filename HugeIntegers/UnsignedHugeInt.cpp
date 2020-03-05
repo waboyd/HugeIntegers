@@ -927,7 +927,7 @@ void UnsignedHugeInt::read_from_text_file(FILE* integer_file) {
     this->defined_key_2 = CHECK_VALUE_B;
 }
 
-void UnsignedHugeInt::write_to_text_file(std::string file_path) {
+void UnsignedHugeInt::write_to_text_file(std::string file_path) const {
     // Prevent writing to an existing file.
     if (stat(file_path.c_str(), NULL) >= 0)
         std::invalid_argument("An attempt was made to write an UnsignedHugeInt value to an existing file.");
@@ -936,11 +936,11 @@ void UnsignedHugeInt::write_to_text_file(std::string file_path) {
     fclose(writeTextFile);
 }
 
-void UnsignedHugeInt::write_to_text_file(FILE* integer_file) {
+void UnsignedHugeInt::write_to_text_file(FILE* integer_file) const {
     if (integer_file == NULL)
         throw std::invalid_argument("A null file pointer was given as an argument.");
     if (!this->is_defined()) {
-        throw std::invalid_argument("The UnsignedHugeInt object was not defined the command to write to a file.");
+        throw std::invalid_argument("The UnsignedHugeInt object was not defined before the command to write to a file.");
     }
     std::string bufferString;
     HugeIntWord *thisWord = this->mostSigWord;
@@ -948,7 +948,7 @@ void UnsignedHugeInt::write_to_text_file(FILE* integer_file) {
     
     while (thisWord != NULL) {
         bufferString = "";
-        for (i = 0; i < WRITE_BUFFER_NUM_WORDS; ++i) {
+        for (i = 0; i < BUFFER_NUM_WORDS; ++i) {
             bufferString += thisWord->to_string();
             thisWord = thisWord->get_next_lower_sig_word();
             if (thisWord == NULL) {
@@ -961,11 +961,85 @@ void UnsignedHugeInt::write_to_text_file(FILE* integer_file) {
 }
 
 void UnsignedHugeInt::read_from_binary_file(std::string file_path) {
-    // ToDo: Complete this method.
+    this->delete_all_words();
+    this->mostSigWord = this->leastSigWord = NULL;
+    unsigned long long remainingNumWords;
+    unsigned long readBuffer[BUFFER_NUM_WORDS];
+    HugeIntWord *thisWord;
+    unsigned int bufferSize = sizeof(unsigned long) * BUFFER_NUM_WORDS;
+    unsigned int bufferIndex;
+    char *readDest = (char*)readBuffer;
+
+    std::ifstream fileReadStream(file_path, std::ios::in | std::ios::binary);
+    if (!fileReadStream.is_open()) {
+        fileReadStream.close();
+        throw std::invalid_argument("The file " + file_path + " could not be opened.");
+    }
+    fileReadStream >> remainingNumWords;
+    
+    // Read the first word from the binary file.
+    if (remainingNumWords < 1) {
+        this->mostSigWord = this->leastSigWord = new HugeIntWord(0);
+        fileReadStream.close();
+        return;
+    }
+    fileReadStream.read(readDest, sizeof(unsigned long));
+    this->leastSigWord = thisWord = new HugeIntWord(readBuffer[0]);
+    --remainingNumWords;
+    
+    // Read full buffers from the binary file.
+    while (remainingNumWords > BUFFER_NUM_WORDS) {
+        fileReadStream.read(readDest, bufferSize);
+        for (bufferIndex = 0; bufferIndex < BUFFER_NUM_WORDS; ++bufferIndex) {
+            thisWord = new HugeIntWord(readBuffer[bufferIndex], thisWord);
+        }
+        remainingNumWords -= BUFFER_NUM_WORDS;
+    }
+    
+    // Read the last partial buffer from the binary file.
+    fileReadStream.read(readDest, sizeof(unsigned long) * remainingNumWords);
+    for (bufferIndex = 0; bufferIndex < remainingNumWords; ++bufferIndex) {
+        thisWord = new HugeIntWord(readBuffer[bufferIndex], thisWord);
+    }
+    fileReadStream.close();
+    this->mostSigWord = thisWord;
 }
 
-void UnsignedHugeInt::write_to_binary_file(std::string file_path) {
-    // ToDo: Complete this method.
+void UnsignedHugeInt::write_to_binary_file(std::string file_path) const {
+    // Prevent writing to an existing file.
+    if (stat(file_path.c_str(), NULL) >= 0)
+        std::invalid_argument("An attempt was made to write an UnsignedHugeInt value to an existing file.");
+    if (!this->is_defined()) {
+        throw std::invalid_argument("The UnsignedHugeInt object was not defined before the command to write to a file.");
+    }
+    unsigned long writeBuffer[BUFFER_NUM_WORDS];
+    char *writeSource = (char*)writeBuffer;
+    unsigned int bufferSize = sizeof(unsigned long) * BUFFER_NUM_WORDS;
+    unsigned int bufferIndex;
+    HugeIntWord *thisWord = this->leastSigWord;
+    
+    std::ofstream fileWriteStream(file_path, std::ios::out | std::ios::binary);
+    if (!fileWriteStream.is_open()) {
+        fileWriteStream.close();
+        throw std::invalid_argument("The file at " + file_path + " could not be created.");
+    }
+    // Write the number of words at the start of the file.
+    fileWriteStream << this->num_words();
+    
+    // Write all the word values to the file.
+    while (thisWord != NULL) {
+        for (bufferIndex = 0; bufferIndex < BUFFER_NUM_WORDS; ++bufferIndex) {
+            writeBuffer[bufferIndex] = thisWord->get_value();
+            thisWord = thisWord->get_next_more_sig_word();
+            if (thisWord == NULL) {
+                fileWriteStream.write(writeSource, sizeof(unsigned long) * (bufferIndex + 1));
+                fileWriteStream.close();
+                return;
+            }
+        }
+        fileWriteStream.write(writeSource, bufferSize);
+    }
+    fileWriteStream.close();
 }
 
 bool UnsignedHugeInt::is_defined() const {

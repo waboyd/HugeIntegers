@@ -9,6 +9,7 @@
 
 //#include <bits/stdc++.h>
 #include <iostream>
+#include <fstream>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
@@ -28,7 +29,7 @@
 #define CHECK_VALUE_A   84340
 #define CHECK_VALUE_B   308424
 #define READ_BUFFER_SIZE    144
-#define WRITE_BUFFER_NUM_WORDS  16
+#define BUFFER_NUM_WORDS    16
 
 class UnsignedHugeInt {
 public:
@@ -43,10 +44,10 @@ public:
     
     void read_from_text_file(std::string file_path);
     void read_from_text_file(FILE* integer_file);
-    void write_to_text_file(std::string file_path);
-    void write_to_text_file(FILE* integer_file);
+    void write_to_text_file(std::string file_path) const;
+    void write_to_text_file(FILE* integer_file) const;
     void read_from_binary_file(std::string file_path);
-    void write_to_binary_file(std::string file_path);
+    void write_to_binary_file(std::string file_path) const;
     
     operator std::string() const;
 
