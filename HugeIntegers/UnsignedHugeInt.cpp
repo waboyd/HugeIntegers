@@ -466,17 +466,58 @@ UnsignedHugeInt UnsignedHugeInt::multiply(const UnsignedHugeInt& factorA, const 
     return totalProduct;
 }
 
+UnsignedHugeInt UnsignedHugeInt::multiply_single_word(const UnsignedHugeInt& large_factor, const unsigned long long small_factor) {
+    if(!large_factor.is_defined()) {
+        throw std::invalid_argument("The UnsignedHugeInt object of the multiplication operation is not defined.");
+    }
+
+    HugeIntWord *factorWord, *productWord;
+    unsigned long long productValue, carryValue;
+    factorWord = large_factor.get_least_significant_word();
+    if ((factorWord == NULL) || (small_factor == 0) || ((large_factor.num_words() < 2) && (factorWord->value == 0)))
+        return UnsignedHugeInt((unsigned long long)0);
+    
+    // Set the first word of the product.
+    productValue = factorWord->value * small_factor;
+    carryValue = productValue / UnsignedHugeInt::word_base;
+    productValue = productValue % UnsignedHugeInt::word_base;
+    UnsignedHugeInt resultProduct(productValue);
+    productWord = resultProduct.get_least_significant_word();
+    factorWord = factorWord->get_next_more_sig_word();
+    
+    // Multiply the other words of the UnsignedHugeInt factor.
+    while (factorWord != NULL) {
+        productValue = factorWord->value * small_factor + carryValue;
+        carryValue = productValue / UnsignedHugeInt::word_base;
+        productValue = productValue % UnsignedHugeInt::word_base;
+        productWord = new HugeIntWord(productValue, productWord);
+        factorWord = factorWord->get_next_more_sig_word();
+    }
+    
+    // Set the most significant word of the product from the carry value.
+    if (carryValue > 0)
+        resultProduct.mostSigWord = new HugeIntWord(carryValue, productWord);
+    else
+        resultProduct.mostSigWord = productWord;
+    return resultProduct;
+}
+
 UnsignedHugeInt UnsignedHugeInt::operator*(const UnsignedHugeInt& factor) const {
     return UnsignedHugeInt::multiply(*this, factor);
 }
 
 UnsignedHugeInt UnsignedHugeInt::operator*(const unsigned long long factor) const {
+    // If factor is small enough to fit in one word of an UnsignedHugeInt object, use the faster multiplication function.
+    if (factor < UnsignedHugeInt::word_base)
+        return UnsignedHugeInt::multiply_single_word(*this, factor);
     UnsignedHugeInt factorObject(factor);
-    // ToDo: Optimize this method for multiplication by a factor of a size smaller than the word base.
     return UnsignedHugeInt::multiply(*this, factorObject);
 }
 
 UnsignedHugeInt operator*(const unsigned long long factorA, const UnsignedHugeInt& factorB) {
+    // If factor is small enough to fit in one word of an UnsignedHugeInt object, use the faster multiplication function.
+    if (factorA < UnsignedHugeInt::word_base)
+        return UnsignedHugeInt::multiply_single_word(factorB, factorA);
     UnsignedHugeInt factorAObject(factorA);
     return UnsignedHugeInt::multiply(factorAObject, factorB);
 }
@@ -529,7 +570,7 @@ std::pair<UnsignedHugeInt, UnsignedHugeInt> UnsignedHugeInt::divide(const Unsign
         quotientWordEstimate = (unsigned long long)(dividendLowerEstimate / divisorUpperEstimate);
 
         // Multiply the quotient word by the divisor, and subtract the product from the remainder.
-        subRemainder = UnsignedHugeInt::subtract(subRemainder, UnsignedHugeInt::multiply(divisor, UnsignedHugeInt(quotientWordEstimate)));
+        subRemainder = UnsignedHugeInt::subtract(subRemainder, UnsignedHugeInt::multiply_single_word(divisor, quotientWordEstimate));
         // Increase the quotient word until it is the correct value.
         while (UnsignedHugeInt::compare(subRemainder, divisor) >= 0) {
             ++quotientWordEstimate;
@@ -563,7 +604,7 @@ std::pair<UnsignedHugeInt, UnsignedHugeInt> UnsignedHugeInt::divide(const Unsign
         quotientWordEstimate = (unsigned long)(dividendLowerEstimate / divisorUpperEstimate);
 
         // Multiply the quotient word by the divisor, and subtract the product from the remainder.
-        subRemainder = UnsignedHugeInt::subtract(subRemainder, UnsignedHugeInt::multiply(divisor, UnsignedHugeInt(quotientWordEstimate)));
+        subRemainder = UnsignedHugeInt::subtract(subRemainder, UnsignedHugeInt::multiply_single_word(divisor, quotientWordEstimate));
         // Increase the quotient word until it is the correct value.
         while (UnsignedHugeInt::compare(subRemainder, divisor) >= 0) {
             ++quotientWordEstimate;
@@ -711,7 +752,11 @@ UnsignedHugeInt& UnsignedHugeInt::operator*=(const UnsignedHugeInt& factor) {
 }
 
 UnsignedHugeInt& UnsignedHugeInt::operator*=(const unsigned long long factor) {
-    // ToDo: Optimize this method for multiplication by a factor smaller than the word base.
+    // If factor is small enough to fit in one word of an UnsignedHugeInt object, use the faster multiplication function.
+    if (factor < UnsignedHugeInt::word_base) {
+        *this = UnsignedHugeInt::multiply_single_word(*this, factor);
+        return *this;
+    }
     *this = UnsignedHugeInt::multiply(*this, UnsignedHugeInt(factor));
     return *this;
 }

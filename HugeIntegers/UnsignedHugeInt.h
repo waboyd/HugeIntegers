@@ -65,31 +65,42 @@ public:
     static short compare(const UnsignedHugeInt& numberA, const UnsignedHugeInt& numberB);
     bool operator<(const UnsignedHugeInt& right_operand) const;
     bool operator<(const unsigned long long right_operand) const;
+    friend bool operator<(const unsigned long long left_operand, const UnsignedHugeInt& right_operand);
     bool operator<=(const UnsignedHugeInt& right_operand) const;
     bool operator<=(const unsigned long long right_operand) const;
+    friend bool operator<=(const unsigned long long left_operand, const UnsignedHugeInt& right_operand);
     bool operator>(const UnsignedHugeInt& right_operand) const;
     bool operator>(const unsigned long long right_operand) const;
+    friend bool operator>(const unsigned long long left_operand, const UnsignedHugeInt& right_operand);
     bool operator>=(const UnsignedHugeInt& right_operand) const;
     bool operator>=(const unsigned long long right_operand) const;
+    friend bool operator>=(const unsigned long long left_operand, const UnsignedHugeInt& right_operand);
     bool operator==(const UnsignedHugeInt& right_operand) const;
     bool operator==(const unsigned long long right_operand) const;
+    friend bool operator==(const unsigned long long left_operand, const UnsignedHugeInt& right_operand);
     bool operator!=(const UnsignedHugeInt& right_operand) const;
     bool operator!=(const unsigned long long right_operand) const;
+    friend bool operator!=(const unsigned long long left_operand, const UnsignedHugeInt& right_operand);
     static UnsignedHugeInt sum_of(const UnsignedHugeInt& addendA, const UnsignedHugeInt& addendB);
     static UnsignedHugeInt sum_of(const UnsignedHugeInt& addendA, const unsigned long long addendB);
     UnsignedHugeInt operator+(const UnsignedHugeInt& addend) const;
     UnsignedHugeInt operator+(const unsigned long long addend) const;
+    friend UnsignedHugeInt operator+(const unsigned long long addendA, const UnsignedHugeInt& addendB);
     static UnsignedHugeInt subtract(const UnsignedHugeInt& minuend, const UnsignedHugeInt& subtrahend);
     UnsignedHugeInt operator-(const UnsignedHugeInt& subtrahend) const;
     UnsignedHugeInt operator-(const unsigned long long subtrahend) const;
+    friend UnsignedHugeInt operator-(const unsigned long long minuend, const UnsignedHugeInt& subtrahend);
     static UnsignedHugeInt multiply(const UnsignedHugeInt& factorA, const UnsignedHugeInt& factorB);
     UnsignedHugeInt operator*(const UnsignedHugeInt& factor) const;
     UnsignedHugeInt operator*(const unsigned long long factor) const;
+    friend UnsignedHugeInt operator*(const unsigned long long factorA, const UnsignedHugeInt& factorB);
     static std::pair<UnsignedHugeInt, UnsignedHugeInt> divide(const UnsignedHugeInt& dividend, const UnsignedHugeInt& divisor);
     UnsignedHugeInt operator/(const UnsignedHugeInt& divisor) const;
     UnsignedHugeInt operator/(const unsigned long long divisor) const;
+    friend UnsignedHugeInt operator/(const unsigned long long dividend, const UnsignedHugeInt& divisor);
     UnsignedHugeInt operator%(const UnsignedHugeInt& divisor) const;
     UnsignedHugeInt operator%(const unsigned long long divisor) const;
+    friend UnsignedHugeInt operator%(const unsigned long long dividend, const UnsignedHugeInt& divisor);
     UnsignedHugeInt& operator+=(const UnsignedHugeInt& addend);
     UnsignedHugeInt& operator+=(const unsigned long long addend);
     UnsignedHugeInt& operator-=(const UnsignedHugeInt& subtrahend);
@@ -104,7 +115,7 @@ public:
     UnsignedHugeInt operator++(int dummy);
     UnsignedHugeInt& operator--();
     UnsignedHugeInt operator--(int dummy);
-        
+    
     /**
      * @brief Return true only if the object has been defined and is not null.
      * @return True if the object is verified as properly defined.
@@ -166,6 +177,7 @@ private:
     static UnsignedHugeInt integer_with_least_significant_word(const HugeIntWord* least_significant_word);
     
     static UnsignedHugeInt find_multiplication_subtotal(const HugeIntWord* greater_factor_word, const HugeIntWord* lesser_factor_word);
+    static UnsignedHugeInt multiply_single_word(const UnsignedHugeInt& large_factor, const unsigned long long small_factor);
 
     // ToDo: Remove the following variables after development.
     static unsigned int num_objects_created;
@@ -173,15 +185,4 @@ private:
 };
 
 // Operators involving UnsignedHugeInt, but not considered part of UnsignedHugeInt by the compiler.
-bool operator<(const unsigned long long left_operand, const UnsignedHugeInt& right_operand);
-bool operator<=(const unsigned long long left_operand, const UnsignedHugeInt& right_operand);
-bool operator>(const unsigned long long left_operand, const UnsignedHugeInt& right_operand);
-bool operator>=(const unsigned long long left_operand, const UnsignedHugeInt& right_operand);
-bool operator==(const unsigned long long left_operand, const UnsignedHugeInt& right_operand);
-bool operator!=(const unsigned long long left_operand, const UnsignedHugeInt& right_operand);
-UnsignedHugeInt operator+(const unsigned long long addendA, const UnsignedHugeInt& addendB);
-UnsignedHugeInt operator-(const unsigned long long minuend, const UnsignedHugeInt& subtrahend);
-UnsignedHugeInt operator*(const unsigned long long factorA, const UnsignedHugeInt& factorB);
-UnsignedHugeInt operator/(const unsigned long long dividend, const UnsignedHugeInt& divisor);
-UnsignedHugeInt operator%(const unsigned long long dividend, const UnsignedHugeInt& divisor);
 std::ostream& operator<<(std::ostream& out_stream, const UnsignedHugeInt& huge_int_object);    
