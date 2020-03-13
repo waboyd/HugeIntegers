@@ -68,6 +68,13 @@ public:
     UnsignedHugeInt(const UnsignedHugeInt* orig);
     
     /**
+     * @brief Creates a new UnsignedHugeInt object with a value moved from the argument.
+     * The value does not not exist in the original argument object after this operation.
+     * @param orig Object whose value will be moved.
+     */
+    UnsignedHugeInt(UnsignedHugeInt&& orig);
+    
+    /**
      * @brief Deletes the UnsignedHugeInt object completely.
      */
     virtual ~UnsignedHugeInt();
@@ -127,6 +134,7 @@ public:
      * @brief Assigns a copy of the right-hand value to the object on the left of the assignment operator.
      * This operation does not change the right-hand value or objects.
      * @param orig An UnsignedHugeInt object with a value that will be copied.
+     * @return Reference to the newly created object.
      */
     UnsignedHugeInt& operator=(const UnsignedHugeInt& orig);
 
@@ -134,14 +142,23 @@ public:
      * @brief Assigns a copy of the right-hand value to the object on the left of the assignment operator.
      * This operation does not change the right-hand value or objects.
      * @param orig A pointer to an UnsignedHugeInt object with a value that will be copied.
+     * @return Reference to the newly created object.
      */
     UnsignedHugeInt& operator=(const UnsignedHugeInt* orig);
+    
+    /**
+     * @brief Moves value from the argument to this object, removing the the value from the argument.
+     * @param orig Object whose value will be moved.
+     * @return Reference to the new object which received the value.
+     */
+    UnsignedHugeInt& operator=(UnsignedHugeInt&& orig);
 
     /**
      * @brief Assigns the value from the right-hand side of the assignment operator to the object on the left of the operator.
      * It is assumed that only non-negative value will be assigned. To assign a value that is too large for the
      * unsigned long long type, a numerical string (such as "9874390745") can be used on the right-hand side of the operator.
      * @param value The value to assign to the UnsignedHugeInt object.
+     * @return Reference to the newly created object.
      */
     UnsignedHugeInt& operator=(const unsigned long long value);
     
@@ -150,6 +167,7 @@ public:
      * The string should contain only digits. This assignment operation can be used to assign values that are too
      * large to be processed directly.
      * @param value_string A C++ string of the value to assign to the UnsignedHugeInt object.
+     * @return Reference to the newly created object.
      */
     UnsignedHugeInt& operator=(const std::string value_string);
     
@@ -624,6 +642,7 @@ private:
     // ToDo: Remove the following variables after development.
     static unsigned int num_objects_created;
     static unsigned int num_objects_deleted;
+    static unsigned int num_objects_moved;
 };
 
 // Operators involving UnsignedHugeInt, but not considered part of UnsignedHugeInt by the compiler.
