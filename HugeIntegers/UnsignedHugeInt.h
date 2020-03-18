@@ -53,7 +53,14 @@ public:
      * The string parameter should have only the digits of the integer value.
      * @param integer_string Initial value of the UnsignedHugeInt object as a string of digits.
      */
-    UnsignedHugeInt(std::string integer_string);
+    UnsignedHugeInt(const std::string integer_string);
+
+    /**
+     * @brief Creates a new UnsignedHugeInt object with the value given in the parameter.
+     * The string parameter should have only the digits of the integer value.
+     * @param integer_string Initial value of the UnsignedHugeInt object as a string of digits.
+     */
+    UnsignedHugeInt(const char* integer_string);
 
     /**
      * @brief Creates a new UnsignedHugeInt object as a copy of the argument.
@@ -171,6 +178,15 @@ public:
      */
     UnsignedHugeInt& operator=(const std::string value_string);
     
+    /**
+     * @brief Reads a numerical string as an unsigned integer and assigns the value to the UnsignedHugeInt object.
+     * The string should contain only digits. This assignment operation can be used to assign values that are too
+     * large to be processed directly.
+     * @param value_string A C string of the value to assign to the UnsignedHugeInt object.
+     * @return Reference to the newly created object.
+     */
+    UnsignedHugeInt& operator=(const char*  value_string);
+
     /**
      * @brief Determines which of the two numbers is greater.
      * @param numberA One of the numbers to compare.

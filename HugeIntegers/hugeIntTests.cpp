@@ -28,9 +28,21 @@
 //    std::cout << "b: " << b << "\n";
 //    std::cout << "c: " << c << "\n";
 
-//    UnsignedHugeInt testInt1("5970947234234");
-//    std::cout << "testInt1: " << testInt1 << "\n";
+//    UnsignedHugeInt testInt1("5970947234234333957096709724300995477654567");
+//    UnsignedHugeInt testInt1 = "5970947234234333957096709724300995477654567";
 
+//    UnsignedHugeInt testInt1(5);
+//    testInt1 = 15;
+//    testInt1 += 890812;
+//    std::cout << "testInt1: " << testInt1 << "\n";
+//    
+//    testInt1 = "5970947234234333957096709724300995477654567";
+//    std::cout << "testInt1 after reassignment: " << testInt1 << "\n";
+//
+//    UnsignedHugeInt testInt2("745777289092837878910928377589");
+//    std::cout << "testInt2: " << testInt2 << "\n";
+//    UnsignedHugeInt testInt3 = "43094187230984798734789091872873890210938741";
+//    std::cout << "testInt3: " << testInt3 << "\n";    
 //}
 
 TEST_CASE("Blank Number", "Instantiate an UnsignedHugeInt with an unspecified value. Its value should be 0 before modification.") {

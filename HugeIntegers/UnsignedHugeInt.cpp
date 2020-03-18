@@ -27,8 +27,16 @@ UnsignedHugeInt::UnsignedHugeInt(const unsigned long long value) {
     ++UnsignedHugeInt::num_objects_created;
 }
 
-UnsignedHugeInt::UnsignedHugeInt(std::string integer_string) {
+UnsignedHugeInt::UnsignedHugeInt(const std::string integer_string) {
     this->set_value_from_string(integer_string);
+    this->defined_key_1 = CHECK_VALUE_A;
+    this->defined_key_2 = CHECK_VALUE_B;
+    ++UnsignedHugeInt::num_objects_created;
+}
+
+UnsignedHugeInt::UnsignedHugeInt(const char* integer_string) {
+    std::string cppString(integer_string);
+    this->set_value_from_string(cppString);
     this->defined_key_1 = CHECK_VALUE_A;
     this->defined_key_2 = CHECK_VALUE_B;
     ++UnsignedHugeInt::num_objects_created;
@@ -140,6 +148,17 @@ UnsignedHugeInt& UnsignedHugeInt::operator=(const std::string value_string) {
         ++UnsignedHugeInt::num_objects_deleted;
     }
     this->set_value_from_string(value_string);
+    ++UnsignedHugeInt::num_objects_created;
+    return *this;
+}
+
+UnsignedHugeInt& UnsignedHugeInt::operator=(const char* value_string) {
+    if(this->is_defined()) {
+        this->delete_all_words();
+        ++UnsignedHugeInt::num_objects_deleted;
+    }
+    std::string cppStringValue(value_string);
+    this->set_value_from_string(cppStringValue);
     ++UnsignedHugeInt::num_objects_created;
     return *this;
 }
