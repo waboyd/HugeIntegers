@@ -7,24 +7,14 @@
  * Created on December 26, 2019, 11:54 AM
  */
 
-//#include <bits/stdc++.h>
 #include <iostream>
 #include <fstream>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
 
-//#include <iomanip>
-//#include <locale>
-//#include <sstream>
-//#include <ostream>
-
-//#include <string>
-//#include <cstring>
-
 #include "HugeIntWord.h"
 
-//#define MAXNUMWORDS 100000
 #define MAX_DIGITS_PER_WORD 9
 #define CHECK_VALUE_A   84340
 #define CHECK_VALUE_B   308424
@@ -396,6 +386,7 @@ public:
      * @return The remainder of the division operation.
      */
     UnsignedHugeInt operator%(const unsigned long long divisor) const;
+
     /**
      * @brief Performs modulus (remainder) division on the unsigned integers.
      * @param dividend The dividend of the division operation, on the left side of the '%' operator.
@@ -552,9 +543,6 @@ public:
      */
     std::string to_string() const;
     
-    // ToDo: Remove the following after development.
-    static void report_number_of_objects();
-    
 protected:
     // The maximum value that is permitted in one word of UnsignedHugeInt.
     static unsigned long max_word_value;
@@ -654,11 +642,6 @@ private:
      * @return The result from multiplying the integers as an UnsignedHugeInt object.
      */
     static UnsignedHugeInt multiply_single_word(const UnsignedHugeInt& large_factor, const unsigned long long small_factor);
-
-    // ToDo: Remove the following variables after development.
-    static unsigned int num_objects_created;
-    static unsigned int num_objects_deleted;
-    static unsigned int num_objects_moved;
 };
 
 // Operators involving UnsignedHugeInt, but not considered part of UnsignedHugeInt by the compiler.

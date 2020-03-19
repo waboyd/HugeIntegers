@@ -32,11 +32,6 @@ public:
     HugeIntWord(unsigned long value, HugeIntWord* lowerSignificantWord);
     
     /**
-     * @brief Deletes the HugeIntWord object completely.
-     */
-    ~HugeIntWord();
-    
-    /**
      * @brief Return the value held by this HugeIntWord object.
      * @return The value held by this HugeIntWord object.
      */
@@ -58,8 +53,6 @@ public:
     std::string to_string();
     
 protected:
-    
-private:
     // The maximum value that is permitted in one HugeIntWord object.
     static unsigned long max_value;
     
@@ -77,18 +70,8 @@ private:
 
     // Location of this word in the number. 0 is least significant place.
     unsigned long long place_value;
-
-    /**
-     * @brief Sets the argument as the next more significant word of this word object.
-     * @param next_word The next more significant word of this word object.
-     */
-    void set_more_significant_word(HugeIntWord* next_word);
-
-    /**
-     * @brief Sets the argument as the next less significant word of this word object.
-     * @param next_word The next less significant word of this word object.
-     */
-    void set_less_significant_word(HugeIntWord* next_word);
+    
+    // Protected methods
 
     /**
      * @brief Returns the next less significant word (segment) of the number.
@@ -102,6 +85,19 @@ private:
      */
     HugeIntWord* get_next_more_sig_word() const;
     
+private:
+    /**
+     * @brief Sets the argument as the next more significant word of this word object.
+     * @param next_word The next more significant word of this word object.
+     */
+    void set_more_significant_word(HugeIntWord* next_word);
+
+    /**
+     * @brief Sets the argument as the next less significant word of this word object.
+     * @param next_word The next less significant word of this word object.
+     */
+    void set_less_significant_word(HugeIntWord* next_word);
+
     /**
      * @brief Removes and deletes the next more significant word object, leaving this object as the new most significant word.
      */
@@ -113,9 +109,5 @@ private:
      * @return Pointer to most significant word of the addition operation.
      */
     HugeIntWord* add_value(unsigned long long addend);
-    
-    // ToDo: Remove the following variables after development.
-    static unsigned int num_objects_created;
-    static unsigned int num_objects_deleted;
 };
 

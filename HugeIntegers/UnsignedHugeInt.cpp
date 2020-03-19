@@ -3,9 +3,6 @@
 // ToDo: Set the max_word_value in UnsignedHugeInt and HugeIntWord.
 unsigned long UnsignedHugeInt::max_word_value = 999999999;
 unsigned long long UnsignedHugeInt::word_base = UnsignedHugeInt::max_word_value + 1;
-unsigned int UnsignedHugeInt::num_objects_created = 0;
-unsigned int UnsignedHugeInt::num_objects_deleted = 0;
-unsigned int UnsignedHugeInt::num_objects_moved = 0;
 
 UnsignedHugeInt::UnsignedHugeInt() {
     // ToDo: Set maximum word value.
@@ -14,7 +11,6 @@ UnsignedHugeInt::UnsignedHugeInt() {
     this->leastSigWord = newWord;
     this->defined_key_1 = CHECK_VALUE_A;
     this->defined_key_2 = CHECK_VALUE_B;
-    ++UnsignedHugeInt::num_objects_created;
 }
 
 UnsignedHugeInt::UnsignedHugeInt(const unsigned long long value) {
@@ -24,14 +20,12 @@ UnsignedHugeInt::UnsignedHugeInt(const unsigned long long value) {
     this->mostSigWord = newWord->add_value(value);
     this->defined_key_1 = CHECK_VALUE_A;
     this->defined_key_2 = CHECK_VALUE_B;
-    ++UnsignedHugeInt::num_objects_created;
 }
 
 UnsignedHugeInt::UnsignedHugeInt(const std::string integer_string) {
     this->set_value_from_string(integer_string);
     this->defined_key_1 = CHECK_VALUE_A;
     this->defined_key_2 = CHECK_VALUE_B;
-    ++UnsignedHugeInt::num_objects_created;
 }
 
 UnsignedHugeInt::UnsignedHugeInt(const char* integer_string) {
@@ -39,21 +33,18 @@ UnsignedHugeInt::UnsignedHugeInt(const char* integer_string) {
     this->set_value_from_string(cppString);
     this->defined_key_1 = CHECK_VALUE_A;
     this->defined_key_2 = CHECK_VALUE_B;
-    ++UnsignedHugeInt::num_objects_created;
 }
 
 UnsignedHugeInt::UnsignedHugeInt(const UnsignedHugeInt& orig) {
     this->change_to_copy_of(orig);
     this->defined_key_1 = orig.defined_key_1;
     this->defined_key_2 = orig.defined_key_2;
-    ++UnsignedHugeInt::num_objects_created;
 }
 
 UnsignedHugeInt::UnsignedHugeInt(const UnsignedHugeInt* orig) {
     this->change_to_copy_of(*orig);
     this->defined_key_1 = orig->defined_key_1;
     this->defined_key_2 = orig->defined_key_2;
-    ++UnsignedHugeInt::num_objects_created;
 }
 
 UnsignedHugeInt::UnsignedHugeInt(UnsignedHugeInt&& orig) {
@@ -62,8 +53,6 @@ UnsignedHugeInt::UnsignedHugeInt(UnsignedHugeInt&& orig) {
     this->defined_key_1 = orig.defined_key_1;
     this->defined_key_2 = orig.defined_key_2;
     orig.mostSigWord = orig.leastSigWord = NULL;
-    ++UnsignedHugeInt::num_objects_created;
-    ++UnsignedHugeInt::num_objects_moved;
 }
 
 UnsignedHugeInt::~UnsignedHugeInt() {
@@ -76,7 +65,6 @@ UnsignedHugeInt::~UnsignedHugeInt() {
     this->delete_all_words();
     this->defined_key_1 = 0;
     this->defined_key_2 = 0;
-    ++UnsignedHugeInt::num_objects_deleted;
 }
 
 UnsignedHugeInt::operator std::string() const {
@@ -88,12 +76,10 @@ UnsignedHugeInt& UnsignedHugeInt::operator=(const UnsignedHugeInt& orig) {
         return *this;
     if(this->is_defined()) {
         this->delete_all_words();
-        ++UnsignedHugeInt::num_objects_deleted;
     }
     this->change_to_copy_of(orig);
     this->defined_key_1 = orig.defined_key_1;
     this->defined_key_2 = orig.defined_key_2;
-    ++UnsignedHugeInt::num_objects_created;
     return *this;
 }
 
@@ -102,12 +88,10 @@ UnsignedHugeInt& UnsignedHugeInt::operator=(const UnsignedHugeInt* orig) {
         return *this;
     if(this->is_defined()) {
         this->delete_all_words();
-        ++UnsignedHugeInt::num_objects_deleted;
     }
     this->change_to_copy_of(*orig);
     this->defined_key_1 = orig->defined_key_1;
     this->defined_key_2 = orig->defined_key_2;
-    ++UnsignedHugeInt::num_objects_created;
     return *this;
 }
 
@@ -116,50 +100,41 @@ UnsignedHugeInt& UnsignedHugeInt::operator=(UnsignedHugeInt&& orig) {
         return *this;
     if(this->is_defined()) {
         this->delete_all_words();
-        ++UnsignedHugeInt::num_objects_deleted;
     }
     this->mostSigWord = orig.mostSigWord;
     this->leastSigWord = orig.leastSigWord;
     this->defined_key_1 = orig.defined_key_1;
     this->defined_key_2 = orig.defined_key_2;
     orig.mostSigWord = orig.leastSigWord = NULL;
-    ++UnsignedHugeInt::num_objects_created;
-    ++UnsignedHugeInt::num_objects_moved;
     return *this;
 }
 
 UnsignedHugeInt& UnsignedHugeInt::operator=(const unsigned long long value) {
     if(this->is_defined()) {
         this->delete_all_words();
-        ++UnsignedHugeInt::num_objects_deleted;
     }
     HugeIntWord *newWord = new HugeIntWord(0);
     this->leastSigWord = newWord;
     this->mostSigWord = newWord->add_value(value);
     this->defined_key_1 = CHECK_VALUE_A;
     this->defined_key_2 = CHECK_VALUE_B;
-    ++UnsignedHugeInt::num_objects_created;
     return *this;
 }
 
 UnsignedHugeInt& UnsignedHugeInt::operator=(const std::string value_string) {
     if(this->is_defined()) {
         this->delete_all_words();
-        ++UnsignedHugeInt::num_objects_deleted;
     }
     this->set_value_from_string(value_string);
-    ++UnsignedHugeInt::num_objects_created;
     return *this;
 }
 
 UnsignedHugeInt& UnsignedHugeInt::operator=(const char* value_string) {
     if(this->is_defined()) {
         this->delete_all_words();
-        ++UnsignedHugeInt::num_objects_deleted;
     }
     std::string cppStringValue(value_string);
     this->set_value_from_string(cppStringValue);
-    ++UnsignedHugeInt::num_objects_created;
     return *this;
 }
 
@@ -1401,15 +1376,4 @@ UnsignedHugeInt UnsignedHugeInt::find_multiplication_subtotal(const HugeIntWord*
 std::ostream& operator<<(std::ostream& out_stream, const UnsignedHugeInt& huge_int_object) {
     out_stream << huge_int_object.to_string();
     return out_stream;
-}
-
-
-
-// ToDo: Remove the following after development.
-void UnsignedHugeInt::report_number_of_objects() {
-    std::cout << "Number of UnsignedHugeInt objects created: " << UnsignedHugeInt::num_objects_created << "\n";
-    std::cout << "Number of UnsignedHugeInt objects destroyed: " << UnsignedHugeInt::num_objects_deleted << "\n";
-    std::cout << "Number of HugeIntWord objects created: " << HugeIntWord::num_objects_created << "\n";
-    std::cout << "Number of HugeIntWord objects destroyed: " << HugeIntWord::num_objects_deleted << "\n";
-    std::cout << "Number of UnsignedHugeInt objects moved: " << UnsignedHugeInt::num_objects_moved << "\n";
 }

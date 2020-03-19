@@ -3,48 +3,6 @@
 
 #include "UnsignedHugeInt.h"
 
-//TEST_CASE("Test Testing Framework", "Verify that the unit testing framework is working correctly.") {
-////    std::cout << "Start of \"Test Testing Framework.\"\n";
-////    REQUIRE(true);
-////    UnsignedHugeInt x(((long)12345));
-////    x = x + 1;
-//
-//    std::string divisorString = "";
-//    std::string quotientString = "";
-//    std::string remainderString = "";
-//    UnsignedHugeInt divisor(divisorString), quotient(quotientString), remainder(remainderString);
-//    UnsignedHugeInt dividend = (divisor * quotient) + remainder;
-//    std::cout << "------------------------------------------------------------------------------------------------\n";
-//    std::cout << "dividend: " << dividend.to_string() << "\n";
-//    std::cout << "divisor: " << divisor.to_string() << "\n";
-//    std::cout << "quotient: " << quotient.to_string() << "\n";
-//    std::cout << "remainder: " << remainder.to_string() << "\n";
-//    std::cout << "------------------------------------------------------------------------------------------------\n";
-
-//    int a(5);
-//    int b = ++a;
-//    int c = a++;
-//    std::cout << "a: " << a << "\n";
-//    std::cout << "b: " << b << "\n";
-//    std::cout << "c: " << c << "\n";
-
-//    UnsignedHugeInt testInt1("5970947234234333957096709724300995477654567");
-//    UnsignedHugeInt testInt1 = "5970947234234333957096709724300995477654567";
-
-//    UnsignedHugeInt testInt1(5);
-//    testInt1 = 15;
-//    testInt1 += 890812;
-//    std::cout << "testInt1: " << testInt1 << "\n";
-//    
-//    testInt1 = "5970947234234333957096709724300995477654567";
-//    std::cout << "testInt1 after reassignment: " << testInt1 << "\n";
-//
-//    UnsignedHugeInt testInt2("745777289092837878910928377589");
-//    std::cout << "testInt2: " << testInt2 << "\n";
-//    UnsignedHugeInt testInt3 = "43094187230984798734789091872873890210938741";
-//    std::cout << "testInt3: " << testInt3 << "\n";    
-//}
-
 TEST_CASE("Blank Number", "Instantiate an UnsignedHugeInt with an unspecified value. Its value should be 0 before modification.") {
     UnsignedHugeInt newNumber;
     std::string valueString = newNumber.to_string();
@@ -974,9 +932,4 @@ TEST_CASE("Decrement Suffix With One Word Carry",
     UnsignedHugeInt y = x--;
     REQUIRE(expectedResultString == x.to_string());
     REQUIRE(origValueString == y.to_string());
-}
-
-TEST_CASE("Memory Leak Check",
-        "Check that the number of UnsignedHugeInt objects created is the same as the number of objects destroyed.") {
-    UnsignedHugeInt::report_number_of_objects();
 }
