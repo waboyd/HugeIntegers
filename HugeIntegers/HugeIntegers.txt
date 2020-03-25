@@ -1,1 +1,1 @@
-./Debug/UnsignedHugeInt.cpp.o ./Debug/HugeIntWord.cpp.o ./Debug/hugeIntTests.cpp.o   
+./Debug/UnsignedHugeInt.cpp.o ./Debug/hugeIntTests.cpp.o ./Debug/HugeIntWord.cpp.o ./Debug/UnsignedHugeIntValue.cpp.o   

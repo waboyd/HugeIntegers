@@ -1,9 +1,7 @@
 #pragma once
 
-#include <cstddef>
 #include <iostream>
 #include <sstream>
-#include <exception>
 
 #define MAX_VALUE   999999999
 #define MAX_NUMBER_OF_DIGITS    9
@@ -11,7 +9,7 @@
 class HugeIntWord
 {
     
-    friend class UnsignedHugeInt;
+    friend class UnsignedHugeIntValue;
     
 public:
 

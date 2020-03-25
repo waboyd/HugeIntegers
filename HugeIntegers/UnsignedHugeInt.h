@@ -1,5 +1,3 @@
-#pragma once
-
 /* 
  * File:   UnsignedHugeInt.h
  * Author: William Boyd
@@ -7,19 +5,11 @@
  * Created on December 26, 2019, 11:54 AM
  */
 
+#pragma once
+
 #include <iostream>
-#include <fstream>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/stat.h>
 
-#include "HugeIntWord.h"
-
-#define MAX_DIGITS_PER_WORD 9
-#define CHECK_VALUE_A   84340
-#define CHECK_VALUE_B   308424
-#define READ_BUFFER_SIZE    144
-#define BUFFER_NUM_WORDS    16
+class UnsignedHugeIntValue;
 
 class UnsignedHugeInt {
 public:
@@ -175,7 +165,7 @@ public:
      * @param value_string A C string of the value to assign to the UnsignedHugeInt object.
      * @return Reference to the newly created object.
      */
-    UnsignedHugeInt& operator=(const char*  value_string);
+    UnsignedHugeInt& operator=(const char* value_string);
 
     /**
      * @brief Determines which of the two numbers is greater.
@@ -508,140 +498,36 @@ public:
     UnsignedHugeInt operator--(int dummy);
     
     /**
-     * @brief Returns true only if the object has been defined and is not null.
-     * @return True if the object is verified as properly defined.
-     */
-    bool is_defined() const;
-    
-    /**
-     * @brief Returns the number of words that make up the UnsignedHugeInt object.
-     * @return The number of words in the object.
-     */
-    long num_words() const;
-    
-    /**
-     * @brief Returns the most significant word of the UnsignedHugeInt object.
-     * @return The most significant word of the object.
-     */
-    HugeIntWord* get_most_significant_word() const;
-
-    /**
-     * @brief Returns the least significant word of the UnsignedHugeInt object.
-     * @return The least significant word of the object.
-     */
-    HugeIntWord* get_least_significant_word() const;
-
-    /**
-     * @brief Removes and deletes the most significant word of the UnsignedHugeInt object.
-     * @return The most significant word of the object after the change.
-     */
-    HugeIntWord* remove_most_significant_word();
-    
-    /**
      * @brief Returns the value of this UnsignedHugeInt object as a string.
      * @return The value of this object as a string of digits.
      */
     std::string to_string() const;
     
-protected:
-    // The maximum value that is permitted in one word of UnsignedHugeInt.
-    static unsigned long max_word_value;
-    
-    // The base value for a word of UnsignedHugeInt. Each word represents a power of the word base.
-    static unsigned long long word_base;
-
-    // Protected Methods
-    
-    /**
-     * @brief Changes this object to a copy of the of the object in the argument.
-     * It is assumed that this object does not have any already defined words.
-     * @param orig The original object that will be copied.
-     */
-    void change_to_copy_of(const UnsignedHugeInt& orig);
-    
-    /**
-     * @brief Sets the value of this object to the unsigned integer given in the argument.
-     * It is assumed that this object does not have any already defined words.
-     * @param integer_string A string of the digits that will be converted to an unsigned integer.
-     */
-    void set_value_from_string(std::string integer_string);
-    
-    /**
-     * @brief Removes and deletes all words from this object.
-     */
-    void delete_all_words();
-    
-    /**
-     * @brief Removes and deletes the most significant words of this object if the words have a value of 0.
-     */
-    void remove_extra_leading_words();
-    
-    /**
-     * @brief Adds a new most significant word with a value of 0.
-     * @return Pointer to the new word that was added.
-     */
-    HugeIntWord* add_word();
-    
-    /**
-     * @brief Adds new most significant words with a total value given in the parameter.
-     * @return Pointer to the most significant new word that was added.
-     */
-    HugeIntWord* add_word(const unsigned long long value);
-
-    /**
-     * @brief Adds the word given in the parameter as the new most significant word.
-     * @return Pointer to the new word that was added.
-     */
-    HugeIntWord* add_word(HugeIntWord* new_word);
-    
-    /**
-     * @brief Changes this number by inserting a new least significant word with the given value.
-     * @param least_significant_value The value of the new least significant word to be added.
-     * @return The least significant word of this number.
-     */
-    HugeIntWord* insert_least_significant_word(unsigned long least_significant_value);
-
 private:
-    HugeIntWord *leastSigWord, *mostSigWord;
-    
-    // Integers that are set to specific values when defined.
-    int defined_key_1, defined_key_2;
-    
-    // Private Methods
+    UnsignedHugeIntValue *value;
 
     /**
-     * @brief Adds a specified value at a specified word of this UnsignedHugeInt.
-     * @param location_to_add Word at which the value will be added. This word will be changed.
-     * @param value_to_add Number that will be added to the specified word.
-     * @return The least significant word that was updated.
+     * @brief Creates a new UnsignedHugeInt object with the value copied from the parameter.
+     * This constructor is intended for internal use only.
+     * @param value Initial value for the UnsignedHugeInt object as an UnsignedHugeIntValue object.
      */
-    HugeIntWord* add_value_at_word(HugeIntWord* location_to_add, const UnsignedHugeInt& value_to_add);
-    
+    UnsignedHugeInt(UnsignedHugeIntValue& value);
+        
     /**
-     * @brief Creates a new UnsignedHugeInt object using the argument and its linked more significant words.
-     * @param least_significant_word An existing word that will be copied as the least significant word of the new UnsignedHugeInt.
-     * @return The new UnsignedHugeInt object.
+     * @brief Creates a new UnsignedHugeInt object with a value moved from the argument.
+     * The value does not not exist in the original argument object after this operation.
+     * This constructor is intended for internal use only.
+     * @param value Object whose value will be moved.
      */
-    static UnsignedHugeInt integer_with_least_significant_word(const HugeIntWord* least_significant_word);
-    
+    UnsignedHugeInt(UnsignedHugeIntValue&& value);
+
     /**
-     * @brief For a multiplication operation, the subtotal from multiplying words toward one word of the product is found.
-     * This method is called by the multiply() method to find the value at one word of the product.
-     * @param greater_factor_word Most significant word of a scan for the first factor.
-     * @param lesser_factor_word Least significant word of a scan for the second factor.
-     * @return The subtotal for one word of the product of the two factors.
+     * @brief Creates a new UnsignedHugeInt object with a value moved directly from the argument.
+     * This constructor is intended for internal use only.
+     * @param value Object whose value will be moved.
      */
-    static UnsignedHugeInt find_multiplication_subtotal(const HugeIntWord* greater_factor_word, const HugeIntWord* lesser_factor_word);
-    
-    /**
-     * @brief Multiplies an UnsignedHugeInt object by an unsigned integer that is small enough to fit within one word of UnsignedHugeInt.
-     * This method does not check the size of the integer. This method is more efficient than the multiply() method
-     * for cases in which the small_factor is less than the base of the UnsignedHugeInt words.
-     * @param large_factor The UnsignedHugeInt factor of the multiplication.
-     * @param small_factor An unsigned integer factor with a value less than the base of the UnsignedHugeInt words.
-     * @return The result from multiplying the integers as an UnsignedHugeInt object.
-     */
-    static UnsignedHugeInt multiply_single_word(const UnsignedHugeInt& large_factor, const unsigned long long small_factor);
+    UnsignedHugeInt(UnsignedHugeIntValue* value);
+
 };
 
 // Operators involving UnsignedHugeInt, but not considered part of UnsignedHugeInt by the compiler.
