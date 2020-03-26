@@ -36,7 +36,7 @@ UnsignedHugeInt::UnsignedHugeInt(UnsignedHugeIntValue& value) {
 }
 
 UnsignedHugeInt::UnsignedHugeInt(UnsignedHugeIntValue&& value) {
-    this->value = new UnsignedHugeIntValue(value);
+    this->value = new UnsignedHugeIntValue(std::move(value));
 }
 
 UnsignedHugeInt::UnsignedHugeInt(UnsignedHugeIntValue* value) {
