@@ -3,7 +3,7 @@
 ## any manual changes will be erased      
 ##
 ## Debug
-ProjectName            :=HugeIntegers
+ProjectName            :=HugeIntegersLibrary
 ConfigurationName      :=Debug
 WorkspacePath          :=C:/Users/Seeker/Documents/programming/HugeIntegers
 ProjectPath            :=C:/Users/Seeker/Documents/programming/HugeIntegers/HugeIntegers
@@ -27,12 +27,12 @@ OutputSwitch           :=-o
 LibraryPathSwitch      :=-L
 PreprocessorSwitch     :=-D
 SourceSwitch           :=-c 
-OutputFile             :=$(IntermediateDirectory)/$(ProjectName)
+OutputFile             :=$(IntermediateDirectory)/libHugeIntegers.a
 Preprocessors          :=
 ObjectSwitch           :=-o 
 ArchiveOutputSwitch    := 
 PreprocessOnlySwitch   :=-E
-ObjectsFileList        :="HugeIntegers.txt"
+ObjectsFileList        :="HugeIntegersLibrary.txt"
 PCHCompileFlags        :=
 MakeDirCommand         :=makedir
 RcCmpOptions           := 
@@ -52,8 +52,8 @@ LibPath                := $(LibraryPathSwitch).
 AR       := C:/MinGW/bin/ar.exe rcu
 CXX      := C:/MinGW/bin/g++.exe
 CC       := C:/MinGW/bin/gcc.exe
-CXXFLAGS := -std=c++17 -Wall -g -O0 -Wall $(Preprocessors)
-CFLAGS   :=  -g -O0 -Wall $(Preprocessors)
+CXXFLAGS :=  -g $(Preprocessors)
+CFLAGS   :=  -g $(Preprocessors)
 ASFLAGS  := 
 AS       := C:/MinGW/bin/as.exe
 
@@ -62,7 +62,7 @@ AS       := C:/MinGW/bin/as.exe
 ## User defined environment variables
 ##
 CodeLiteDir:=C:\Program Files\CodeLite
-Objects0=$(IntermediateDirectory)/HugeIntWord.cpp$(ObjectSuffix) $(IntermediateDirectory)/UnsignedHugeInt.cpp$(ObjectSuffix) $(IntermediateDirectory)/UnsignedHugeIntValue.cpp$(ObjectSuffix) $(IntermediateDirectory)/hugeIntTests.cpp$(ObjectSuffix) 
+Objects0=$(IntermediateDirectory)/HugeIntWord.cpp$(ObjectSuffix) $(IntermediateDirectory)/UnsignedHugeInt.cpp$(ObjectSuffix) $(IntermediateDirectory)/UnsignedHugeIntValue.cpp$(ObjectSuffix) 
 
 
 
@@ -72,19 +72,21 @@ Objects=$(Objects0)
 ## Main Build Targets 
 ##
 .PHONY: all clean PreBuild PrePreBuild PostBuild MakeIntermediateDirs
-all: $(OutputFile)
+all: $(IntermediateDirectory) $(OutputFile)
 
-$(OutputFile): $(IntermediateDirectory)/.d $(Objects) 
+$(OutputFile): $(Objects)
 	@$(MakeDirCommand) $(@D)
 	@echo "" > $(IntermediateDirectory)/.d
 	@echo $(Objects0)  > $(ObjectsFileList)
-	$(LinkerName) $(OutputSwitch)$(OutputFile) @$(ObjectsFileList) $(LibPath) $(Libs) $(LinkOptions)
+	$(AR) $(ArchiveOutputSwitch)$(OutputFile) @$(ObjectsFileList) $(ArLibs)
+	@$(MakeDirCommand) "C:\Users\Seeker\Documents\programming\HugeIntegers/.build-debug"
+	@echo rebuilt > "C:\Users\Seeker\Documents\programming\HugeIntegers/.build-debug/HugeIntegersLibrary"
 
 MakeIntermediateDirs:
 	@$(MakeDirCommand) "./Debug"
 
 
-$(IntermediateDirectory)/.d:
+./Debug:
 	@$(MakeDirCommand) "./Debug"
 
 PreBuild:
@@ -116,14 +118,6 @@ $(IntermediateDirectory)/UnsignedHugeIntValue.cpp$(DependSuffix): UnsignedHugeIn
 
 $(IntermediateDirectory)/UnsignedHugeIntValue.cpp$(PreprocessSuffix): UnsignedHugeIntValue.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/UnsignedHugeIntValue.cpp$(PreprocessSuffix) UnsignedHugeIntValue.cpp
-
-$(IntermediateDirectory)/hugeIntTests.cpp$(ObjectSuffix): hugeIntTests.cpp $(IntermediateDirectory)/hugeIntTests.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/Users/Seeker/Documents/programming/HugeIntegers/HugeIntegers/hugeIntTests.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/hugeIntTests.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/hugeIntTests.cpp$(DependSuffix): hugeIntTests.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/hugeIntTests.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/hugeIntTests.cpp$(DependSuffix) -MM hugeIntTests.cpp
-
-$(IntermediateDirectory)/hugeIntTests.cpp$(PreprocessSuffix): hugeIntTests.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/hugeIntTests.cpp$(PreprocessSuffix) hugeIntTests.cpp
 
 
 -include $(IntermediateDirectory)/*$(DependSuffix)

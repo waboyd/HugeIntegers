@@ -1,4 +1,28 @@
 [{
+  "file": "C:\\Users\\Seeker\\Documents\\programming\\HugeIntegers\\HugeIntegers\\HugeIntWord.cpp",
+  "directory": "C:\\Users\\Seeker\\Documents\\programming\\HugeIntegers\\HugeIntegers",
+  "command": "clang  -c C:\\Users\\Seeker\\Documents\\programming\\HugeIntegers\\HugeIntegers\\HugeIntWord.cpp -o C:\\Users\\Seeker\\Documents\\programming\\HugeIntegers\\HugeIntegers\\HugeIntWord.cpp.o -target x86_64-pc-windows-gnu -Ic:\\MinGW\\lib\\gcc\\mingw32\\8.2.0\\include\\c++ -Ic:\\MinGW\\lib\\gcc\\mingw32\\8.2.0\\include\\c++\\mingw32 -Ic:\\MinGW\\lib\\gcc\\mingw32\\8.2.0\\include\\c++\\backward -Ic:\\MinGW\\lib\\gcc\\mingw32\\8.2.0\\include -Ic:\\MinGW\\include -Ic:\\MinGW\\lib\\gcc\\mingw32\\8.2.0\\include-fixed -I. -I.  -g"
+ }, {
+  "file": "C:\\Users\\Seeker\\Documents\\programming\\HugeIntegers\\HugeIntegers\\UnsignedHugeInt.h",
+  "directory": "C:\\Users\\Seeker\\Documents\\programming\\HugeIntegers\\HugeIntegers",
+  "command": "clang  -c C:\\Users\\Seeker\\Documents\\programming\\HugeIntegers\\HugeIntegers\\UnsignedHugeInt.h -o C:\\Users\\Seeker\\Documents\\programming\\HugeIntegers\\HugeIntegers\\UnsignedHugeInt.h.o -target x86_64-pc-windows-gnu -Ic:\\MinGW\\lib\\gcc\\mingw32\\8.2.0\\include\\c++ -Ic:\\MinGW\\lib\\gcc\\mingw32\\8.2.0\\include\\c++\\mingw32 -Ic:\\MinGW\\lib\\gcc\\mingw32\\8.2.0\\include\\c++\\backward -Ic:\\MinGW\\lib\\gcc\\mingw32\\8.2.0\\include -Ic:\\MinGW\\include -Ic:\\MinGW\\lib\\gcc\\mingw32\\8.2.0\\include-fixed -I. -I.  -g"
+ }, {
+  "file": "C:\\Users\\Seeker\\Documents\\programming\\HugeIntegers\\HugeIntegers\\HugeIntWord.h",
+  "directory": "C:\\Users\\Seeker\\Documents\\programming\\HugeIntegers\\HugeIntegers",
+  "command": "clang  -c C:\\Users\\Seeker\\Documents\\programming\\HugeIntegers\\HugeIntegers\\HugeIntWord.h -o C:\\Users\\Seeker\\Documents\\programming\\HugeIntegers\\HugeIntegers\\HugeIntWord.h.o -target x86_64-pc-windows-gnu -Ic:\\MinGW\\lib\\gcc\\mingw32\\8.2.0\\include\\c++ -Ic:\\MinGW\\lib\\gcc\\mingw32\\8.2.0\\include\\c++\\mingw32 -Ic:\\MinGW\\lib\\gcc\\mingw32\\8.2.0\\include\\c++\\backward -Ic:\\MinGW\\lib\\gcc\\mingw32\\8.2.0\\include -Ic:\\MinGW\\include -Ic:\\MinGW\\lib\\gcc\\mingw32\\8.2.0\\include-fixed -I. -I.  -g"
+ }, {
+  "file": "C:\\Users\\Seeker\\Documents\\programming\\HugeIntegers\\HugeIntegers\\UnsignedHugeInt.cpp",
+  "directory": "C:\\Users\\Seeker\\Documents\\programming\\HugeIntegers\\HugeIntegers",
+  "command": "clang  -c C:\\Users\\Seeker\\Documents\\programming\\HugeIntegers\\HugeIntegers\\UnsignedHugeInt.cpp -o C:\\Users\\Seeker\\Documents\\programming\\HugeIntegers\\HugeIntegers\\UnsignedHugeInt.cpp.o -target x86_64-pc-windows-gnu -Ic:\\MinGW\\lib\\gcc\\mingw32\\8.2.0\\include\\c++ -Ic:\\MinGW\\lib\\gcc\\mingw32\\8.2.0\\include\\c++\\mingw32 -Ic:\\MinGW\\lib\\gcc\\mingw32\\8.2.0\\include\\c++\\backward -Ic:\\MinGW\\lib\\gcc\\mingw32\\8.2.0\\include -Ic:\\MinGW\\include -Ic:\\MinGW\\lib\\gcc\\mingw32\\8.2.0\\include-fixed -I. -I.  -g"
+ }, {
+  "file": "C:\\Users\\Seeker\\Documents\\programming\\HugeIntegers\\HugeIntegers\\UnsignedHugeIntValue.h",
+  "directory": "C:\\Users\\Seeker\\Documents\\programming\\HugeIntegers\\HugeIntegers",
+  "command": "clang  -c C:\\Users\\Seeker\\Documents\\programming\\HugeIntegers\\HugeIntegers\\UnsignedHugeIntValue.h -o C:\\Users\\Seeker\\Documents\\programming\\HugeIntegers\\HugeIntegers\\UnsignedHugeIntValue.h.o -target x86_64-pc-windows-gnu -Ic:\\MinGW\\lib\\gcc\\mingw32\\8.2.0\\include\\c++ -Ic:\\MinGW\\lib\\gcc\\mingw32\\8.2.0\\include\\c++\\mingw32 -Ic:\\MinGW\\lib\\gcc\\mingw32\\8.2.0\\include\\c++\\backward -Ic:\\MinGW\\lib\\gcc\\mingw32\\8.2.0\\include -Ic:\\MinGW\\include -Ic:\\MinGW\\lib\\gcc\\mingw32\\8.2.0\\include-fixed -I. -I.  -g"
+ }, {
+  "file": "C:\\Users\\Seeker\\Documents\\programming\\HugeIntegers\\HugeIntegers\\UnsignedHugeIntValue.cpp",
+  "directory": "C:\\Users\\Seeker\\Documents\\programming\\HugeIntegers\\HugeIntegers",
+  "command": "clang  -c C:\\Users\\Seeker\\Documents\\programming\\HugeIntegers\\HugeIntegers\\UnsignedHugeIntValue.cpp -o C:\\Users\\Seeker\\Documents\\programming\\HugeIntegers\\HugeIntegers\\UnsignedHugeIntValue.cpp.o -target x86_64-pc-windows-gnu -Ic:\\MinGW\\lib\\gcc\\mingw32\\8.2.0\\include\\c++ -Ic:\\MinGW\\lib\\gcc\\mingw32\\8.2.0\\include\\c++\\mingw32 -Ic:\\MinGW\\lib\\gcc\\mingw32\\8.2.0\\include\\c++\\backward -Ic:\\MinGW\\lib\\gcc\\mingw32\\8.2.0\\include -Ic:\\MinGW\\include -Ic:\\MinGW\\lib\\gcc\\mingw32\\8.2.0\\include-fixed -I. -I.  -g"
+ }, {
   "file": "C:\\Users\\Seeker\\Documents\\programming\\HugeIntegers\\HugeIntegers\\HugeIntWord.h",
   "directory": "C:\\Users\\Seeker\\Documents\\programming\\HugeIntegers\\HugeIntegers",
   "command": "clang  -c C:\\Users\\Seeker\\Documents\\programming\\HugeIntegers\\HugeIntegers\\HugeIntWord.h -o C:\\Users\\Seeker\\Documents\\programming\\HugeIntegers\\HugeIntegers\\HugeIntWord.h.o -target x86_64-pc-windows-gnu -Ic:\\MinGW\\lib\\gcc\\mingw32\\8.2.0\\include\\c++ -Ic:\\MinGW\\lib\\gcc\\mingw32\\8.2.0\\include\\c++\\mingw32 -Ic:\\MinGW\\lib\\gcc\\mingw32\\8.2.0\\include\\c++\\backward -Ic:\\MinGW\\lib\\gcc\\mingw32\\8.2.0\\include -Ic:\\MinGW\\include -Ic:\\MinGW\\lib\\gcc\\mingw32\\8.2.0\\include-fixed -I. -I.  -std=c++17  -Wall  -g  -O0  -Wall"
