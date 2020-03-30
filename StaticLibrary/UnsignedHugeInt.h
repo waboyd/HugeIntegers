@@ -1,6 +1,6 @@
 /* 
  * File:   UnsignedHugeInt.h
- * Author: William Boyd
+ * Author: William A. Boyd Jr.
  *
  * Created on December 26, 2019, 11:54 AM
  */

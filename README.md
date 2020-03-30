@@ -10,7 +10,7 @@ The file catch.hpp is the Catch2 test framework, which was used for class testin
 
 
 ## Setup
-The library is precompiled as a static library for a 64-bit Windows environment in the folder named StaticLibrary. Your compiler will need access to the header file UnsignedHugeInt.h, and your linker will need the file libUnsignedHugeInt.lib.
+The library is precompiled as a static library for a 64-bit Windows environment in the folder named StaticLibrary. Your compiler will need access to the header file UnsignedHugeInt.h, and your linker will need the file libHugeIntegers.lib.
 
 If the UnsignedHugeInt class will be used on a system other than 64-bit Windows, it may be necessary to compile the source code for your particular environment. The required source files are:
 
@@ -176,7 +176,7 @@ Result:
 
 ## Development Notes
 
-This library was developed in 2019-2020 by William A. Boyd Jr. The IDEs NetBeans and CodeLite were used at different stages of development. MinGW was used for its C++ compilation tools. Git was used together with Github for version control and backup. The testing framework Catch2 was used to create test cases, allowing a Test-Driven Development approach to be used for this library. 79 test cases were created, both to define the requirements and verify the functionality of the library. The test cases are available in the Github repository, but they are not compiled into the static library.
+This library was developed in 2019-2020 by William A. Boyd Jr. The IDEs NetBeans and CodeLite were used at different stages of development. MinGW was used for its C++ compilation tools. Git was used together with Github for version control and backup. The testing framework Catch2 was used to create test cases, allowing a Test-Driven Development approach to be used for this library. 79 test cases were created, both to define the requirements and verify the functionality of the library. The test cases are available in the Github repository, but they are not compiled into the static library. Care was taken to ensure that the release version of this library does not create any memory leaks; all internal objects that are instantiated are deleted when no longer in scope.
 
 No guarantees are made as to whether development will continue for this library. Some features that are not currently implemented but could be useful are listed below.
 

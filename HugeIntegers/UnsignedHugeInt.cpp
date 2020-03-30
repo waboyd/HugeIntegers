@@ -86,9 +86,7 @@ UnsignedHugeInt& UnsignedHugeInt::operator=(const UnsignedHugeInt* orig) {
 }
     
 UnsignedHugeInt& UnsignedHugeInt::operator=(UnsignedHugeInt&& orig) {
-    if(this->value->is_defined()) {
-        this->value->delete_all_words();
-    }
+    delete(this->value);
     this->value = orig.value;
     orig.value = NULL;
     return *this;
