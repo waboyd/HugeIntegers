@@ -54,7 +54,7 @@ If an integer is too large for the native C++ environment to process, you will n
 
     UnsignedHugeInt a = 1234567890098765432101; // Does not work. Do not do this!
 
-For this reason, strings (char* or std::string) of digits can used to assign a value to an UnsignedHugeInt. The string must contain only digits for the integer. Values can also be copied from existing UnsignedHugeInt or nonnegative integer variables.
+For this reason, strings (char* or std::string) of digits can be used to assign a value to an UnsignedHugeInt. The string must contain only digits for the integer. Values can also be copied from existing UnsignedHugeInt or nonnegative integer variables.
 
     UnsignedHugeInt a = "1234567890098765432101";	// This will give the correct value to the variable.
     UnsignedHugeInt b(a);		// Copies the value 1234567890098765432101 to the new variable b.
@@ -88,7 +88,7 @@ UnsignedHugeInt supports the following arithmetic operators, which behave the sa
 	+=	-=	*=	/=	%=
 	++ (prefix or suffix)
 	-- (prefix or suffix)
-All of these return UnsignedHugeInt objects when one of the arguments is an UnsignedHugeInt. Please note that UnsignedHugeInt does not support the shift operators << and >>. Integer values can be used for one side of the operator, but the use of negative values in the operations is not supported.
+All of these return UnsignedHugeInt objects when one of the arguments is an UnsignedHugeInt. The subtraction and decrement operations throw an exception if the result is negative. Please note that UnsignedHugeInt does not support the shift operators << and >>. Integer values can be used for one side of the operator, but the use of negative values in the operations is not supported.
 
 As an example, this finds the average of the two values.
 
@@ -132,7 +132,8 @@ These all return a bool value and have the same behavior expected for other inte
 
 ## Text File Operations
 
-The value of an UnsignedHugeInt can be written to a text file using the method `write_to_text_file(std::string file_path)`. The argument should be the path of the file to be written, including the name of the file. The write_to_text_file method can only be used to create a new file containing only digits from the value and newline ('\n') characters. An exception is thrown if the file already exists.
+The value of an UnsignedHugeInt can be written to a text file using the method
+`write_to_text_file(std::string file_path)`. The argument should be the path of the file to be written, including the name of the file. The write_to_text_file method can only be used to create a new file containing only digits from the value and newline ('\n') characters. An exception is thrown if the file already exists before the method is called.
 
 The value of an UnsignedHugeInt can be set to a value from a text file via the method `read_from_text_file(std::string file_path)`. The argument should be the path of the file to be read, including the name of the file. The text file is assumed to hold the digits of only one unsigned integer. All non-digit characters in the text file are ignored.
 
@@ -153,7 +154,8 @@ Result:
 
 ## Binary File Operations
 
-The value of an UnsignedHugeInt can be written to a binary file using the method `write_to_binary_file(std::string file_path)`. The use of a binary file is more efficient than a text file for both performance and required disk space. The drawback is that the binary file can only be read by the same library that created the file, in the same environment. The argument should be the path of the file to be written, including the name of the file. The write_to_binary_file method can only be used to create a new binary file; an exception is thrown if the file already exists.
+The value of an UnsignedHugeInt can be written to a binary file using the method
+`write_to_binary_file(std::string file_path)`. The use of a binary file is more efficient than a text file for both performance and required disk space. The drawback is that the binary file can only be read by the same library that created the file, in the same environment. The argument should be the path of the file to be written, including the name of the file. The write_to_binary_file() method can only be used to create a new binary file; an exception is thrown if the file already exists before the method is called.
 
 The method `read_from_binary_file(std::string file_path)` reads the value of an UnsignedHugeInt that was previously written to a file by the write_to_binary_file() method. The argument should be the path of the file to be read, including the name of the file. The portability of the binary files across different computers is not guaranteed.
 
@@ -174,11 +176,11 @@ Result:
 
 ## Development Notes
 
-This library was developed in 2019-2020 by William A. Boyd Jr. The IDEs NetBeans and CodeLite were used at different stages of development. MinGW was used for its C++ compilation tools. Git was used together with Github for version control and backup. The testing framework Catch2 was used to create test cases, allowing a Test-Driven Development approach to be used for this library.
+This library was developed in 2019-2020 by William A. Boyd Jr. The IDEs NetBeans and CodeLite were used at different stages of development. MinGW was used for its C++ compilation tools. Git was used together with Github for version control and backup. The testing framework Catch2 was used to create test cases, allowing a Test-Driven Development approach to be used for this library. 79 test cases were created, both to define the requirements and verify the functionality of the library. The test cases are available in the Github repository, but they are not compiled into the static library.
 
 No guarantees are made as to whether development will continue for this library. Some features that are not currently implemented but could be useful are listed below.
 
 - Detect the environment settings and adjust the maximum size for the value segments (words) accordingly.
 - Allow bases for value segments that are not powers of 10. The output functions would need to be replaced.
-- Apply multithreading to the multiplication and division operations.
-- Apply a related class that supports operations for signed integers with many digits.
+- Apply multithreading to the multiplication and/or division operations.
+- Implement a related class that supports operations for signed integers with many digits.

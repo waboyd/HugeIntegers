@@ -3,10 +3,6 @@
 
 #include "UnsignedHugeInt.h"
 
-//TEST_CASE("Empty Test", "A test that should pass in any circumstance.") {
-//    std::cout << "Inside Empty Test.\n";
-//}
-
 TEST_CASE("Blank Number", "Instantiate an UnsignedHugeInt with an unspecified value. Its value should be 0 before modification.") {
     UnsignedHugeInt newNumber;
     std::string valueString = newNumber.to_string();
