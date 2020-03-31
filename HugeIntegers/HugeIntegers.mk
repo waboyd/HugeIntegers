@@ -13,7 +13,7 @@ CurrentFileName        :=
 CurrentFilePath        :=
 CurrentFileFullPath    :=
 User                   :=Seeker
-Date                   :=29/03/2020
+Date                   :=31/03/2020
 CodeLitePath           :="C:/Program Files/CodeLite"
 LinkerName             :=C:/MinGW/bin/g++.exe
 SharedObjectLinkerName :=C:/MinGW/bin/g++.exe -shared -fPIC
@@ -62,7 +62,7 @@ AS       := C:/MinGW/bin/as.exe
 ## User defined environment variables
 ##
 CodeLiteDir:=C:\Program Files\CodeLite
-Objects0=$(IntermediateDirectory)/HugeIntWord.cpp$(ObjectSuffix) $(IntermediateDirectory)/UnsignedHugeInt.cpp$(ObjectSuffix) $(IntermediateDirectory)/UnsignedHugeIntValue.cpp$(ObjectSuffix) $(IntermediateDirectory)/hugeIntTests.cpp$(ObjectSuffix) 
+Objects0=$(IntermediateDirectory)/UnsignedHugeInt.cpp$(ObjectSuffix) $(IntermediateDirectory)/UnsignedHugeIntValue.cpp$(ObjectSuffix) $(IntermediateDirectory)/hugeIntTests.cpp$(ObjectSuffix) $(IntermediateDirectory)/HugeIntWord.cpp$(ObjectSuffix) 
 
 
 
@@ -93,14 +93,6 @@ PreBuild:
 ##
 ## Objects
 ##
-$(IntermediateDirectory)/HugeIntWord.cpp$(ObjectSuffix): HugeIntWord.cpp $(IntermediateDirectory)/HugeIntWord.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/Users/Seeker/Documents/programming/HugeIntegers/HugeIntegers/HugeIntWord.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/HugeIntWord.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/HugeIntWord.cpp$(DependSuffix): HugeIntWord.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/HugeIntWord.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/HugeIntWord.cpp$(DependSuffix) -MM HugeIntWord.cpp
-
-$(IntermediateDirectory)/HugeIntWord.cpp$(PreprocessSuffix): HugeIntWord.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/HugeIntWord.cpp$(PreprocessSuffix) HugeIntWord.cpp
-
 $(IntermediateDirectory)/UnsignedHugeInt.cpp$(ObjectSuffix): UnsignedHugeInt.cpp $(IntermediateDirectory)/UnsignedHugeInt.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/Users/Seeker/Documents/programming/HugeIntegers/HugeIntegers/UnsignedHugeInt.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/UnsignedHugeInt.cpp$(ObjectSuffix) $(IncludePath)
 $(IntermediateDirectory)/UnsignedHugeInt.cpp$(DependSuffix): UnsignedHugeInt.cpp
@@ -124,6 +116,14 @@ $(IntermediateDirectory)/hugeIntTests.cpp$(DependSuffix): hugeIntTests.cpp
 
 $(IntermediateDirectory)/hugeIntTests.cpp$(PreprocessSuffix): hugeIntTests.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/hugeIntTests.cpp$(PreprocessSuffix) hugeIntTests.cpp
+
+$(IntermediateDirectory)/HugeIntWord.cpp$(ObjectSuffix): HugeIntWord.cpp $(IntermediateDirectory)/HugeIntWord.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/Users/Seeker/Documents/programming/HugeIntegers/HugeIntegers/HugeIntWord.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/HugeIntWord.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/HugeIntWord.cpp$(DependSuffix): HugeIntWord.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/HugeIntWord.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/HugeIntWord.cpp$(DependSuffix) -MM HugeIntWord.cpp
+
+$(IntermediateDirectory)/HugeIntWord.cpp$(PreprocessSuffix): HugeIntWord.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/HugeIntWord.cpp$(PreprocessSuffix) HugeIntWord.cpp
 
 
 -include $(IntermediateDirectory)/*$(DependSuffix)

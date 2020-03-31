@@ -79,6 +79,7 @@ Result:
     intString2: 56748962340197409876098734777769112230553
     d: 56748962340197409876098734777769112230553
 
+The UnsignedHugeInt method `number_of_digits()` returns the number of digits in the value as an UnsignedHugeInt. The UnsignedHugeInt method `length()` is equivalent.
 
 ## Arithmetic Operators
 
@@ -176,7 +177,7 @@ Result:
 
 ## Development Notes
 
-This library was developed in 2019-2020 by William A. Boyd Jr. The IDEs NetBeans and CodeLite were used at different stages of development. MinGW was used for its C++ compilation tools. Git was used together with Github for version control and backup. The testing framework Catch2 was used to create test cases, allowing a Test-Driven Development approach to be used for this library. 79 test cases were created, both to define the requirements and verify the functionality of the library. The test cases are available in the Github repository, but they are not compiled into the static library. Care was taken to ensure that the release version of this library does not create any memory leaks; all internal objects that are instantiated are deleted when no longer in scope.
+This library was developed in 2019-2020 by William A. Boyd Jr. The IDEs NetBeans and CodeLite were used at different stages of development. MinGW was used for its C++ compilation tools. Git was used together with Github for version control and backup. The testing framework Catch2 was used to create test cases, allowing a Test-Driven Development approach to be used for this library. 82 test cases were created, both to define the requirements and verify the functionality of the library. The test cases are available in the Github repository, but they are not compiled into the static library. Care was taken to ensure that the release version of this library does not create any memory leaks; all internal objects that are instantiated are deleted when no longer in scope.
 
 No guarantees are made as to whether development will continue for this library. Some features that are not currently implemented but could be useful are listed below.
 

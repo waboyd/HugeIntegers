@@ -69,6 +69,12 @@ public:
     virtual ~UnsignedHugeIntValue();
     
     /**
+     * @brief Returns the number of digits in the value.
+     * @return The number of digits in the value.
+     */
+    UnsignedHugeIntValue number_of_digits() const;
+    
+    /**
      * @brief Sets the value of this UnsignedHugeIntValue object to the integer in the text file.
      * The file should contain digits for only a single integer, as the entire file is scanned to 
      * set the value of this object.

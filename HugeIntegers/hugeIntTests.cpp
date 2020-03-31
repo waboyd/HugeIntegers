@@ -933,3 +933,22 @@ TEST_CASE("Decrement Suffix With One Word Carry",
     REQUIRE(expectedResultString == x.to_string());
     REQUIRE(origValueString == y.to_string());
 }
+
+TEST_CASE("Check number of digits 1", "Read the number of digits in the value of UnsignedHugeInt.") {
+    std::string valueString = "57938245092765675590098172937668939093873709875";
+    unsigned int expectedNumDigits = valueString.length();
+    UnsignedHugeInt x(valueString);
+    REQUIRE(expectedNumDigits == x.number_of_digits());
+}
+
+TEST_CASE("Check number of digits 2", "Read the number of digits in the value of UnsignedHugeInt.") {
+    std::string valueString = "821065408943540035403078980";
+    unsigned int expectedNumDigits = 27;
+    UnsignedHugeInt x(valueString);
+    REQUIRE(expectedNumDigits == x.length());
+}
+
+TEST_CASE("Check number of digits 3", "Read the number of digits for an UnsignedHugeInt with a value of 0.") {
+    UnsignedHugeInt x((unsigned long long)0);
+    REQUIRE(1 == x.length());
+}

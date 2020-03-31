@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Workspace Name="HugeIntegers" Database="" Version="10.0.0">
-  <Project Name="HugeIntegers" Path="HugeIntegers/HugeIntegers.project" Active="No"/>
-  <Project Name="HugeIntegersStaticLibraryCreator" Path="HugeIntegers/HugeIntegersLibrary.project" Active="Yes"/>
+  <Project Name="HugeIntegers" Path="HugeIntegers/HugeIntegers.project" Active="Yes"/>
+  <Project Name="HugeIntegersStaticLibraryCreator" Path="HugeIntegers/HugeIntegersLibrary.project" Active="No"/>
   <BuildMatrix>
     <WorkspaceConfiguration Name="Debug" Selected="yes">
       <Environment/>

@@ -47,6 +47,14 @@ UnsignedHugeInt::~UnsignedHugeInt() {
     delete this->value;
 }
 
+UnsignedHugeInt UnsignedHugeInt::number_of_digits() const {
+    return UnsignedHugeInt(this->value->number_of_digits());
+}
+
+UnsignedHugeInt UnsignedHugeInt::length() const {
+    return UnsignedHugeInt(this->value->number_of_digits());
+}
+
 void UnsignedHugeInt::read_from_text_file(std::string file_path) {
     this->value->read_from_text_file(file_path);
 }
