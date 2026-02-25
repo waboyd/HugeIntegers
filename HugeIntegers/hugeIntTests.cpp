@@ -1,7 +1,8 @@
-#define CATCH_CONFIG_MAIN
-#include "catch.hpp"
+#include <catch2/catch_test_macros.hpp>
 
 #include "UnsignedHugeInt.h"
+
+const char test_folder_path[] = "../TestFiles/";
 
 TEST_CASE("Blank Number", "Instantiate an UnsignedHugeInt with an unspecified value. Its value should be 0 before modification.") {
     UnsignedHugeInt newNumber;
@@ -38,7 +39,7 @@ TEST_CASE("Read And Display Middle Zeros", "Instantiate an UnsignedHugeInt with 
     std::string valueString = "457760375299030000000000000000000000000000000000000000000589200347000000000000000000000000013";
     UnsignedHugeInt *newNumber = new UnsignedHugeInt(valueString);
     CHECK(valueString == newNumber->to_string());
-    delete(newNumber);    
+    delete(newNumber);
 }
 
 TEST_CASE("Read String With Extra Leading Zeros", "Instantiate an UnsignedHugeInt from a string with many extra leading zeros.") {
@@ -59,7 +60,7 @@ TEST_CASE("Read Very Long Number String", "Instantiate an UnsignedHugeInt from a
         "4984122697451005654";
     UnsignedHugeInt *newNumber = new UnsignedHugeInt(valueString);
     CHECK(valueString == newNumber->to_string());
-    delete(newNumber);    
+    delete(newNumber);
 }
 
 TEST_CASE("Copy UnsignedHugeInt From Object",
@@ -105,7 +106,7 @@ TEST_CASE("Set Equal to String", "Change the value of an UnsignedHugeInt object 
 }
 
 TEST_CASE("Read From Text File 1", "Take the value of an UnsignedHugeInt object from a text file.") {
-    std::string filePath = "..\\..\\TestFiles\\smallInt.txt";
+    std::string filePath = std::string(test_folder_path) + "smallInt.txt";
     std::string expectedValueString = "19843";
     UnsignedHugeInt x;
     FILE *testTextFile = fopen(filePath.c_str(), "r");
@@ -115,15 +116,17 @@ TEST_CASE("Read From Text File 1", "Take the value of an UnsignedHugeInt object 
 }
 
 TEST_CASE("Read From Text File 2", "Take the value of an UnsignedHugeInt object from a text file.") {
-    std::string filePath = "..\\..\\TestFiles\\oneLineInt.txt";
+    char filePath[70];
+    strcpy(filePath, test_folder_path);
+    strcat(filePath, "oneLineInt.txt");
     std::string expectedValueString = "730984055406875409847684032487198406875407354458765804141708026";
     UnsignedHugeInt x;
     x.read_from_text_file(filePath);
-    REQUIRE(expectedValueString == x.to_string());    
+    REQUIRE(expectedValueString == x.to_string());
 }
 
 TEST_CASE("Read From Text File 3", "Take the value of an UnsignedHugeInt object from a text file.") {
-    std::string filePath = "..\\..\\TestFiles\\twoLineInt.txt";
+    std::string filePath = std::string(test_folder_path) + "twoLineInt.txt";
     std::string expectedValueString = "820498354354904968439898403871842520506525012000844863354646"
             "85441064524354878348484999654074035247887357479873228725855787149401870063865530630257"
             "6983601830000135725";
@@ -131,11 +134,11 @@ TEST_CASE("Read From Text File 3", "Take the value of an UnsignedHugeInt object 
     FILE *testTextFile = fopen(filePath.c_str(), "r");
     x.read_from_text_file(testTextFile);
     fclose(testTextFile);
-    REQUIRE(expectedValueString == x.to_string());    
+    REQUIRE(expectedValueString == x.to_string());
 }
 
 TEST_CASE("Read From Text File 4", "Take the value of an UnsignedHugeInt object from a text file.") {
-    std::string filePath = "..\\..\\TestFiles\\fiveLineInt.txt";
+    std::string filePath = std::string(test_folder_path) + "fiveLineInt.txt";
     std::string expectedValueString = "209680437196854065847012871284085415840151068475405282745820"
     "1254976846987675242669958404021029535743871849065098876984153103251870528574141835463840987551"
     "1554986303489046876984248051881657053577512838715405488754654687406986713212587165408970078200"
@@ -144,22 +147,24 @@ TEST_CASE("Read From Text File 4", "Take the value of an UnsignedHugeInt object 
     "0741652";
     UnsignedHugeInt x;
     x.read_from_text_file(filePath);
-    REQUIRE(expectedValueString == x.to_string());        
+    REQUIRE(expectedValueString == x.to_string());
 }
 
 TEST_CASE("Write to Text File 1", "Write a one-word UnsignedHugeInt to a text file.") {
     UnsignedHugeInt x(58961);
     std::string expectedString = "58961";
-    char textFilePath[50] = "..\\..\\TestFiles\\tempTestFile1.txt";
-    
+    char textFilePath[70];
+    strcpy(textFilePath, test_folder_path);
+    strcat(textFilePath, "tempTestFile1.txt");
+
     // Delete the file before writing if it already exists.
     remove(textFilePath);
-    
+
     // Use the write_to_text_file method to write the number to a text file.'
     FILE *writeTextFile = fopen(textFilePath, "w");
     x.write_to_text_file(writeTextFile);
     fclose(writeTextFile);
-    
+
     // Read the text file and compare its text to the expected string.
     FILE *readTextFile = fopen(textFilePath, "r");
     char readBuffer[101];
@@ -185,21 +190,23 @@ TEST_CASE("Write to Text File 1", "Write a one-word UnsignedHugeInt to a text fi
     }
     fclose(readTextFile);
     remove(textFilePath);
-    
+
     REQUIRE(expectedString == stringFromFile);
 }
 
 TEST_CASE("Write to Text File 2", "Write a multi-word UnsignedHugeInt to a text file, with some words equal to 0.") {
     std::string numberString = "46770498402019870000000000000000000096403210483580970000000000369670048940368706";
     UnsignedHugeInt x(numberString);
-    char textFilePath[50] = "..\\..\\TestFiles\\tempTestFile2.txt";
-    
+    char textFilePath[70];
+    strcpy(textFilePath, test_folder_path);
+    strcat(textFilePath, "tempTestFile2.txt");
+
     // Delete the file before writing if it already exists.
     remove(textFilePath);
-    
+
     // Use the write_to_text_file method to write the number to a text file.'
     x.write_to_text_file(textFilePath);
-    
+
     // Read the text file and compare its text to the expected string.
     FILE *readTextFile = fopen(textFilePath, "r");
     char readBuffer[101];
@@ -229,21 +236,23 @@ TEST_CASE("Write to Text File 2", "Write a multi-word UnsignedHugeInt to a text 
 }
 
 TEST_CASE("Write to Text File 3", "Write a several hundred digit UnsignedHugeInt to a text file.") {
-    std::string numberString = 
+    std::string numberString =
         "1809940760898948310000000000000000000004089784635409879064984068974346896894070894654672463549694104984712355"
         "9498473764065409864064876513335684604077908464178867605898010808801654144552000687976856737656816728308729843"
         "6769874140051032498464654613040345846410066738768746015576826840638469848668665434343899258782251550400168337"
         "7789798673543756068741159874027803568766840587604774568822408413485998048015504004484335098840087852287198038"
-        "67089403568729878478505453574040687522145544063666867078412825";    
+        "67089403568729878478505453574040687522145544063666867078412825";
     UnsignedHugeInt x(numberString);
-    char textFilePath[50] = "..\\..\\TestFiles\\tempTestFile3.txt";
-    
+    char textFilePath[70];
+    strcpy(textFilePath, test_folder_path);
+    strcat(textFilePath, "tempTestFile3.txt");
+
     // Delete the file before writing if it already exists.
     remove(textFilePath);
-    
+
     // Use the write_to_text_file method to write the number to a text file.'
     x.write_to_text_file(textFilePath);
-    
+
     // Read the text file and compare its text to the expected string.
     FILE *readTextFile = fopen(textFilePath, "r");
     char readBuffer[101];
@@ -282,7 +291,7 @@ TEST_CASE("Write and Read a Text File",
         "000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
         "000000000000000000000000000000000000000000000000018743574153568004808089000000049840"
         "098435740";
-    std::string textFilePath = "..\\..\\TestFiles\\tempTestFile4.txt";
+    std::string textFilePath = std::string(test_folder_path) + "tempTestFile4.txt";
     UnsignedHugeInt x(numberString);
     UnsignedHugeInt y;
     remove(textFilePath.c_str());
@@ -295,7 +304,7 @@ TEST_CASE("Write and Read a Text File",
 TEST_CASE("Write and Read Binary File for Small Number",
         "Write a single-word UnsignedHugeInt object to a binary file, then read the value with a different object.") {
     std::string numberString = "590";
-    std::string binaryFilePath = "..\\..\\TestFiles\\tempTestFile5.bin";
+    std::string binaryFilePath = std::string(test_folder_path) + "tempTestFile5.bin";
     UnsignedHugeInt x(numberString);
     UnsignedHugeInt y;
     remove(binaryFilePath.c_str());
@@ -311,7 +320,7 @@ TEST_CASE("Write and Read Binary File for Very Large Number",
         "70498669871503842048433982211489403999999999999999999999970683363000806404933500087904070704900001044040"
         "08070350680650405020780404000070849099963308350983535384984984436884000484808400443698404177434658083522"
         "78801399470004119398000285177";
-    std::string binaryFilePath = "..\\..\\TestFiles\\tempTestFile6.bin";
+    std::string binaryFilePath = std::string(test_folder_path) + "tempTestFile6.bin";
     UnsignedHugeInt x(numberString);
     UnsignedHugeInt y;
     remove(binaryFilePath.c_str());
@@ -336,7 +345,7 @@ TEST_CASE("Compare With One Operand Much Greater",
     CHECK_FALSE(numberB > numberA);
     CHECK_FALSE(numberB >= numberA);
     CHECK_FALSE(numberB == numberA);
-    CHECK(numberB != numberA);    
+    CHECK(numberB != numberA);
 }
 
 TEST_CASE("Compare Objects With Same Number of Words",
@@ -354,7 +363,7 @@ TEST_CASE("Compare Objects With Same Number of Words",
     CHECK_FALSE(numberB > numberA);
     CHECK_FALSE(numberB >= numberA);
     CHECK_FALSE(numberB == numberA);
-    CHECK(numberB != numberA);    
+    CHECK(numberB != numberA);
 }
 
 TEST_CASE("Compare Objects With the Same Value",
@@ -373,7 +382,7 @@ TEST_CASE("Compare Objects With the Same Value",
     CHECK_FALSE(numberB > numberA);
     CHECK(numberB >= numberA);
     CHECK(numberB == numberA);
-    CHECK_FALSE(numberB != numberA);    
+    CHECK_FALSE(numberB != numberA);
 }
 
 TEST_CASE("Compare unsigned long long And Larger UnsignedHugeInt",
@@ -391,7 +400,7 @@ TEST_CASE("Compare unsigned long long And Larger UnsignedHugeInt",
     CHECK_FALSE(numberB > numberA);
     CHECK_FALSE(numberB >= numberA);
     CHECK_FALSE(numberB == numberA);
-    CHECK(numberB != numberA);    
+    CHECK(numberB != numberA);
 }
 
 TEST_CASE("Compare int And Smaller UnsignedHugeInt",
@@ -409,7 +418,7 @@ TEST_CASE("Compare int And Smaller UnsignedHugeInt",
     CHECK(numberB > numberA);
     CHECK(numberB >= numberA);
     CHECK_FALSE(numberB == numberA);
-    CHECK(numberB != numberA);    
+    CHECK(numberB != numberA);
 }
 
 TEST_CASE("Compare unsigned long And UnsignedHugeInt With the Same Value",
@@ -427,7 +436,7 @@ TEST_CASE("Compare unsigned long And UnsignedHugeInt With the Same Value",
     CHECK_FALSE(numberB > numberA);
     CHECK(numberB >= numberA);
     CHECK(numberB == numberA);
-    CHECK_FALSE(numberB != numberA);    
+    CHECK_FALSE(numberB != numberA);
 }
 
 TEST_CASE("Multi-word Addition", "Add two multi-word integers instantiated in different ways.") {
@@ -508,7 +517,7 @@ TEST_CASE("Subtract UnsignedHugeInt from Integer", "Subtract an integer and an U
     UnsignedHugeInt numB("8106354");
     std::string expectedString = "956281781";
     UnsignedHugeInt difference = numA - numB;
-    REQUIRE(expectedString == difference.to_string());    
+    REQUIRE(expectedString == difference.to_string());
 }
 
 TEST_CASE("Multiply by Zero Object", "Multiply an UnsignedHugeInt by the UnsignedHugeInt version of 0.") {
@@ -540,7 +549,7 @@ TEST_CASE("Multiply 1 Int by UnsignedHugeInt", "Multiply 1 as an integer by an U
     UnsignedHugeInt factorB(factorBString);
     UnsignedHugeInt productObject = factorA * factorB;
     REQUIRE(factorBString == productObject.to_string());
-    
+
 }
 
 TEST_CASE("Multiply With 1-Word Product", "Multiply two 1-word UnsignedHugeInts to produce a 1-word product.") {
@@ -565,7 +574,7 @@ TEST_CASE("Multiply With One Multi-Word UnsignedHugeInt",
     UnsignedHugeInt factorB("295903006877313987478812358644301");
     std::string expectedProductString = "12904057307347322110454551495483296564478";
     UnsignedHugeInt productObject = factorA * factorB;
-    REQUIRE(expectedProductString == productObject.to_string());    
+    REQUIRE(expectedProductString == productObject.to_string());
 }
 
 TEST_CASE("Multiply With Multiple Words 1",
@@ -574,7 +583,7 @@ TEST_CASE("Multiply With Multiple Words 1",
     UnsignedHugeInt factorB("33555555555");
     std::string expectedProductString = "135439923503930452938271612456790115876543210";
     UnsignedHugeInt productObject = factorA * factorB;
-    REQUIRE(expectedProductString == productObject.to_string());    
+    REQUIRE(expectedProductString == productObject.to_string());
 }
 
 TEST_CASE("Multiply With Multiple Words 2",
@@ -584,7 +593,7 @@ TEST_CASE("Multiply With Multiple Words 2",
     std::string expectedProductString = "11111000011111222222222222222222000033333000000000666666666000022222000000000444444444";
     UnsignedHugeInt productObject = factorA * factorB;
     REQUIRE(expectedProductString == productObject.to_string());
-    
+
 }
 
 TEST_CASE("Multiply With Multiple Words 3",
@@ -602,7 +611,7 @@ TEST_CASE("Multiply Int by UnsignedHugeInt",
     UnsignedHugeInt factorB("608093410947678765906739847977007364412559990534672");
     std::string expectedProductString = "32228950780226974593057211942781390313865679498337616";
     UnsignedHugeInt productObject = factorA * factorB;
-    REQUIRE(expectedProductString == productObject.to_string());    
+    REQUIRE(expectedProductString == productObject.to_string());
 }
 
 TEST_CASE("Multiply UnsignedHugeInt by Int",
@@ -611,7 +620,7 @@ TEST_CASE("Multiply UnsignedHugeInt by Int",
     int factorB = 2739;
     std::string expectedProductString = "20779972133146162924449";
     UnsignedHugeInt productObject = factorA * factorB;
-    REQUIRE(expectedProductString == productObject.to_string());        
+    REQUIRE(expectedProductString == productObject.to_string());
 }
 
 TEST_CASE("Divide Zero Object by Object", "Divide 0 as an UnsignedHugeInt by another UnsignedHugeInt.") {
@@ -650,7 +659,7 @@ TEST_CASE("Divide UnsignedHugeInt by 1 Int", "Divide an UnsignedHugeInt object b
     UnsignedHugeInt quotientObject = dividend / divisor;
     UnsignedHugeInt remainderObject = dividend % divisor;
     REQUIRE(dividendString == quotientObject.to_string());
-    REQUIRE("0" == remainderObject.to_string());    
+    REQUIRE("0" == remainderObject.to_string());
 }
 
 TEST_CASE("Divide With same Dividend and Divisor", "Divide two UnsignedHugeInt objects with the same value.") {
@@ -794,7 +803,7 @@ TEST_CASE("Divide With Equal Numbers of Words", "Divide when the dividend and di
 
 TEST_CASE("Divide When Dividend Has Smaller Leading Word",
         "Divide two multiple-word numbers when the divisor has a larger most significant word.") {
-    
+
     UnsignedHugeInt dividend("5509821354912032618934356441443044776045079125139752582608797800812931419959231230851725532294994544766478795484040792889795167781390702");
     UnsignedHugeInt divisor("6554312049000133281882220402049873270410072549068031968389704");
     std::string expectedQuotientString = "840640682610246068368403846840542054725039972001140443335770549044287126981";
@@ -820,7 +829,7 @@ TEST_CASE("Compound Addition of int", "Use the += operator to add an int to an U
     std::string expectedSumString = "83450480039870687434909000398944";
     UnsignedHugeInt z = x += y;
     REQUIRE(expectedSumString == x.to_string());
-    REQUIRE(expectedSumString == z.to_string());    
+    REQUIRE(expectedSumString == z.to_string());
 }
 
 TEST_CASE("Compound Subtraction of UnsignedHugeInt Object", "Use the -= operator to subtract an UnsignedHugeInt object.") {
@@ -838,7 +847,7 @@ TEST_CASE("Compound Subtraction of int", "Use the -= operator to subtract an int
     std::string expectedDifferenceString = "83450480039870687434908999574635";
     UnsignedHugeInt z = x -= y;
     REQUIRE(expectedDifferenceString == x.to_string());
-    REQUIRE(expectedDifferenceString == z.to_string());    
+    REQUIRE(expectedDifferenceString == z.to_string());
 }
 
 TEST_CASE("Compound Multiplication of UnsignedHugeInt Object", "Use the *= operator to multiply UnsignedHugeInt objects.") {
@@ -856,7 +865,7 @@ TEST_CASE("Compound Multiplication of int", "Use the *= operator to multiply an 
     std::string expectedProductString = "794281967968184423462273546861001297899772093258";
     UnsignedHugeInt z = x *= y;
     REQUIRE(expectedProductString == x.to_string());
-    REQUIRE(expectedProductString == z.to_string());        
+    REQUIRE(expectedProductString == z.to_string());
 }
 
 TEST_CASE("Compound Integer Division of UnsignedHugeIntObject", "Use the /= operator to divide UnsignedHugeInt objects.") {
@@ -865,7 +874,7 @@ TEST_CASE("Compound Integer Division of UnsignedHugeIntObject", "Use the /= oper
     std::string expectedQuotientString = "48894065434036885468779840680";
     UnsignedHugeInt z = x /= y;
     REQUIRE(expectedQuotientString == x.to_string());
-    REQUIRE(expectedQuotientString == z.to_string());        
+    REQUIRE(expectedQuotientString == z.to_string());
 }
 
 TEST_CASE("Compound Modulus Division of UnsignedHugeIntObject", "Use the %= operator to divide UnsignedHugeInt objects.") {
@@ -874,7 +883,7 @@ TEST_CASE("Compound Modulus Division of UnsignedHugeIntObject", "Use the %= oper
     std::string expectedRemainderString = "99403049840587217068406870071";
     UnsignedHugeInt z = x %= y;
     REQUIRE(expectedRemainderString == x.to_string());
-    REQUIRE(expectedRemainderString == z.to_string());        
+    REQUIRE(expectedRemainderString == z.to_string());
 }
 
 TEST_CASE("Compound Integer Division of int", "Use the /= operator to divide an UnsignedHugeInt object by an int.") {
@@ -883,7 +892,7 @@ TEST_CASE("Compound Integer Division of int", "Use the /= operator to divide an 
     std::string expectedQuotientString = "35109870984004427504859379840710122994";
     UnsignedHugeInt z = x /= y;
     REQUIRE(expectedQuotientString == x.to_string());
-    REQUIRE(expectedQuotientString == z.to_string());            
+    REQUIRE(expectedQuotientString == z.to_string());
 }
 
 TEST_CASE("Compound Modulus Division of int", "Use the %= operator to divide an UnsignedHugeInt object by an int.") {
@@ -892,7 +901,7 @@ TEST_CASE("Compound Modulus Division of int", "Use the %= operator to divide an 
     std::string expectedRemainderString = "389047";
     UnsignedHugeInt z = x %= y;
     REQUIRE(expectedRemainderString == x.to_string());
-    REQUIRE(expectedRemainderString == z.to_string());            
+    REQUIRE(expectedRemainderString == z.to_string());
 }
 
 TEST_CASE("Increment Prefix With New Word Carry",

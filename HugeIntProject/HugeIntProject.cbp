@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="HugeIntProject" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="bin/Debug/HugeIntProject" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-std=gnu++17" />
+					<Add option="-g" />
+					<Add directory="/home/willboyd/Programming/Catch2/build/src" />
+				</Compiler>
+				<Linker>
+					<Add library="/home/willboyd/Programming/Catch2/build/src/libCatch2Main.a" />
+					<Add library="/home/willboyd/Programming/Catch2/build/src/libCatch2.a" />
+					<Add directory="/home/willboyd/Programming/Catch2/build/src" />
+				</Linker>
+			</Target>
+			<Target title="Release">
+				<Option output="bin/Release/HugeIntProject" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+		</Compiler>
+		<Unit filename="../../Catch2/src/catch2/catch_test_macros.hpp" />
+		<Unit filename="../HugeIntegers/HugeIntWord.cpp" />
+		<Unit filename="../HugeIntegers/HugeIntWord.h" />
+		<Unit filename="../HugeIntegers/UnsignedHugeInt.cpp" />
+		<Unit filename="../HugeIntegers/UnsignedHugeInt.h" />
+		<Unit filename="../HugeIntegers/UnsignedHugeIntValue.cpp" />
+		<Unit filename="../HugeIntegers/UnsignedHugeIntValue.h" />
+		<Unit filename="../HugeIntegers/hugeIntTests.cpp" />
+		<Extensions />
+	</Project>
+</CodeBlocks_project_file>

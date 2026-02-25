@@ -1,0 +1,38 @@
+# depslib dependency file v1.0
+1771639873 source:/home/willboyd/Programming/HugeIntegers/HugeIntegers/HugeIntWord.cpp
+	"HugeIntWord.h"
+
+1771639873 /home/willboyd/Programming/HugeIntegers/HugeIntegers/HugeIntWord.h
+	<iostream>
+	<sstream>
+
+1771639873 source:/home/willboyd/Programming/HugeIntegers/HugeIntegers/UnsignedHugeInt.cpp
+	"UnsignedHugeInt.h"
+	"UnsignedHugeIntValue.h"
+
+1771639873 /home/willboyd/Programming/HugeIntegers/HugeIntegers/UnsignedHugeInt.h
+	<iostream>
+
+1771639873 /home/willboyd/Programming/HugeIntegers/HugeIntegers/UnsignedHugeIntValue.h
+	<fstream>
+	<string.h>
+	<sys/stat.h>
+	"HugeIntWord.h"
+
+1771639873 source:/home/willboyd/Programming/HugeIntegers/HugeIntegers/UnsignedHugeIntValue.cpp
+	"UnsignedHugeIntValue.h"
+	"UnsignedHugeIntValue.h"
+
+1771987463 source:/home/willboyd/Programming/HugeIntegers/HugeIntegers/hugeIntTests.cpp
+	<catch2/catch_test_macros.hpp>
+	"UnsignedHugeInt.h"
+
+1771961525 /home/willboyd/Programming/Catch2/src/catch2/catch_test_macros.hpp
+	<catch2/internal/catch_test_macro_impl.hpp>
+	<catch2/catch_message.hpp>
+	<catch2/catch_user_config.hpp>
+	<catch2/internal/catch_section.hpp>
+	<catch2/internal/catch_test_registry.hpp>
+	<catch2/internal/catch_unique_name.hpp>
+	<catch2/internal/catch_unreachable.hpp>
+
