@@ -165,15 +165,15 @@ short UnsignedHugeIntValue::compare(const UnsignedHugeIntValue& numberA, const U
     unsigned long long numWordsB = numberB.num_words();
     HugeIntWord *thisWordA, *thisWordB;
     unsigned long wordValueA, wordValueB;
-    
+
     thisWordA = numberA.get_most_significant_word();
     thisWordB = numberB.get_most_significant_word();
-    
+
     if (numWordsA > numWordsB && thisWordA->get_value() > 0)
         return 1;
     else if (numWordsA < numWordsB && thisWordB->get_value() > 0)
         return -1;
-        
+
     while (thisWordA != NULL && thisWordB != NULL) {
         wordValueA = thisWordA->get_value();
         wordValueB = thisWordB->get_value();
@@ -184,11 +184,11 @@ short UnsignedHugeIntValue::compare(const UnsignedHugeIntValue& numberA, const U
         thisWordA = thisWordA->get_next_lower_sig_word();
         thisWordB = thisWordB->get_next_lower_sig_word();
     }
-    
+
     if ((thisWordA == NULL && thisWordB != NULL) || (thisWordA != NULL && thisWordB == NULL)) {
         throw std::logic_error("A problem occurred involving the number of words in an UnsignedHugeIntValue.");
     }
-    
+
     return 0;   // The numbers are equal.
 }
 
@@ -200,7 +200,7 @@ UnsignedHugeIntValue UnsignedHugeIntValue::sum_of(const UnsignedHugeIntValue& ad
     HugeIntWord *sumWord, *sumMostSigWord;
     unsigned long long thisWordSum;
     unsigned long carryValue = 0;
-    
+
     if (addendB.num_words() > addendA.num_words()) {
         greaterAddendWord = addendB.get_least_significant_word();
         lesserAddendWord = addendA.get_least_significant_word();
@@ -212,12 +212,12 @@ UnsignedHugeIntValue UnsignedHugeIntValue::sum_of(const UnsignedHugeIntValue& ad
     UnsignedHugeIntValue sum((unsigned long long)0);
     sumWord = sum.get_least_significant_word();
     sumMostSigWord = sum.get_most_significant_word();
-    
+
     while (lesserAddendWord != NULL) {
         thisWordSum = greaterAddendWord->get_value() + lesserAddendWord->get_value() + carryValue;
         carryValue = thisWordSum / UnsignedHugeIntValue::word_base;
         thisWordSum = thisWordSum % UnsignedHugeIntValue::word_base;
-        
+
         if (sumWord == NULL) {
             sumWord = sum.add_word(thisWordSum);
             sumMostSigWord = sumWord;
@@ -229,12 +229,12 @@ UnsignedHugeIntValue UnsignedHugeIntValue::sum_of(const UnsignedHugeIntValue& ad
         lesserAddendWord = lesserAddendWord->get_next_more_sig_word();
         sumWord = sumWord->get_next_more_sig_word();
     }
-    
+
     while (greaterAddendWord != NULL) {
         thisWordSum = greaterAddendWord->get_value() + carryValue;
         carryValue = thisWordSum / UnsignedHugeIntValue::word_base;
         thisWordSum = thisWordSum % UnsignedHugeIntValue::word_base;
-        
+
         if (sumWord == NULL) {
             sumWord = sum.add_word(thisWordSum);
             sumMostSigWord = sumWord;
@@ -245,11 +245,11 @@ UnsignedHugeIntValue UnsignedHugeIntValue::sum_of(const UnsignedHugeIntValue& ad
         greaterAddendWord = greaterAddendWord->get_next_more_sig_word();
         sumWord = sumWord->get_next_more_sig_word();
     }
-    
+
     while (carryValue > 0) {
         thisWordSum = carryValue % UnsignedHugeIntValue::word_base;
         carryValue = carryValue / UnsignedHugeIntValue::word_base;
-        
+
         if (sumWord == NULL) {
             sumWord = sum.add_word(thisWordSum);
             sumMostSigWord = sumWord;
@@ -257,7 +257,7 @@ UnsignedHugeIntValue UnsignedHugeIntValue::sum_of(const UnsignedHugeIntValue& ad
         else {
             sumMostSigWord = sumWord->add_value(thisWordSum);
         }
-        sumWord = sumWord->get_next_more_sig_word();        
+        sumWord = sumWord->get_next_more_sig_word();
     }
     sum.mostSigWord = sumMostSigWord;
     return sum;
@@ -271,16 +271,16 @@ UnsignedHugeIntValue UnsignedHugeIntValue::sum_of(const UnsignedHugeIntValue& ad
     unsigned long long thisWordSum;
     unsigned long thisCarryValue = 0;
     HugeIntWord *thisAddendWord = addendA.get_least_significant_word();
-    
+
     thisWordSum = addendB % UnsignedHugeIntValue::word_base;
     thisCarryValue = addendB / UnsignedHugeIntValue::word_base;
     thisWordSum += thisAddendWord->get_value();
     thisCarryValue += thisWordSum / UnsignedHugeIntValue::word_base;
     thisWordSum = thisWordSum % UnsignedHugeIntValue::word_base;
     UnsignedHugeIntValue sum(thisWordSum);
-    
+
     thisAddendWord = thisAddendWord->get_next_more_sig_word();
-    
+
     while (thisAddendWord != NULL || thisCarryValue > 0) {
         thisWordSum = thisCarryValue;
         if (thisAddendWord != NULL) {
@@ -301,11 +301,11 @@ UnsignedHugeIntValue UnsignedHugeIntValue::subtract(const UnsignedHugeIntValue& 
     if (UnsignedHugeIntValue::compare(minuend, subtrahend) < 0) {
         throw std::range_error("The subtrahend of an unsigned subtraction operation was greater than the minuend.");
     }
-    
+
     HugeIntWord *minuendWord, *subtrahendWord;
     unsigned long long thisMinuendWordValue;
     unsigned long thisWordDifference, thisSubtrahendWordValue, carryValue;
-    
+
     // Determine the least significant word of the difference.
     minuendWord = minuend.get_least_significant_word();
     if (minuendWord == NULL)
@@ -322,13 +322,13 @@ UnsignedHugeIntValue UnsignedHugeIntValue::subtract(const UnsignedHugeIntValue& 
     else {
         carryValue = 0;
         thisWordDifference = thisMinuendWordValue - thisSubtrahendWordValue;
-    }        
+    }
     UnsignedHugeIntValue difference(thisWordDifference);
     difference.get_least_significant_word();
     minuendWord = minuendWord->get_next_more_sig_word();
     subtrahendWord = subtrahendWord->get_next_more_sig_word();
-    
-    // Subtract all the words of the subtrahend.    
+
+    // Subtract all the words of the subtrahend.
     while (subtrahendWord != NULL) {
         thisMinuendWordValue = minuendWord->get_value();
         thisSubtrahendWordValue = subtrahendWord->get_value() + carryValue;
@@ -344,7 +344,7 @@ UnsignedHugeIntValue UnsignedHugeIntValue::subtract(const UnsignedHugeIntValue& 
         minuendWord = minuendWord->get_next_more_sig_word();
         subtrahendWord = subtrahendWord->get_next_more_sig_word();
     }
-    
+
     // Continue carry operations from the remaining words of the menuend.
     while (minuendWord != NULL && carryValue > 0) {
         thisMinuendWordValue = minuendWord->get_value();
@@ -359,7 +359,7 @@ UnsignedHugeIntValue UnsignedHugeIntValue::subtract(const UnsignedHugeIntValue& 
         difference.add_word(thisWordDifference);
         minuendWord = minuendWord->get_next_more_sig_word();
     }
-    
+
     // After carry operations are finished, copy the minuend words to the difference.
     while (minuendWord != NULL) {
         thisMinuendWordValue = minuendWord->get_value();
@@ -379,11 +379,11 @@ UnsignedHugeIntValue UnsignedHugeIntValue::multiply(const UnsignedHugeIntValue& 
     HugeIntWord *startWordA = factorA.get_least_significant_word(); // Starting words when finding a partial product.
     HugeIntWord *startWordB = factorB.get_least_significant_word();
     if ((startWordA == NULL) || (startWordB == NULL))
-        return UnsignedHugeIntValue((unsigned long long)0);    
+        return UnsignedHugeIntValue((unsigned long long)0);
     UnsignedHugeIntValue totalProduct((unsigned long long)startWordA->get_value() * startWordB->get_value());
     HugeIntWord *totalCalcWord = totalProduct.get_least_significant_word();
     UnsignedHugeIntValue partialProduct;
-    
+
     // Find partial products while changing startWordA.
     startWordA = startWordA->get_next_more_sig_word();
     while (startWordA != NULL) {
@@ -393,7 +393,7 @@ UnsignedHugeIntValue UnsignedHugeIntValue::multiply(const UnsignedHugeIntValue& 
         startWordA = startWordA->get_next_more_sig_word();
     }
     startWordA = factorA.get_most_significant_word();
-    
+
     // Find partial products while changing startWordB.
     startWordB= startWordB->get_next_more_sig_word();
     while (startWordB != NULL) {
@@ -402,10 +402,10 @@ UnsignedHugeIntValue UnsignedHugeIntValue::multiply(const UnsignedHugeIntValue& 
         totalCalcWord = totalProduct.add_value_at_word(totalCalcWord, partialProduct);
         startWordB = startWordB->get_next_more_sig_word();
     }
-    
+
     // Remove leading 0 words.
     totalProduct.remove_extra_leading_words();
-    
+
     return totalProduct;
 }
 
@@ -427,7 +427,7 @@ UnsignedHugeIntValue UnsignedHugeIntValue::multiply_single_word(const UnsignedHu
     factorWord = large_factor.get_least_significant_word();
     if ((factorWord == NULL) || (small_factor == 0) || ((large_factor.num_words() < 2) && (factorWord->value == 0)))
         return UnsignedHugeIntValue((unsigned long long)0);
-    
+
     // Set the first word of the product.
     productValue = factorWord->value * small_factor;
     carryValue = productValue / UnsignedHugeIntValue::word_base;
@@ -435,7 +435,7 @@ UnsignedHugeIntValue UnsignedHugeIntValue::multiply_single_word(const UnsignedHu
     UnsignedHugeIntValue resultProduct(productValue);
     productWord = resultProduct.get_least_significant_word();
     factorWord = factorWord->get_next_more_sig_word();
-    
+
     // Multiply the other words of the UnsignedHugeIntValue factor.
     while (factorWord != NULL) {
         productValue = factorWord->value * small_factor + carryValue;
@@ -444,7 +444,7 @@ UnsignedHugeIntValue UnsignedHugeIntValue::multiply_single_word(const UnsignedHu
         productWord = new HugeIntWord(productValue, productWord);
         factorWord = factorWord->get_next_more_sig_word();
     }
-    
+
     // Set the most significant word of the product from the carry value.
     if (carryValue > 0)
         resultProduct.mostSigWord = new HugeIntWord(carryValue, productWord);
@@ -466,7 +466,7 @@ std::pair<UnsignedHugeIntValue, UnsignedHugeIntValue> UnsignedHugeIntValue::divi
     HugeIntWord *remainderEstimateWord, *dividendNextWord, *divisorEstimateWord;
     double dividendLowerEstimate, divisorUpperEstimate;
     unsigned long long quotientWordEstimate;
-    
+
     if (divisorNumWords == 0 || (divisorNumWords == 1 && divisor.get_least_significant_word()->get_value() == 0)) {
         throw std::invalid_argument("An attempt was made to divide by zero.");
     }
@@ -483,7 +483,7 @@ std::pair<UnsignedHugeIntValue, UnsignedHugeIntValue> UnsignedHugeIntValue::divi
         dividendNextWord = dividendNextWord->get_next_more_sig_word();
     }
     UnsignedHugeIntValue subRemainder = integer_with_least_significant_word(dividendNextWord);
-    
+
     // Set the most significant word of the quotient.
         // Give a lower estimate of the quotient word.
         divisorEstimateWord = divisor.get_most_significant_word();
@@ -512,7 +512,7 @@ std::pair<UnsignedHugeIntValue, UnsignedHugeIntValue> UnsignedHugeIntValue::divi
         // Include the next word in the remainder.
         quotientCalcWord = quotientCalcWord->get_next_lower_sig_word();
         dividendNextWord = dividendNextWord->get_next_lower_sig_word();
-    
+
     // Loop through the dividend's words.
     while (dividendNextWord != NULL) {
         subRemainder.insert_least_significant_word(dividendNextWord->get_value());
@@ -549,7 +549,7 @@ std::pair<UnsignedHugeIntValue, UnsignedHugeIntValue> UnsignedHugeIntValue::divi
     }
     // Remove leading zeros.
     quotient.remove_extra_leading_words();
-    
+
     divisionResults.first = quotient;
     divisionResults.second = subRemainder;
     return divisionResults;
@@ -561,7 +561,7 @@ UnsignedHugeIntValue& UnsignedHugeIntValue::operator+=(const UnsignedHugeIntValu
     }
     HugeIntWord *thisWord = this->leastSigWord;
     HugeIntWord *addendWord = addend.get_least_significant_word();
-    
+
     while (addendWord != NULL) {
         if (thisWord != NULL) {
             thisWord->add_value(addendWord->get_value());
@@ -603,14 +603,14 @@ UnsignedHugeIntValue& UnsignedHugeIntValue::operator-=(const UnsignedHugeIntValu
     if (UnsignedHugeIntValue::compare(*this, subtrahend) < 0) {
         throw std::range_error("The subtrahend of an unsigned compound subtraction operation was greater than the minuend.");
     }
-    
+
     HugeIntWord *minuendWord, *subtrahendWord;
     unsigned long long thisWordDifference, thisMinuendWordValue, thisSubtrahendWordValue, carryValue(0);
-    
+
     minuendWord = this->get_least_significant_word();
     subtrahendWord = subtrahend.get_least_significant_word();
 
-    // Subtract all the words of the subtrahend.    
+    // Subtract all the words of the subtrahend.
     while (subtrahendWord != NULL) {
         thisMinuendWordValue = minuendWord->get_value();
         thisSubtrahendWordValue = subtrahendWord->get_value() + carryValue;
@@ -626,7 +626,7 @@ UnsignedHugeIntValue& UnsignedHugeIntValue::operator-=(const UnsignedHugeIntValu
         minuendWord = minuendWord->get_next_more_sig_word();
         subtrahendWord = subtrahendWord->get_next_more_sig_word();
     }
-    
+
     // Continue carry operations from the remaining words of the menuend.
     while (carryValue > 0 && minuendWord != NULL) {
         thisMinuendWordValue = minuendWord->get_value();
@@ -709,7 +709,7 @@ UnsignedHugeIntValue& UnsignedHugeIntValue::operator--() {
     unsigned long long thisMinuendWordValue;
     minuendWord = this->get_least_significant_word();
 
-    // Subtract all the words of the subtrahend.    
+    // Subtract all the words of the subtrahend.
     while (minuendWord != NULL) {
         thisMinuendWordValue = minuendWord->get_value();
         if (thisMinuendWordValue < 1) {
@@ -814,7 +814,7 @@ void UnsignedHugeIntValue::read_from_text_file(FILE* integer_file) {
     digitBuffer[digitBufferIndex] = '\0';
     strcat(digitBuffer, wordString);
     digitBufferIndex += remainderLength;
-    
+
     if (strlen(digitBuffer) == 0) {
         this->mostSigWord = newMostSigWord;
         this->remove_extra_leading_words();
@@ -836,7 +836,7 @@ void UnsignedHugeIntValue::read_from_text_file(FILE* integer_file) {
             newMostSigWord = new HugeIntWord(wordValue, newMostSigWord);
         }
     }
-    
+
     // Set the most significant word.
     strncpy(wordString, digitBuffer, digitBufferIndex);
     wordString[digitBufferIndex] = '\0';
@@ -849,14 +849,15 @@ void UnsignedHugeIntValue::read_from_text_file(FILE* integer_file) {
         newMostSigWord = new HugeIntWord(wordValue, newMostSigWord);
     }
     this->mostSigWord = newMostSigWord;
-    this->remove_extra_leading_words();    
+    this->remove_extra_leading_words();
     this->defined_key_1 = CHECK_VALUE_A;
     this->defined_key_2 = CHECK_VALUE_B;
 }
 
 void UnsignedHugeIntValue::write_to_text_file(std::string file_path) const {
     // Prevent writing to an existing file.
-    if (stat(file_path.c_str(), NULL) >= 0)
+    struct stat placeholder_stat;
+    if (stat(file_path.c_str(), &placeholder_stat) >= 0)
         std::invalid_argument("An attempt was made to write an UnsignedHugeIntValue value to an existing file.");
     FILE *writeTextFile = fopen(file_path.c_str(), "w");
     this->write_to_text_file(writeTextFile);
@@ -872,7 +873,7 @@ void UnsignedHugeIntValue::write_to_text_file(FILE* integer_file) const {
     std::string bufferString;
     HugeIntWord *thisWord = this->mostSigWord;
     unsigned int i;
-    
+
     while (thisWord != NULL) {
         bufferString = "";
         for (i = 0; i < BUFFER_NUM_WORDS; ++i) {
@@ -903,7 +904,7 @@ void UnsignedHugeIntValue::read_from_binary_file(std::string file_path) {
         throw std::invalid_argument("The file " + file_path + " could not be opened.");
     }
     fileReadStream >> remainingNumWords;
-    
+
     // Read the first word from the binary file.
     if (remainingNumWords < 1) {
         this->mostSigWord = this->leastSigWord = new HugeIntWord(0);
@@ -913,7 +914,7 @@ void UnsignedHugeIntValue::read_from_binary_file(std::string file_path) {
     fileReadStream.read(readDest, sizeof(unsigned long));
     this->leastSigWord = thisWord = new HugeIntWord(readBuffer[0]);
     --remainingNumWords;
-    
+
     // Read full buffers from the binary file.
     while (remainingNumWords > BUFFER_NUM_WORDS) {
         fileReadStream.read(readDest, bufferSize);
@@ -922,7 +923,7 @@ void UnsignedHugeIntValue::read_from_binary_file(std::string file_path) {
         }
         remainingNumWords -= BUFFER_NUM_WORDS;
     }
-    
+
     // Read the last partial buffer from the binary file.
     fileReadStream.read(readDest, sizeof(unsigned long) * remainingNumWords);
     for (bufferIndex = 0; bufferIndex < remainingNumWords; ++bufferIndex) {
@@ -934,7 +935,8 @@ void UnsignedHugeIntValue::read_from_binary_file(std::string file_path) {
 
 void UnsignedHugeIntValue::write_to_binary_file(std::string file_path) const {
     // Prevent writing to an existing file.
-    if (stat(file_path.c_str(), NULL) >= 0)
+    struct stat placeholder_stat;
+    if (stat(file_path.c_str(), &placeholder_stat) >= 0)
         std::invalid_argument("An attempt was made to write an UnsignedHugeIntValue value to an existing file.");
     if (!this->is_defined()) {
         throw std::invalid_argument("The UnsignedHugeIntValue object was not defined before the command to write to a file.");
@@ -944,7 +946,7 @@ void UnsignedHugeIntValue::write_to_binary_file(std::string file_path) const {
     unsigned int bufferSize = sizeof(unsigned long) * BUFFER_NUM_WORDS;
     unsigned int bufferIndex;
     HugeIntWord *thisWord = this->leastSigWord;
-    
+
     std::ofstream fileWriteStream(file_path, std::ios::out | std::ios::binary);
     if (!fileWriteStream.is_open()) {
         fileWriteStream.close();
@@ -952,7 +954,7 @@ void UnsignedHugeIntValue::write_to_binary_file(std::string file_path) const {
     }
     // Write the number of words at the start of the file.
     fileWriteStream << this->num_words();
-    
+
     // Write all the word values to the file.
     while (thisWord != NULL) {
         for (bufferIndex = 0; bufferIndex < BUFFER_NUM_WORDS; ++bufferIndex) {
@@ -971,7 +973,7 @@ void UnsignedHugeIntValue::write_to_binary_file(std::string file_path) const {
 
 bool UnsignedHugeIntValue::is_defined() const {
     if ((this->defined_key_1 != CHECK_VALUE_A) || (this->defined_key_2 != CHECK_VALUE_B) ||
-        ((this->leastSigWord != NULL) && 
+        ((this->leastSigWord != NULL) &&
         ((this->leastSigWord->get_next_lower_sig_word() != NULL) || (this->mostSigWord->get_next_more_sig_word() != NULL)))) {
 //            throw std::invalid_argument("An UnsignedHugeIntValue object was used before it was defined.");
             return false;
@@ -1060,7 +1062,7 @@ void UnsignedHugeIntValue::set_value_from_string(std::string integer_string) {
     unsigned long long thisWordValue;
     unsigned long long thisWordIndex = integer_string.length();
     HugeIntWord *newWordObject;
-    
+
     // Set the least significant word.
     if (thisWordIndex <= MAX_DIGITS_PER_WORD) {
         thisWordString = integer_string.substr(0, thisWordIndex);
@@ -1075,7 +1077,7 @@ void UnsignedHugeIntValue::set_value_from_string(std::string integer_string) {
     thisWordValue = strtoul(thisWordChar, NULL, 10);
     newWordObject = new HugeIntWord(thisWordValue);
     this->leastSigWord = newWordObject;
-    
+
     // Add the medium significant words.
     while (thisWordIndex > MAX_DIGITS_PER_WORD) {
         thisWordIndex -= MAX_DIGITS_PER_WORD;
@@ -1084,7 +1086,7 @@ void UnsignedHugeIntValue::set_value_from_string(std::string integer_string) {
         thisWordValue = strtoul(thisWordChar, NULL, 10);
         newWordObject = new HugeIntWord(thisWordValue, newWordObject);
     }
-    
+
     // Set the most significant word.
     thisWordString = integer_string.substr(0, thisWordIndex);
     strcpy(thisWordChar, thisWordString.c_str());
@@ -1098,11 +1100,11 @@ void UnsignedHugeIntValue::delete_all_words() {
     HugeIntWord *wordToDelete, *nextWord;
     while (thisWord != NULL) {
         wordToDelete = thisWord;
-        
+
         nextWord = thisWord->get_next_lower_sig_word();
         delete(wordToDelete);
         thisWord = nextWord;
-    }    
+    }
 }
 
 void UnsignedHugeIntValue::remove_extra_leading_words() {
@@ -1166,7 +1168,7 @@ HugeIntWord* UnsignedHugeIntValue::add_value_at_word(HugeIntWord* location_to_ad
     const HugeIntWord *thisValueWord = value_to_add.get_least_significant_word();
     HugeIntWord *moreSigWord;
     HugeIntWord *wordToReturn;
-    
+
     if (location_to_add == NULL) {
         thisAddLocation = this->add_word(new HugeIntWord((unsigned long)0));
         wordToReturn = thisAddLocation;
@@ -1175,7 +1177,7 @@ HugeIntWord* UnsignedHugeIntValue::add_value_at_word(HugeIntWord* location_to_ad
         thisAddLocation = location_to_add;
         wordToReturn = location_to_add;
     }
-    
+
     while (thisValueWord != NULL) {
         if (thisAddLocation == NULL) {
             thisAddLocation = this->add_word(thisValueWord->get_value());
@@ -1186,11 +1188,11 @@ HugeIntWord* UnsignedHugeIntValue::add_value_at_word(HugeIntWord* location_to_ad
             if (moreSigWord->get_next_more_sig_word() == NULL)
                 this->mostSigWord = moreSigWord;
         }
-        
+
         thisValueWord = thisValueWord->get_next_more_sig_word();
         thisAddLocation = thisAddLocation->get_next_more_sig_word();
     }
-    
+
     // Set the most significant word.
     thisAddLocation = this->mostSigWord;
     moreSigWord = thisAddLocation->get_next_more_sig_word();
