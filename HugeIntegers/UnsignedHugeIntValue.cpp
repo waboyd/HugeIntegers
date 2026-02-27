@@ -57,20 +57,18 @@ UnsignedHugeIntValue::UnsignedHugeIntValue(UnsignedHugeIntValue&& orig) {
 }
 
 UnsignedHugeIntValue UnsignedHugeIntValue::number_of_digits() const {
-    // This implementation assumes the word base is a power of 10.
     if (this->mostSigWord == NULL)
         return UnsignedHugeIntValue(1);
-    UnsignedHugeIntValue totalNumDigits(UnsignedHugeIntValue::multiply(
-            this->mostSigWord->get_word_number(), MAX_DIGITS_PER_WORD)
-    );
-    unsigned long upperBoundary = 10;
-    unsigned long mostSigValue = this->mostSigWord->get_value();
-    unsigned short numMostSigDigits = 1;
-    while (mostSigValue >= upperBoundary) {
-        ++numMostSigDigits;
-        upperBoundary *= 10;
+    UnsignedHugeIntValue totalNumDigits(1);
+    UnsignedHugeIntValue quotient(this);
+    while (this->compare(quotient, 1000000000) >= 0) {
+        totalNumDigits += 9;
+        quotient /= UnsignedHugeIntValue(1000000000);
     }
-    totalNumDigits += numMostSigDigits;
+    while (this->compare(quotient, UnsignedHugeIntValue(10)) >= 0) {
+        totalNumDigits += 1;
+        quotient /= UnsignedHugeIntValue(10);
+    }
     return totalNumDigits;
 }
 

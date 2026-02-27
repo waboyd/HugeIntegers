@@ -16,7 +16,7 @@ class UnsignedHugeIntValue {
     friend class UnsignedHugeInt;
 public:
     // Public Methods
-    
+
     /**
      * @brief Creates a new UnsignedHugeIntValue object with a value of 0.
      */
@@ -55,33 +55,33 @@ public:
      * @param orig Pointer to the object whose value is to be copied.
      */
     UnsignedHugeIntValue(const UnsignedHugeIntValue* orig);
-    
+
     /**
      * @brief Creates a new UnsignedHugeIntValue object with a value moved from the argument.
      * The value does not not exist in the original argument object after this operation.
      * @param orig Object whose value will be moved.
      */
     UnsignedHugeIntValue(UnsignedHugeIntValue&& orig);
-    
+
     /**
      * @brief Deletes the UnsignedHugeIntValue object completely.
      */
     virtual ~UnsignedHugeIntValue();
-    
+
     /**
-     * @brief Returns the number of digits in the value.
-     * @return The number of digits in the value.
+     * @brief Returns the number of base 10 digits in the value.
+     * @return The number of base 10 digits in the value.
      */
     UnsignedHugeIntValue number_of_digits() const;
-    
+
     /**
      * @brief Sets the value of this UnsignedHugeIntValue object to the integer in the text file.
-     * The file should contain digits for only a single integer, as the entire file is scanned to 
+     * The file should contain digits for only a single integer, as the entire file is scanned to
      * set the value of this object.
      * @param file_path The path of a file containing an unsigned integer value.
      */
     void read_from_text_file(std::string file_path);
-    
+
     /**
      * @brief Sets the value of this UnsignedHugeIntValue object to the integer in the text file.
      * The file should contain digits for only a single integer, as the entire file is scanned to
@@ -89,21 +89,21 @@ public:
      * @param integer_file A file pointer, with read permission, to the file to be read.
      */
     void read_from_text_file(FILE* integer_file);
-    
+
     /**
      * @brief Writes the value from this object to a new text file.
      * The file with the given path must not already exist.
      * @param file_path The destination path, including the file name, of the text file to be written.
      */
     void write_to_text_file(std::string file_path) const;
-    
+
     /**
      * @brief Writes the value from this object as text to a file.
      * The value will be written to the current file pointer location.
      * @param integer_file A file pointer, with write permission, to the file location where the value will be written.
      */
     void write_to_text_file(FILE* integer_file) const;
-    
+
     /**
      * @brief Sets the value of this object to the value from a binary file.
      * The file should be one created by the write_to_binary_file method of UnsignedHugeIntValue. Portability of the binary files
@@ -111,7 +111,7 @@ public:
      * @param file_path The file path, including the file name, of the binary file containing the value of an UnsignedHugeIntValue.
      */
     void read_from_binary_file(std::string file_path);
-    
+
     /**
      * @brief Writes the value from this object to a new binary file.
      * The file must not already exist. The binary file can be read by the read_from_binary_file method of UnsignedHugeIntValue.
@@ -119,7 +119,7 @@ public:
      * @param file_path
      */
     void write_to_binary_file(std::string file_path) const;
-    
+
     /**
      * @brief Converts the value of this object to a C++ string.
      */
@@ -140,7 +140,7 @@ public:
      * @return Reference to the newly created object.
      */
     UnsignedHugeIntValue& operator=(const UnsignedHugeIntValue* orig);
-    
+
     /**
      * @brief Moves value from the argument to this object, removing the the value from the argument.
      * @param orig Object whose value will be moved.
@@ -156,7 +156,7 @@ public:
      * @return Reference to the newly created object.
      */
     UnsignedHugeIntValue& operator=(const unsigned long long value);
-    
+
     /**
      * @brief Reads a numerical string as an unsigned integer and assigns the value to the UnsignedHugeIntValue object.
      * The string should contain only digits. This assignment operation can be used to assign values that are too
@@ -165,7 +165,7 @@ public:
      * @return Reference to the newly created object.
      */
     UnsignedHugeIntValue& operator=(const std::string value_string);
-    
+
     /**
      * @brief Reads a numerical string as an unsigned integer and assigns the value to the UnsignedHugeIntValue object.
      * The string should contain only digits. This assignment operation can be used to assign values that are too
@@ -207,7 +207,7 @@ public:
      * @return The result of subtraction as an unsigned integer.
      */
     static UnsignedHugeIntValue subtract(const UnsignedHugeIntValue& minuend, const UnsignedHugeIntValue& subtrahend);
-    
+
     /**
      * @brief Multiplies two unsigned integers to produce an UnsignedHugeIntValue object.
      * @param factorA One of the integer factors of the multiplication.
@@ -335,13 +335,14 @@ public:
      * @return True if the object is verified as properly defined.
      */
     bool is_defined() const;
-    
+    // ToDo: Check whether the is_defined() function is necessary.
+
     /**
      * @brief Returns the number of words that make up the UnsignedHugeIntValue object.
      * @return The number of words in the object.
      */
     long num_words() const;
-    
+
     /**
      * @brief Returns the most significant word of the UnsignedHugeIntValue object.
      * @return The most significant word of the object.
@@ -359,52 +360,52 @@ public:
      * @return The most significant word of the object after the change.
      */
     HugeIntWord* remove_most_significant_word();
-    
+
     /**
      * @brief Returns the value of this UnsignedHugeIntValue object as a string.
      * @return The value of this object as a string of digits.
      */
     std::string to_string() const;
-    
+
 protected:
     // The maximum value that is permitted in one word of UnsignedHugeIntValue.
     static unsigned long max_word_value;
-    
+
     // The base value for a word of UnsignedHugeIntValue. Each word represents a power of the word base.
     static unsigned long long word_base;
 
     // Protected Methods
-    
+
     /**
      * @brief Changes this object to a copy of the of the object in the argument.
      * It is assumed that this object does not have any already defined words.
      * @param orig The original object that will be copied.
      */
     void change_to_copy_of(const UnsignedHugeIntValue& orig);
-    
+
     /**
      * @brief Sets the value of this object to the unsigned integer given in the argument.
      * It is assumed that this object does not have any already defined words.
      * @param integer_string A string of the digits that will be converted to an unsigned integer.
      */
     void set_value_from_string(std::string integer_string);
-    
+
     /**
      * @brief Removes and deletes all words from this object.
      */
     void delete_all_words();
-    
+
     /**
      * @brief Removes and deletes the most significant words of this object if the words have a value of 0.
      */
     void remove_extra_leading_words();
-    
+
     /**
      * @brief Adds a new most significant word with a value of 0.
      * @return Pointer to the new word that was added.
      */
     HugeIntWord* add_word();
-    
+
     /**
      * @brief Adds new most significant words with a total value given in the parameter.
      * @return Pointer to the most significant new word that was added.
@@ -416,7 +417,7 @@ protected:
      * @return Pointer to the new word that was added.
      */
     HugeIntWord* add_word(HugeIntWord* new_word);
-    
+
     /**
      * @brief Changes this number by inserting a new least significant word with the given value.
      * @param least_significant_value The value of the new least significant word to be added.
@@ -426,10 +427,10 @@ protected:
 
 private:
     HugeIntWord *leastSigWord, *mostSigWord;
-    
+
     // Integers that are set to specific values when defined.
     int defined_key_1, defined_key_2;
-    
+
     // Private Methods
 
     /**
@@ -439,14 +440,14 @@ private:
      * @return The least significant word that was updated.
      */
     HugeIntWord* add_value_at_word(HugeIntWord* location_to_add, const UnsignedHugeIntValue& value_to_add);
-    
+
     /**
      * @brief Creates a new UnsignedHugeIntValue object using the argument and its linked more significant words.
      * @param least_significant_word An existing word that will be copied as the least significant word of the new UnsignedHugeIntValue.
      * @return The new UnsignedHugeIntValue object.
      */
     static UnsignedHugeIntValue integer_with_least_significant_word(const HugeIntWord* least_significant_word);
-    
+
     /**
      * @brief For a multiplication operation, the subtotal from multiplying words toward one word of the product is found.
      * This method is called by the multiply() method to find the value at one word of the product.
@@ -455,7 +456,7 @@ private:
      * @return The subtotal for one word of the product of the two factors.
      */
     static UnsignedHugeIntValue find_multiplication_subtotal(const HugeIntWord* greater_factor_word, const HugeIntWord* lesser_factor_word);
-    
+
     /**
      * @brief Multiplies an UnsignedHugeIntValue object by an unsigned integer that is small enough to fit within one word of UnsignedHugeIntValue.
      * This method does not check the size of the integer. This method is more efficient than the multiply() method
@@ -474,4 +475,4 @@ private:
  * @param out_stream The stream that receives the string form of the UnsignedHugeIntValue object.
  * @param huge_int_object The object whose value is output to the stream.
  */
-std::ostream& operator<<(std::ostream& out_stream, const UnsignedHugeIntValue& huge_int_object);    
+std::ostream& operator<<(std::ostream& out_stream, const UnsignedHugeIntValue& huge_int_object);

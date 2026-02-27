@@ -1,4 +1,4 @@
-/* 
+/*
  * File:   UnsignedHugeInt.h
  * Author: William A. Boyd Jr.
  *
@@ -14,7 +14,7 @@ class UnsignedHugeIntValue;
 class UnsignedHugeInt {
 public:
     // Public Methods
-    
+
     /**
      * @brief Creates a new UnsignedHugeInt object with a value of 0.
      */
@@ -53,39 +53,39 @@ public:
      * @param orig Pointer to the object whose value is to be copied.
      */
     UnsignedHugeInt(const UnsignedHugeInt* orig);
-    
+
     /**
      * @brief Creates a new UnsignedHugeInt object with a value moved from the argument.
      * The value does not not exist in the original argument object after this operation.
      * @param orig Object whose value will be moved.
      */
     UnsignedHugeInt(UnsignedHugeInt&& orig);
-    
+
     /**
      * @brief Deletes the UnsignedHugeInt object completely.
      */
     virtual ~UnsignedHugeInt();
-    
+
     /**
-     * @brief Returns the number of digits in the value.
-     * @return The number of digits in the value.
+     * @brief Returns the number of base 10 digits in the value.
+     * @return The number of base 10 digits in the value.
      */
     UnsignedHugeInt number_of_digits() const;
-    
+
     /**
-     * @brief Returns the number of digits in the value.
-     * @return The number of digits in the value.
+     * @brief Returns the number of base 10 digits in the value.
+     * @return The number of base 10 digits in the value.
      */
     UnsignedHugeInt length() const;
 
     /**
      * @brief Sets the value of this UnsignedHugeInt object to the integer in the text file.
-     * The file should contain digits for only a single integer, as the entire file is scanned to 
+     * The file should contain digits for only a single integer, as the entire file is scanned to
      * set the value of this object.
      * @param file_path The path of a file containing an unsigned integer value.
      */
     void read_from_text_file(std::string file_path);
-    
+
     /**
      * @brief Sets the value of this UnsignedHugeInt object to the integer in the text file.
      * The file should contain digits for only a single integer, as the entire file is scanned to
@@ -93,21 +93,21 @@ public:
      * @param integer_file A file pointer, with read permission, to the file to be read.
      */
     void read_from_text_file(FILE* integer_file);
-    
+
     /**
      * @brief Writes the value from this object to a new text file.
      * The file with the given path must not already exist.
      * @param file_path The destination path, including the file name, of the text file to be written.
      */
     void write_to_text_file(std::string file_path) const;
-    
+
     /**
      * @brief Writes the value from this object as text to a file.
      * The value will be written to the current file pointer location.
      * @param integer_file A file pointer, with write permission, to the file location where the value will be written.
      */
     void write_to_text_file(FILE* integer_file) const;
-    
+
     /**
      * @brief Sets the value of this object to the value from a binary file.
      * The file should be one created by the write_to_binary_file method of UnsignedHugeInt. Portability of the binary files
@@ -115,7 +115,7 @@ public:
      * @param file_path The file path, including the file name, of the binary file containing the value of an UnsignedHugeInt.
      */
     void read_from_binary_file(std::string file_path);
-    
+
     /**
      * @brief Writes the value from this object to a new binary file.
      * The file must not already exist. The binary file can be read by the read_from_binary_file method of UnsignedHugeInt.
@@ -123,7 +123,7 @@ public:
      * @param file_path
      */
     void write_to_binary_file(std::string file_path) const;
-    
+
     /**
      * @brief Converts the value of this object to a C++ string.
      */
@@ -144,7 +144,7 @@ public:
      * @return Reference to the newly created object.
      */
     UnsignedHugeInt& operator=(const UnsignedHugeInt* orig);
-    
+
     /**
      * @brief Moves value from the argument to this object, removing the the value from the argument.
      * @param orig Object whose value will be moved.
@@ -160,7 +160,7 @@ public:
      * @return Reference to the newly created object.
      */
     UnsignedHugeInt& operator=(const unsigned long long value);
-    
+
     /**
      * @brief Reads a numerical string as an unsigned integer and assigns the value to the UnsignedHugeInt object.
      * The string should contain only digits. This assignment operation can be used to assign values that are too
@@ -169,7 +169,7 @@ public:
      * @return Reference to the newly created object.
      */
     UnsignedHugeInt& operator=(const std::string value_string);
-    
+
     /**
      * @brief Reads a numerical string as an unsigned integer and assigns the value to the UnsignedHugeInt object.
      * The string should contain only digits. This assignment operation can be used to assign values that are too
@@ -186,7 +186,7 @@ public:
      * @return 1 if numberA is greater; 0 if the numbers are equal; -1 if numberB is greater.
      */
     static short compare(const UnsignedHugeInt& numberA, const UnsignedHugeInt& numberB);
-    
+
     // Returns true only if the left operand is less than the right operand.
     bool operator<(const UnsignedHugeInt& right_operand) const;
 
@@ -312,7 +312,7 @@ public:
      * @return The result of subtraction as an unsigned integer.
      */
     friend UnsignedHugeInt operator-(const unsigned long long minuend, const UnsignedHugeInt& subtrahend);
-    
+
     /**
      * @brief Multiplies two unsigned integers to produce an UnsignedHugeInt object.
      * @param factorA One of the integer factors of the multiplication.
@@ -352,6 +352,7 @@ public:
      * @return The whole number quotient (first) and remainder (second) results of the division operation.
      */
     static std::pair<UnsignedHugeInt, UnsignedHugeInt> divide(const UnsignedHugeInt& dividend, const UnsignedHugeInt& divisor);
+    // ToDo: Overload the divide function for a long dividend or divisor.
 
     /**
      * @brief Divides the unsigned integers and returns the whole number quotient result as an UnsignedHugeInt object.
@@ -508,13 +509,13 @@ public:
      * @return A copy of the UnsignedHugeInt object before its value is changed.
      */
     UnsignedHugeInt operator--(int dummy);
-    
+
     /**
      * @brief Returns the value of this UnsignedHugeInt object as a string.
      * @return The value of this object as a string of digits.
      */
     std::string to_string() const;
-    
+
 private:
     UnsignedHugeIntValue *value;
 
@@ -524,7 +525,7 @@ private:
      * @param value Initial value for the UnsignedHugeInt object as an UnsignedHugeIntValue object.
      */
     UnsignedHugeInt(UnsignedHugeIntValue& value);
-        
+
     /**
      * @brief Creates a new UnsignedHugeInt object with a value moved from the argument.
      * The value does not not exist in the original argument object after this operation.
@@ -549,4 +550,4 @@ private:
  * @param out_stream The stream that receives the string form of the UnsignedHugeInt object.
  * @param huge_int_object The object whose value is output to the stream.
  */
-std::ostream& operator<<(std::ostream& out_stream, const UnsignedHugeInt& huge_int_object);    
+std::ostream& operator<<(std::ostream& out_stream, const UnsignedHugeInt& huge_int_object);
