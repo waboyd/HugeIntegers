@@ -1014,21 +1014,54 @@ HugeIntWord* UnsignedHugeIntValue::remove_most_significant_word() {
 
 std::string UnsignedHugeIntValue::to_string() const {
     if(!this->is_defined()) {
-        throw std::invalid_argument("An attempt was made to retrieve the value of a non-defined UnsignedHugeIntValue.");
+        throw std::invalid_argument("An attempt was made to convert the value of a non-defined UnsignedHugeIntValue to a string.");
     }
-    std::string numberString = "", wordString;
-    HugeIntWord *thisWord;
     if (this->mostSigWord == NULL)
-        numberString = "0";
-    else {
-        thisWord = this->mostSigWord;
-        while (thisWord != NULL) {
-            wordString = thisWord->to_string();
-            numberString += wordString;
-            thisWord = thisWord->get_next_lower_sig_word();
-        }
+        return "0";
+    unsigned long zero_long(0);
+    UnsignedHugeIntValue zero_object(zero_long);
+    if (this->compare(this, zero_long) == 0)
+        return "0";
+    std::string fullNumberString;
+    unsigned long long allocationSize;
+    allocationSize = this->num_words() * MAX_NUMBER_OF_DIGITS + 1;
+    fullNumberString.resize(allocationSize, '0');
+    UnsignedHugeIntValue segmentBase(1000000000);  // base for segment of the string found.
+
+    // Setting the digits of the result string in segments.
+    UnsignedHugeIntValue quotient;
+    unsigned long remainder;
+    unsigned long long segmentStart = allocationSize; // index of the start of the current segment in the result string.
+    auto divisionResult = this->divide(this, segmentBase);
+    quotient = divisionResult.first;
+    remainder = divisionResult.second.get_least_significant_word()->get_value();
+
+    while (this->compare(quotient, zero_object) > 0) {
+        segmentStart -= 9;
+        std::ostringstream numberToStringStream;
+        numberToStringStream << remainder;
+        std::string segmentString(numberToStringStream.str());
+        unsigned short numLeadingZeros = 9 - segmentString.length();
+        segmentString = std::string(numLeadingZeros, '0') + std::string(segmentString);
+        fullNumberString.replace(segmentStart, 9, segmentString);
+
+        divisionResult = this->divide(quotient, segmentBase);
+        quotient = divisionResult.first;
+        remainder = divisionResult.second.get_least_significant_word()->get_value();
     }
-    return numberString;
+
+    // Setting the most significant digits of the string.
+    std::ostringstream numberToStringStream;
+    numberToStringStream << remainder;
+    std::string segmentString(numberToStringStream.str());
+    unsigned short numLeadingDigits = segmentString.length();
+    segmentStart -= numLeadingDigits;
+    fullNumberString.replace(segmentStart, numLeadingDigits, segmentString);
+
+    // Remove extra digits at the beginning.
+    fullNumberString.erase(0, segmentStart);
+    fullNumberString.shrink_to_fit();
+    return fullNumberString;
 }
 
 void UnsignedHugeIntValue::change_to_copy_of(const UnsignedHugeIntValue& orig) {
