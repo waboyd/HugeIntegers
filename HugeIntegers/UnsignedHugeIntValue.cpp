@@ -10,8 +10,6 @@ UnsignedHugeIntValue::UnsignedHugeIntValue() {
     HugeIntWord *newWord = new HugeIntWord(0);
     this->mostSigWord = newWord;
     this->leastSigWord = newWord;
-    this->defined_key_1 = CHECK_VALUE_A;
-    this->defined_key_2 = CHECK_VALUE_B;
 }
 
 UnsignedHugeIntValue::UnsignedHugeIntValue(const unsigned long long value) {
@@ -19,40 +17,28 @@ UnsignedHugeIntValue::UnsignedHugeIntValue(const unsigned long long value) {
     HugeIntWord *newWord = new HugeIntWord(0);
     this->leastSigWord = newWord;
     this->mostSigWord = newWord->add_value(value);
-    this->defined_key_1 = CHECK_VALUE_A;
-    this->defined_key_2 = CHECK_VALUE_B;
 }
 
 UnsignedHugeIntValue::UnsignedHugeIntValue(const std::string integer_string) {
     this->set_value_from_string(integer_string);
-    this->defined_key_1 = CHECK_VALUE_A;
-    this->defined_key_2 = CHECK_VALUE_B;
 }
 
 UnsignedHugeIntValue::UnsignedHugeIntValue(const char* integer_string) {
     std::string cppString(integer_string);
     this->set_value_from_string(cppString);
-    this->defined_key_1 = CHECK_VALUE_A;
-    this->defined_key_2 = CHECK_VALUE_B;
 }
 
 UnsignedHugeIntValue::UnsignedHugeIntValue(const UnsignedHugeIntValue& orig) {
     this->change_to_copy_of(orig);
-    this->defined_key_1 = orig.defined_key_1;
-    this->defined_key_2 = orig.defined_key_2;
 }
 
 UnsignedHugeIntValue::UnsignedHugeIntValue(const UnsignedHugeIntValue* orig) {
     this->change_to_copy_of(*orig);
-    this->defined_key_1 = orig->defined_key_1;
-    this->defined_key_2 = orig->defined_key_2;
 }
 
 UnsignedHugeIntValue::UnsignedHugeIntValue(UnsignedHugeIntValue&& orig) {
     this->mostSigWord = orig.mostSigWord;
     this->leastSigWord = orig.leastSigWord;
-    this->defined_key_1 = orig.defined_key_1;
-    this->defined_key_2 = orig.defined_key_2;
     orig.mostSigWord = orig.leastSigWord = NULL;
 }
 
@@ -73,15 +59,7 @@ UnsignedHugeIntValue UnsignedHugeIntValue::number_of_digits() const {
 }
 
 UnsignedHugeIntValue::~UnsignedHugeIntValue() {
-    if(!this->is_defined()) {
-        delete(this->mostSigWord);
-        delete(this->leastSigWord);
-        std::cout << "Warning: The destructor was called for a non-defined UnsignedHugeIntValue object.\n";
-        return;
-    }
     this->delete_all_words();
-    this->defined_key_1 = 0;
-    this->defined_key_2 = 0;
 }
 
 UnsignedHugeIntValue::operator std::string() const {
@@ -91,74 +69,51 @@ UnsignedHugeIntValue::operator std::string() const {
 UnsignedHugeIntValue& UnsignedHugeIntValue::operator=(const UnsignedHugeIntValue& orig) {
     if (this == &orig)
         return *this;
-    if(this->is_defined()) {
-        this->delete_all_words();
-    }
+    this->delete_all_words();
     this->change_to_copy_of(orig);
-    this->defined_key_1 = orig.defined_key_1;
-    this->defined_key_2 = orig.defined_key_2;
     return *this;
 }
 
 UnsignedHugeIntValue& UnsignedHugeIntValue::operator=(const UnsignedHugeIntValue* orig) {
     if (this == orig)
         return *this;
-    if(this->is_defined()) {
-        this->delete_all_words();
-    }
+    this->delete_all_words();
     this->change_to_copy_of(*orig);
-    this->defined_key_1 = orig->defined_key_1;
-    this->defined_key_2 = orig->defined_key_2;
     return *this;
 }
 
 UnsignedHugeIntValue& UnsignedHugeIntValue::operator=(UnsignedHugeIntValue&& orig) {
     if (this == &orig)
         return *this;
-    if(this->is_defined()) {
-        this->delete_all_words();
-    }
+    this->delete_all_words();
     this->mostSigWord = orig.mostSigWord;
     this->leastSigWord = orig.leastSigWord;
-    this->defined_key_1 = orig.defined_key_1;
-    this->defined_key_2 = orig.defined_key_2;
     orig.mostSigWord = orig.leastSigWord = NULL;
     return *this;
 }
 
 UnsignedHugeIntValue& UnsignedHugeIntValue::operator=(const unsigned long long value) {
-    if(this->is_defined()) {
-        this->delete_all_words();
-    }
+    this->delete_all_words();
     HugeIntWord *newWord = new HugeIntWord(0);
     this->leastSigWord = newWord;
     this->mostSigWord = newWord->add_value(value);
-    this->defined_key_1 = CHECK_VALUE_A;
-    this->defined_key_2 = CHECK_VALUE_B;
     return *this;
 }
 
 UnsignedHugeIntValue& UnsignedHugeIntValue::operator=(const std::string value_string) {
-    if(this->is_defined()) {
-        this->delete_all_words();
-    }
+    this->delete_all_words();
     this->set_value_from_string(value_string);
     return *this;
 }
 
 UnsignedHugeIntValue& UnsignedHugeIntValue::operator=(const char* value_string) {
-    if(this->is_defined()) {
-        this->delete_all_words();
-    }
+    this->delete_all_words();
     std::string cppStringValue(value_string);
     this->set_value_from_string(cppStringValue);
     return *this;
 }
 
 short UnsignedHugeIntValue::compare(const UnsignedHugeIntValue& numberA, const UnsignedHugeIntValue& numberB) {
-    if(!numberA.is_defined() || !numberB.is_defined()) {
-        throw std::invalid_argument("One of the numbers of the comparison operation is not defined.");
-    }
     unsigned long long numWordsA = numberA.num_words();
     unsigned long long numWordsB = numberB.num_words();
     HugeIntWord *thisWordA, *thisWordB;
@@ -191,9 +146,6 @@ short UnsignedHugeIntValue::compare(const UnsignedHugeIntValue& numberA, const U
 }
 
 UnsignedHugeIntValue UnsignedHugeIntValue::sum_of(const UnsignedHugeIntValue& addendA, const UnsignedHugeIntValue& addendB) {
-    if(!addendA.is_defined() || !addendB.is_defined()) {
-        throw std::invalid_argument("One of the numbers of the addition operation is not defined.");
-    }
     HugeIntWord *greaterAddendWord, *lesserAddendWord;
     HugeIntWord *sumWord, *sumMostSigWord;
     unsigned long long thisWordSum;
@@ -263,9 +215,6 @@ UnsignedHugeIntValue UnsignedHugeIntValue::sum_of(const UnsignedHugeIntValue& ad
 
 
 UnsignedHugeIntValue UnsignedHugeIntValue::sum_of(const UnsignedHugeIntValue& addendA, const unsigned long long addendB) {
-    if(!addendA.is_defined()) {
-        throw std::invalid_argument("One of the numbers of the addition operation is not defined.");
-    }
     unsigned long long thisWordSum;
     unsigned long thisCarryValue = 0;
     HugeIntWord *thisAddendWord = addendA.get_least_significant_word();
@@ -293,9 +242,6 @@ UnsignedHugeIntValue UnsignedHugeIntValue::sum_of(const UnsignedHugeIntValue& ad
 }
 
 UnsignedHugeIntValue UnsignedHugeIntValue::subtract(const UnsignedHugeIntValue& minuend, const UnsignedHugeIntValue& subtrahend) {
-    if(!minuend.is_defined() || !subtrahend.is_defined()) {
-        throw std::invalid_argument("One of the UnsignedHugeIntValues of the subtraction operation is not defined.");
-    }
     if (UnsignedHugeIntValue::compare(minuend, subtrahend) < 0) {
         throw std::range_error("The subtrahend of an unsigned subtraction operation was greater than the minuend.");
     }
@@ -370,9 +316,6 @@ UnsignedHugeIntValue UnsignedHugeIntValue::subtract(const UnsignedHugeIntValue& 
 
 UnsignedHugeIntValue UnsignedHugeIntValue::multiply(const UnsignedHugeIntValue& factorA, const UnsignedHugeIntValue& factorB) {
     // ToDo: Possibly apply multithreading to this method.
-    if(!factorA.is_defined() || !factorB.is_defined()) {
-        throw std::invalid_argument("One of the numbers of the multiplication operation is not defined.");
-    }
     // Find the product of the least significant word of each factor.
     HugeIntWord *startWordA = factorA.get_least_significant_word(); // Starting words when finding a partial product.
     HugeIntWord *startWordB = factorB.get_least_significant_word();
@@ -416,10 +359,6 @@ UnsignedHugeIntValue UnsignedHugeIntValue::multiply_by_int(const unsigned long l
 }
 
 UnsignedHugeIntValue UnsignedHugeIntValue::multiply_single_word(const UnsignedHugeIntValue& large_factor, const unsigned long long small_factor) {
-    if(!large_factor.is_defined()) {
-        throw std::invalid_argument("The UnsignedHugeIntValue object of the multiplication operation is not defined.");
-    }
-
     HugeIntWord *factorWord, *productWord;
     unsigned long long productValue, carryValue;
     factorWord = large_factor.get_least_significant_word();
@@ -452,9 +391,6 @@ UnsignedHugeIntValue UnsignedHugeIntValue::multiply_single_word(const UnsignedHu
 }
 
 std::pair<UnsignedHugeIntValue, UnsignedHugeIntValue> UnsignedHugeIntValue::divide(const UnsignedHugeIntValue& dividend, const UnsignedHugeIntValue& divisor) {
-    if (!dividend.is_defined() || !divisor.is_defined()) {
-        throw std::invalid_argument("One of the UnsignedHugeIntValues of the divide operation is not defined.");
-    }
     std::pair<UnsignedHugeIntValue, UnsignedHugeIntValue> divisionResults;
     unsigned long long dividendNumWords = dividend.num_words();
     unsigned long long divisorNumWords = divisor.num_words();
@@ -554,9 +490,6 @@ std::pair<UnsignedHugeIntValue, UnsignedHugeIntValue> UnsignedHugeIntValue::divi
 }
 
 UnsignedHugeIntValue& UnsignedHugeIntValue::operator+=(const UnsignedHugeIntValue& addend) {
-    if(!this->is_defined() || !addend.is_defined()) {
-        throw std::invalid_argument("One of the numbers of the compound addition operation is not defined.");
-    }
     HugeIntWord *thisWord = this->leastSigWord;
     HugeIntWord *addendWord = addend.get_least_significant_word();
 
@@ -581,9 +514,6 @@ UnsignedHugeIntValue& UnsignedHugeIntValue::operator+=(const UnsignedHugeIntValu
 }
 
 UnsignedHugeIntValue& UnsignedHugeIntValue::operator+=(const unsigned long long addend) {
-    if(!this->is_defined()) {
-        throw std::invalid_argument("The UnsignedHugeIntValue object was not defined before compound addition.");
-    }
     this->leastSigWord->add_value(addend);
     // Set the most significant word.
     HugeIntWord *nextWord = this->mostSigWord->get_next_more_sig_word();
@@ -595,9 +525,6 @@ UnsignedHugeIntValue& UnsignedHugeIntValue::operator+=(const unsigned long long 
 }
 
 UnsignedHugeIntValue& UnsignedHugeIntValue::operator-=(const UnsignedHugeIntValue& subtrahend) {
-    if(!this->is_defined() || !subtrahend.is_defined()) {
-        throw std::invalid_argument("One of the UnsignedHugeIntValue objects of the compound subtraction operation is not defined.");
-    }
     if (UnsignedHugeIntValue::compare(*this, subtrahend) < 0) {
         throw std::range_error("The subtrahend of an unsigned compound subtraction operation was greater than the minuend.");
     }
@@ -683,9 +610,6 @@ UnsignedHugeIntValue& UnsignedHugeIntValue::operator%=(const unsigned long long 
 }
 
 UnsignedHugeIntValue& UnsignedHugeIntValue::operator++() {
-    if(!this->is_defined()) {
-        throw std::invalid_argument("The UnsignedHugeIntValue object was not defined before incrementing.");
-    }
     this->leastSigWord->add_value(1);
     // Set the most significant word.
     HugeIntWord *nextWord = this->mostSigWord->get_next_more_sig_word();
@@ -697,9 +621,6 @@ UnsignedHugeIntValue& UnsignedHugeIntValue::operator++() {
 }
 
 UnsignedHugeIntValue& UnsignedHugeIntValue::operator--() {
-    if(!this->is_defined()) {
-        throw std::invalid_argument("The UnsignedHugeIntValue object was not defined before decrementing.");
-    }
     if ((this->num_words() <= 1) && (this->leastSigWord->get_value() < 1)) {
         throw std::range_error("An unsigned integer equal to 0 was decremented.");
     }
@@ -816,8 +737,6 @@ void UnsignedHugeIntValue::read_from_text_file(FILE* integer_file) {
     if (strlen(digitBuffer) == 0) {
         this->mostSigWord = newMostSigWord;
         this->remove_extra_leading_words();
-        this->defined_key_1 = CHECK_VALUE_A;
-        this->defined_key_2 = CHECK_VALUE_B;
         return;
     }
     // Add the least significant words from the buffer.
@@ -848,8 +767,6 @@ void UnsignedHugeIntValue::read_from_text_file(FILE* integer_file) {
     }
     this->mostSigWord = newMostSigWord;
     this->remove_extra_leading_words();
-    this->defined_key_1 = CHECK_VALUE_A;
-    this->defined_key_2 = CHECK_VALUE_B;
 }
 
 void UnsignedHugeIntValue::write_to_text_file(std::string file_path) const {
@@ -865,9 +782,6 @@ void UnsignedHugeIntValue::write_to_text_file(std::string file_path) const {
 void UnsignedHugeIntValue::write_to_text_file(FILE* integer_file) const {
     if (integer_file == NULL)
         throw std::invalid_argument("A null file pointer was given as an argument.");
-    if (!this->is_defined()) {
-        throw std::invalid_argument("The UnsignedHugeIntValue object was not defined before the command to write to a file.");
-    }
     std::string bufferString;
     HugeIntWord *thisWord = this->mostSigWord;
     unsigned int i;
@@ -936,9 +850,6 @@ void UnsignedHugeIntValue::write_to_binary_file(std::string file_path) const {
     struct stat placeholder_stat;
     if (stat(file_path.c_str(), &placeholder_stat) >= 0)
         std::invalid_argument("An attempt was made to write an UnsignedHugeIntValue value to an existing file.");
-    if (!this->is_defined()) {
-        throw std::invalid_argument("The UnsignedHugeIntValue object was not defined before the command to write to a file.");
-    }
     unsigned long writeBuffer[BUFFER_NUM_WORDS];
     char *writeSource = (char*)writeBuffer;
     unsigned int bufferSize = sizeof(unsigned long) * BUFFER_NUM_WORDS;
@@ -969,16 +880,6 @@ void UnsignedHugeIntValue::write_to_binary_file(std::string file_path) const {
     fileWriteStream.close();
 }
 
-bool UnsignedHugeIntValue::is_defined() const {
-    if ((this->defined_key_1 != CHECK_VALUE_A) || (this->defined_key_2 != CHECK_VALUE_B) ||
-        ((this->leastSigWord != NULL) &&
-        ((this->leastSigWord->get_next_lower_sig_word() != NULL) || (this->mostSigWord->get_next_more_sig_word() != NULL)))) {
-//            throw std::invalid_argument("An UnsignedHugeIntValue object was used before it was defined.");
-            return false;
-    }
-    return true;
-}
-
 long UnsignedHugeIntValue::num_words() const {
     if (this->mostSigWord == NULL)
         return 0;
@@ -994,10 +895,6 @@ HugeIntWord* UnsignedHugeIntValue::get_least_significant_word() const {
 }
 
 HugeIntWord* UnsignedHugeIntValue::remove_most_significant_word() {
-    if(!this->is_defined()) {
-        throw std::invalid_argument("An attempt was made to remove a word from a non-defined number.");
-        return NULL;
-    }
     HugeIntWord *oldMostSigWord = this->mostSigWord;
     if (oldMostSigWord == NULL) {
         throw std::logic_error("An UnsignedHugeIntValue object has no words or value.");
@@ -1013,9 +910,6 @@ HugeIntWord* UnsignedHugeIntValue::remove_most_significant_word() {
 }
 
 std::string UnsignedHugeIntValue::to_string() const {
-    if(!this->is_defined()) {
-        throw std::invalid_argument("An attempt was made to convert the value of a non-defined UnsignedHugeIntValue to a string.");
-    }
     if (this->mostSigWord == NULL)
         return "0";
     unsigned long zero_long(0);

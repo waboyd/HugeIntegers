@@ -7,8 +7,6 @@
 #include "HugeIntWord.h"
 
 #define MAX_DIGITS_PER_WORD 9
-#define CHECK_VALUE_A   84340
-#define CHECK_VALUE_B   308424
 #define READ_BUFFER_SIZE    144
 #define BUFFER_NUM_WORDS    16
 
@@ -331,13 +329,6 @@ public:
     UnsignedHugeIntValue& operator--();
 
     /**
-     * @brief Returns true only if the object has been defined and is not null.
-     * @return True if the object is verified as properly defined.
-     */
-    bool is_defined() const;
-    // ToDo: Check whether the is_defined() function is necessary.
-
-    /**
      * @brief Returns the number of words that make up the UnsignedHugeIntValue object.
      * @return The number of words in the object.
      */
@@ -427,9 +418,6 @@ protected:
 
 private:
     HugeIntWord *leastSigWord, *mostSigWord;
-
-    // Integers that are set to specific values when defined.
-    int defined_key_1, defined_key_2;
 
     // Private Methods
 
