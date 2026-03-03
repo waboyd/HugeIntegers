@@ -653,6 +653,7 @@ void UnsignedHugeIntValue::read_from_text_file(std::string file_path) {
 }
 
 void UnsignedHugeIntValue::read_from_text_file(FILE* integer_file) {
+    // ToDo: Change this implementation to allow word sizes that are not a power of 10.
     if (integer_file == NULL)
         throw std::invalid_argument("A null file pointer was given as an argument.");
     this->delete_all_words();
@@ -780,6 +781,7 @@ void UnsignedHugeIntValue::write_to_text_file(std::string file_path) const {
 }
 
 void UnsignedHugeIntValue::write_to_text_file(FILE* integer_file) const {
+    // ToDo: Change this implementation to allow word sizes that are not a power of 10.
     if (integer_file == NULL)
         throw std::invalid_argument("A null file pointer was given as an argument.");
     std::string bufferString;
@@ -981,43 +983,38 @@ void UnsignedHugeIntValue::change_to_copy_of(const UnsignedHugeIntValue& orig) {
 }
 
 void UnsignedHugeIntValue::set_value_from_string(std::string integer_string) {
-    // ToDo: handle bases that are not a power of 10.
-    std::string thisWordString;
-    char thisWordChar[MAX_DIGITS_PER_WORD + 1];
-    unsigned long long thisWordValue;
-    unsigned long long thisWordIndex = integer_string.length();
-    HugeIntWord *newWordObject;
-
-    // Set the least significant word.
-    if (thisWordIndex <= MAX_DIGITS_PER_WORD) {
-        thisWordString = integer_string.substr(0, thisWordIndex);
-        strcpy(thisWordChar, thisWordString.c_str());
-        thisWordValue = strtoul(thisWordChar, NULL, 10);
-        this->mostSigWord = this->leastSigWord = new HugeIntWord(thisWordValue);
-        return;
+    unsigned long long num_digits =  integer_string.length();
+    if (num_digits == 0) {
+        throw std::invalid_argument("An attempt was made to convert an empty string into an UnsignedHugeInt.");
     }
-    thisWordIndex -= MAX_DIGITS_PER_WORD;
-    thisWordString = integer_string.substr(thisWordIndex, MAX_DIGITS_PER_WORD);
-    strcpy(thisWordChar, thisWordString.c_str());
-    thisWordValue = strtoul(thisWordChar, NULL, 10);
-    newWordObject = new HugeIntWord(thisWordValue);
-    this->leastSigWord = newWordObject;
+    // Use segments of 9 base 10 digits.
+    unsigned long long segment_start_index = num_digits % 9;
+    std::string segment_string;
+    unsigned long segment_value;
 
-    // Add the medium significant words.
-    while (thisWordIndex > MAX_DIGITS_PER_WORD) {
-        thisWordIndex -= MAX_DIGITS_PER_WORD;
-        thisWordString = integer_string.substr(thisWordIndex, MAX_DIGITS_PER_WORD);
-        strcpy(thisWordChar, thisWordString.c_str());
-        thisWordValue = strtoul(thisWordChar, NULL, 10);
-        newWordObject = new HugeIntWord(thisWordValue, newWordObject);
+    // Read the most significant digits.
+    if (segment_start_index == 0) {
+        segment_value = 0;
     }
+    else {
+        segment_string = integer_string.substr(0, segment_start_index);
+        segment_value = std::stol(segment_string);
+        if (segment_value < 0) {
+            throw std::invalid_argument("An attempt was made to read a negative value as a string into an UnsignedHugeInt.");
+        }
+    }
+    this->mostSigWord = this->leastSigWord = new HugeIntWord(segment_value);
 
-    // Set the most significant word.
-    thisWordString = integer_string.substr(0, thisWordIndex);
-    strcpy(thisWordChar, thisWordString.c_str());
-    thisWordValue = strtoul(thisWordChar, NULL, 10);
-    this->mostSigWord = new HugeIntWord(thisWordValue, newWordObject);
-    this->remove_extra_leading_words();
+    // Read the remaining digits of the string in segments of 9 digits.
+    for (; segment_start_index < num_digits; segment_start_index += 9) {
+        segment_string = integer_string.substr(segment_start_index, 9);
+        segment_value = std::stol(segment_string);
+        if (segment_value < 0) {
+            throw std::invalid_argument("A string could not be converted to an UnsignedHugeInt.");
+        }
+        *this = UnsignedHugeIntValue::multiply_single_word(*this, 1000000000);
+        this->add_value_at_word(this->leastSigWord, segment_value);
+    }
 }
 
 void UnsignedHugeIntValue::delete_all_words() {
