@@ -781,24 +781,45 @@ void UnsignedHugeIntValue::write_to_text_file(std::string file_path) const {
 }
 
 void UnsignedHugeIntValue::write_to_text_file(FILE* integer_file) const {
-    // ToDo: Change this implementation to allow word sizes that are not a power of 10.
     if (integer_file == NULL)
         throw std::invalid_argument("A null file pointer was given as an argument.");
+    if (this->num_words() <= 0) {
+        throw std::logic_error("An attempt was made to write an undefined value to a file.");
+    }
     std::string bufferString;
-    HugeIntWord *thisWord = this->mostSigWord;
-    unsigned int i;
-
-    while (thisWord != NULL) {
-        bufferString = "";
-        for (i = 0; i < BUFFER_NUM_WORDS; ++i) {
-            bufferString += thisWord->to_string();
-            thisWord = thisWord->get_next_lower_sig_word();
-            if (thisWord == NULL) {
-                fputs(bufferString.c_str(), integer_file);
-                return;
-            }
-        }
+    if (this->num_words() == 1) {
+        bufferString = std::to_string(this->leastSigWord->get_value());
         fputs(bufferString.c_str(), integer_file);
+        return;
+    }
+
+    // The number of digits must be found to determine the size of the output file.
+    unsigned long long numDigits(9);
+    auto divisionResult = this->divide(this, 1000000000);
+    UnsignedHugeIntValue &quotient = divisionResult.first;
+    UnsignedHugeIntValue &remainder = divisionResult.second;
+    while (quotient.num_words() > 1) {
+        divisionResult = this->divide(quotient, 1000000000);
+        numDigits += 9;
+    }
+    bufferString = std::to_string(quotient.leastSigWord->get_value());
+    numDigits += bufferString.length();
+
+    // The first sets of digits were already found, so they are sent to the output file.
+    fputs(bufferString.c_str(), integer_file);
+    bufferString = std::to_string(remainder.leastSigWord->get_value());
+    bufferString = std::string(9 - bufferString.length(), '0') + bufferString;
+    fputs(bufferString.c_str(), integer_file);
+
+    // The other output digits are found in segments, in order of least significant segment of digits.
+    divisionResult = this->divide(this, 1000000000);
+    unsigned long long segmentIndex;
+    for (segmentIndex = numDigits - 9; segmentIndex > 9; segmentIndex -= 9) {
+        bufferString = std::to_string(remainder.leastSigWord->get_value());
+        bufferString = std::string(9 - bufferString.length(), '0') + bufferString;
+        fseek(integer_file, segmentIndex, SEEK_SET);
+        fputs(bufferString.c_str(), integer_file);
+        divisionResult = this->divide(quotient, 1000000000);
     }
 }
 
@@ -987,7 +1008,8 @@ void UnsignedHugeIntValue::set_value_from_string(std::string integer_string) {
     if (num_digits == 0) {
         throw std::invalid_argument("An attempt was made to convert an empty string into an UnsignedHugeInt.");
     }
-    // Use segments of 9 base 10 digits.
+
+    // Use segments of 9 digits (base 10).
     unsigned long long segment_start_index = num_digits % 9;
     std::string segment_string;
     unsigned long segment_value;
@@ -1015,6 +1037,7 @@ void UnsignedHugeIntValue::set_value_from_string(std::string integer_string) {
         *this = UnsignedHugeIntValue::multiply_single_word(*this, 1000000000);
         this->add_value_at_word(this->leastSigWord, segment_value);
     }
+    this->remove_extra_leading_words();
 }
 
 void UnsignedHugeIntValue::delete_all_words() {
@@ -1022,11 +1045,12 @@ void UnsignedHugeIntValue::delete_all_words() {
     HugeIntWord *wordToDelete, *nextWord;
     while (thisWord != NULL) {
         wordToDelete = thisWord;
-
         nextWord = thisWord->get_next_lower_sig_word();
         delete(wordToDelete);
         thisWord = nextWord;
     }
+    this->mostSigWord = NULL;
+    this->leastSigWord = NULL;
 }
 
 void UnsignedHugeIntValue::remove_extra_leading_words() {
