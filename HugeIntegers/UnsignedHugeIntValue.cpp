@@ -484,8 +484,8 @@ std::pair<UnsignedHugeIntValue, UnsignedHugeIntValue> UnsignedHugeIntValue::divi
     // Remove leading zeros.
     quotient.remove_extra_leading_words();
 
-    divisionResults.first = quotient;
-    divisionResults.second = subRemainder;
+    divisionResults.first = std::move(quotient);
+    divisionResults.second = std::move(subRemainder);
     return divisionResults;
 }
 
@@ -590,22 +590,22 @@ UnsignedHugeIntValue& UnsignedHugeIntValue::operator*=(const unsigned long long 
 }
 
 UnsignedHugeIntValue& UnsignedHugeIntValue::operator/=(const UnsignedHugeIntValue& divisor) {
-    *this = UnsignedHugeIntValue::divide(*this, divisor).first;
+    *this = std::move(UnsignedHugeIntValue::divide(*this, divisor).first);
     return *this;
 }
 
 UnsignedHugeIntValue& UnsignedHugeIntValue::operator/=(const unsigned long long divisor) {
-    *this = UnsignedHugeIntValue::divide(*this, UnsignedHugeIntValue(divisor)).first;
+    *this = std::move(UnsignedHugeIntValue::divide(*this, UnsignedHugeIntValue(divisor)).first);
     return *this;
 }
 
 UnsignedHugeIntValue& UnsignedHugeIntValue::operator%=(const UnsignedHugeIntValue& divisor) {
-    *this = UnsignedHugeIntValue::divide(*this, divisor).second;
+    *this = std::move(UnsignedHugeIntValue::divide(*this, divisor).second);
     return *this;
 }
 
 UnsignedHugeIntValue& UnsignedHugeIntValue::operator%=(const unsigned long long divisor) {
-    *this = UnsignedHugeIntValue::divide(*this, UnsignedHugeIntValue(divisor)).second;
+    *this = std::move(UnsignedHugeIntValue::divide(*this, UnsignedHugeIntValue(divisor)).second);
     return *this;
 }
 
@@ -946,11 +946,10 @@ std::string UnsignedHugeIntValue::to_string() const {
     UnsignedHugeIntValue segmentBase(1000000000);  // base for segment of the string found.
 
     // Setting the digits of the result string in segments.
-    UnsignedHugeIntValue quotient;
     unsigned long remainder;
     unsigned long long segmentStart = allocationSize; // index of the start of the current segment in the result string.
     auto divisionResult = this->divide(this, segmentBase);
-    quotient = divisionResult.first;
+    UnsignedHugeIntValue &quotient = divisionResult.first;
     remainder = divisionResult.second.get_least_significant_word()->get_value();
 
     while (this->compare(quotient, zero_object) > 0) {
@@ -963,7 +962,6 @@ std::string UnsignedHugeIntValue::to_string() const {
         fullNumberString.replace(segmentStart, 9, segmentString);
 
         divisionResult = this->divide(quotient, segmentBase);
-        quotient = divisionResult.first;
         remainder = divisionResult.second.get_least_significant_word()->get_value();
     }
 
