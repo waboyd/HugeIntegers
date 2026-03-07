@@ -653,121 +653,39 @@ void UnsignedHugeIntValue::read_from_text_file(std::string file_path) {
 }
 
 void UnsignedHugeIntValue::read_from_text_file(FILE* integer_file) {
-    // ToDo: Change this implementation to allow word sizes that are not a power of 10.
     if (integer_file == NULL)
         throw std::invalid_argument("A null file pointer was given as an argument.");
     this->delete_all_words();
-    this->mostSigWord = this->leastSigWord = NULL;
-    char readBuffer[READ_BUFFER_SIZE + 1];
-    char digitBuffer[READ_BUFFER_SIZE + MAX_DIGITS_PER_WORD + 1];
-    char wordString[MAX_DIGITS_PER_WORD + 1] = "\0";
-    unsigned int remainderLength = 0;
-    unsigned int numCharsRead;
-    unsigned int readBufferIndex, digitBufferIndex;
-    char thisChar;
-    unsigned long long wordValue;
-    HugeIntWord *newMostSigWord = this->leastSigWord;
-    bool isFirstWordEmpty = true;
-    unsigned long long filePositionAfterRead;
-
-    // Check the number of characters in the file.
-    fseek(integer_file, 0, SEEK_END);
-    unsigned long long numCharsToRead = ftell(integer_file);
-
-    // Read from the file in reverse order.
-    wordString[MAX_NUMBER_OF_DIGITS] = '\0';
-    while(numCharsToRead > READ_BUFFER_SIZE) {
-        numCharsToRead -= READ_BUFFER_SIZE;
-        fseek(integer_file, numCharsToRead, SEEK_SET);
-        numCharsRead = fread(readBuffer, sizeof(char), READ_BUFFER_SIZE, integer_file);
-        filePositionAfterRead = ftell(integer_file);
-        numCharsRead -= (filePositionAfterRead - numCharsToRead) - READ_BUFFER_SIZE;    // Ignore characters that were read twice.
-
-        // Take only the digits from the read buffer to create the digit buffer.
-        digitBufferIndex = 0;
-        for (readBufferIndex = 0; readBufferIndex < numCharsRead; ++readBufferIndex) {
-            thisChar = readBuffer[readBufferIndex];
-            if (isdigit(thisChar)) {
-                digitBuffer[digitBufferIndex] = thisChar;
-                ++digitBufferIndex;
+    char readBuffer[9];
+    char nextChar;
+    unsigned long segmentValue;
+    unsigned long multiplier;
+    unsigned short placeIndex;
+    this->mostSigWord = this->leastSigWord = new HugeIntWord(0);
+    do {
+        placeIndex = 0;
+        multiplier = 1;
+        // A segment of 9 digits is read at a time to convert the segment to a long integer.
+        while (placeIndex < 9) {
+            nextChar = fgetc(integer_file);
+            // When the end of the file is reached, no more digits are put in the buffer, and
+            // the multiplier keeps its value.
+            if (nextChar == EOF)
+                break;
+            // Characters that are not digits will be skipped.
+            if (isdigit(nextChar)) {
+                readBuffer[placeIndex] = nextChar;
+                ++placeIndex;
+                multiplier *= 10;
             }
         }
-        digitBuffer[digitBufferIndex] = '\0';
-        // Attach the remaining digits from the previous buffer to this digit buffer.
-        strcat(digitBuffer, wordString);
-        digitBufferIndex += remainderLength;
-        // Set the words of this UnsignedHugeIntValue object from the digit buffer.
-        while (digitBufferIndex > MAX_DIGITS_PER_WORD) {
-            digitBufferIndex -= MAX_DIGITS_PER_WORD;
-            strncpy(wordString, digitBuffer + digitBufferIndex, MAX_DIGITS_PER_WORD);
-            wordValue = strtoul(wordString, NULL, 10);
-            if (isFirstWordEmpty) {
-                newMostSigWord = new HugeIntWord(wordValue);
-                this->leastSigWord = newMostSigWord;
-                isFirstWordEmpty = false;
-            }
-            else {
-                newMostSigWord = new HugeIntWord(wordValue, newMostSigWord);
-            }
-        }
-        // Save the remaining digits for the next buffer.
-        strncpy(wordString, digitBuffer, digitBufferIndex);
-        wordString[digitBufferIndex] = '\0';
-        remainderLength = digitBufferIndex;
-    }
-
-    // Read the most significant digits from the file.
-    fseek(integer_file, 0, SEEK_SET);
-    numCharsRead = fread(readBuffer, sizeof(char), numCharsToRead, integer_file);
-    filePositionAfterRead = ftell(integer_file);
-    numCharsRead -= (filePositionAfterRead - numCharsToRead);    // Ignore characters that were read twice.
-
-    // Take only the digits from the read buffer to create the digit buffer.
-    digitBufferIndex = 0;
-    for (readBufferIndex = 0; readBufferIndex < numCharsRead; ++readBufferIndex) {
-        thisChar = readBuffer[readBufferIndex];
-        if (isdigit(thisChar)) {
-            digitBuffer[digitBufferIndex] = thisChar;
-            ++digitBufferIndex;
-        }
-    }
-    digitBuffer[digitBufferIndex] = '\0';
-    strcat(digitBuffer, wordString);
-    digitBufferIndex += remainderLength;
-
-    if (strlen(digitBuffer) == 0) {
-        this->mostSigWord = newMostSigWord;
-        this->remove_extra_leading_words();
-        return;
-    }
-    // Add the least significant words from the buffer.
-    while (digitBufferIndex > MAX_DIGITS_PER_WORD) {
-        digitBufferIndex -= MAX_DIGITS_PER_WORD;
-        strncpy(wordString, digitBuffer + digitBufferIndex, MAX_DIGITS_PER_WORD);
-        wordValue = strtoul(wordString, NULL, 10);
-        if (isFirstWordEmpty) {
-            newMostSigWord = new HugeIntWord(wordValue);
-            this->leastSigWord = newMostSigWord;
-            isFirstWordEmpty = false;
-        }
-        else {
-            newMostSigWord = new HugeIntWord(wordValue, newMostSigWord);
-        }
-    }
-
-    // Set the most significant word.
-    strncpy(wordString, digitBuffer, digitBufferIndex);
-    wordString[digitBufferIndex] = '\0';
-    wordValue = strtoul(wordString, NULL, 10);
-    if (isFirstWordEmpty) {
-        newMostSigWord = new HugeIntWord(wordValue);
-        this->leastSigWord = newMostSigWord;
-    }
-    else {
-        newMostSigWord = new HugeIntWord(wordValue, newMostSigWord);
-    }
-    this->mostSigWord = newMostSigWord;
-    this->remove_extra_leading_words();
+        if (placeIndex < 9) // if end of file was reached before reading a full segment
+            readBuffer[placeIndex] = '\0';
+        // Converts the string to a long integer.
+        segmentValue = strtoul(readBuffer, NULL, 10);
+        *this = UnsignedHugeIntValue::multiply_single_word(*this, multiplier);
+        this->add_value_at_word(this->leastSigWord, segmentValue);
+    } while (nextChar != EOF);
 }
 
 void UnsignedHugeIntValue::write_to_text_file(std::string file_path) const {

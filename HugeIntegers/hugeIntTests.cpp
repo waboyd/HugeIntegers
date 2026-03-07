@@ -150,6 +150,18 @@ TEST_CASE("Read From Text File 4", "Take the value of an UnsignedHugeInt object 
     REQUIRE(expectedValueString == x.to_string());
 }
 
+TEST_CASE("Read From Text File 5", "Take the value of an UnsignedHugeInt object from a text file with consecutive zeros.") {
+    std::string filePath = std::string(test_folder_path) + "twoLineInt2.txt";
+    std::string expectedValueString = "820498354354904968439898403871842520506525012000844863354646"
+            "85441064524354878348484999654074035247887357479873228725855787149401870063865530630257"
+            "69836018300000000000135725";
+    UnsignedHugeInt x;
+    FILE *testTextFile = fopen(filePath.c_str(), "r");
+    x.read_from_text_file(testTextFile);
+    fclose(testTextFile);
+    REQUIRE(expectedValueString == x.to_string());
+}
+
 TEST_CASE("Write to Text File 1", "Write a one-word UnsignedHugeInt to a text file.") {
     UnsignedHugeInt x(58961);
     std::string expectedString = "58961";
