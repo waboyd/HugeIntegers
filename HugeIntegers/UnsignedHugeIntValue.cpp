@@ -859,7 +859,7 @@ std::string UnsignedHugeIntValue::to_string() const {
         return "0";
     std::string fullNumberString;
     unsigned long long allocationSize;
-    allocationSize = this->num_words() * MAX_NUMBER_OF_DIGITS + 1;
+    allocationSize = this->num_words() * HUGE_INT_NUMBER_OF_BASE_10_DIGITS_PER_WORD + 1;
     fullNumberString.resize(allocationSize, '0');
     UnsignedHugeIntValue segmentBase(1000000000);  // base for segment of the string found.
 

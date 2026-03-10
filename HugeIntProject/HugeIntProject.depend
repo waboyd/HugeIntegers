@@ -1,8 +1,8 @@
 # depslib dependency file v1.0
-1771639873 source:/home/willboyd/Programming/HugeIntegers/HugeIntegers/HugeIntWord.cpp
+1773161679 source:/home/willboyd/Programming/HugeIntegers/HugeIntegers/HugeIntWord.cpp
 	"HugeIntWord.h"
 
-1771639873 /home/willboyd/Programming/HugeIntegers/HugeIntegers/HugeIntWord.h
+1773166432 /home/willboyd/Programming/HugeIntegers/HugeIntegers/HugeIntWord.h
 	<iostream>
 	<sstream>
 
@@ -19,11 +19,11 @@
 	<sys/stat.h>
 	"HugeIntWord.h"
 
-1772849060 source:/home/willboyd/Programming/HugeIntegers/HugeIntegers/UnsignedHugeIntValue.cpp
+1773164771 source:/home/willboyd/Programming/HugeIntegers/HugeIntegers/UnsignedHugeIntValue.cpp
 	"UnsignedHugeIntValue.h"
 	"UnsignedHugeIntValue.h"
 
-1772601723 source:/home/willboyd/Programming/HugeIntegers/HugeIntegers/hugeIntTests.cpp
+1773163047 source:/home/willboyd/Programming/HugeIntegers/HugeIntegers/hugeIntTests.cpp
 	<catch2/catch_test_macros.hpp>
 	"UnsignedHugeInt.h"
 

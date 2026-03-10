@@ -3,14 +3,14 @@
 #include <iostream>
 #include <sstream>
 
-#define MAX_VALUE   999999999
-#define MAX_NUMBER_OF_DIGITS    9
+#define HUGE_INT_MAX_WORD_VALUE   999999999
+#define HUGE_INT_NUMBER_OF_BASE_10_DIGITS_PER_WORD    9
 
 class HugeIntWord
 {
-    
+
     friend class UnsignedHugeIntValue;
-    
+
 public:
 
     /**
@@ -28,13 +28,13 @@ public:
      * @param lowerSignificantWord Object to be set as the next lower significant word of the newly created object.
      */
     HugeIntWord(unsigned long value, HugeIntWord* lowerSignificantWord);
-    
+
     /**
      * @brief Return the value held by this HugeIntWord object.
      * @return The value held by this HugeIntWord object.
      */
     unsigned long get_value() const;
-    
+
     /**
      * @brief Returns the place value of this HugeIntWord object within the integer.
      * The least significant word has a place value of 0, and each word has a place value one higher than the next less
@@ -49,26 +49,26 @@ public:
      * @return The value of this word as a string of digits.
      */
     std::string to_string();
-    
+
 protected:
     // The maximum value that is permitted in one HugeIntWord object.
     static unsigned long max_value;
-    
+
     // The base value for a HugeIntWord object. Each word represents a power of the base value.
     static unsigned long base_value;
 
     // Link to the next less significant word object.
     HugeIntWord *lessSigWord;
-    
+
     // Link to the next more significant word object.
     HugeIntWord *moreSigWord;
-    
+
     // Current numerical value of this word.
     unsigned long value;
 
     // Location of this word in the number. 0 is least significant place.
     unsigned long long place_value;
-    
+
     // Protected methods
 
     /**
@@ -82,7 +82,7 @@ protected:
      * @return The next more significant word (segment) of the number.
      */
     HugeIntWord* get_next_more_sig_word() const;
-    
+
 private:
     /**
      * @brief Sets the argument as the next more significant word of this word object.
@@ -100,7 +100,7 @@ private:
      * @brief Removes and deletes the next more significant word object, leaving this object as the new most significant word.
      */
     void remove_more_significant_word();
-    
+
     /**
      * @brief Adds a value to this word.
      * @param addend Value to add to the word.

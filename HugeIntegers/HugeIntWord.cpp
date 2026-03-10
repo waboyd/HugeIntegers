@@ -1,6 +1,6 @@
 #include "HugeIntWord.h"
 
-unsigned long HugeIntWord::max_value = MAX_VALUE;
+unsigned long HugeIntWord::max_value = HUGE_INT_MAX_WORD_VALUE;
 unsigned long HugeIntWord::base_value = max_value + 1;
 
 HugeIntWord::HugeIntWord(unsigned long value){
@@ -38,12 +38,12 @@ void HugeIntWord::set_more_significant_word(HugeIntWord* next_word) {
     if (this->moreSigWord != NULL) {
         throw std::logic_error("An attempt was made to attach a word to replace an existing word.");
     }
-    
+
     if (next_word == NULL) {
         std::cout << "WARNING: An attempt was made to attach a null object to a word.\n";
         return;
     }
-    
+
     this->moreSigWord = next_word;
 }
 
@@ -51,12 +51,12 @@ void HugeIntWord::set_less_significant_word(HugeIntWord* next_word) {
     if (this->lessSigWord != NULL) {
         throw std::logic_error("An attempt was made to attach a word to replace an existing word.");
     }
-    
+
     if (next_word == NULL) {
         std::cout << "WARNING: An attempt was made to attach a null object to a word.\n";
         return;
     }
-    
+
     this->lessSigWord = next_word;
     this->place_value = next_word->get_word_number() + 1;
 }
@@ -80,7 +80,7 @@ std::string HugeIntWord::to_string() {
     numberToStringStream << this->value;
     numberString = numberToStringStream.str();
     if (this->moreSigWord != NULL) {
-        numLeadingZeros = MAX_NUMBER_OF_DIGITS - numberString.length();
+        numLeadingZeros = HUGE_INT_NUMBER_OF_BASE_10_DIGITS_PER_WORD - numberString.length();
         formattedNumberString = std::string(numLeadingZeros, '0') + numberString;
     }
     else {
@@ -100,7 +100,7 @@ HugeIntWord* HugeIntWord::add_value(unsigned long long addend) {
             thisNewValue = thisNewValue % HugeIntWord::base_value;
             this->value = thisNewValue;
             if (this->moreSigWord == NULL) {
-                this->moreSigWord = new HugeIntWord(0, this);                
+                this->moreSigWord = new HugeIntWord(0, this);
             }
             mostSignificantAddedWord = this->moreSigWord->add_value(carryValue);
         }

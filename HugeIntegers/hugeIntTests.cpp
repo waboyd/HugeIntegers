@@ -63,6 +63,15 @@ TEST_CASE("Read Very Long Number String", "Instantiate an UnsignedHugeInt from a
     delete(newNumber);
 }
 
+TEST_CASE("Read Number String With Consecutive Zeros", "Instantiate an UnsignedHugeInt from a number string with many consecutive 0 digits.") {
+    std::string valueString =
+        "36700000000000000000000000000000005345700000009479670260000000000000000000000000000000000034678900000000000000000000"
+        "00300000000000000000700000000000000000000000000000000000000000000000000000030";
+    UnsignedHugeInt *newNumber = new UnsignedHugeInt(valueString);
+    CHECK(valueString == newNumber->to_string());
+    delete(newNumber);
+}
+
 TEST_CASE("Copy UnsignedHugeInt From Object",
         "Make a copy of a multiple word UnsignedHugeInt. Check that the original is not changed after the copy.") {
     std::string valueString = "5035049874131000489735174198161536841357152630403";
