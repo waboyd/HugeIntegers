@@ -656,7 +656,7 @@ void UnsignedHugeIntValue::read_from_text_file(FILE* integer_file) {
     if (integer_file == NULL)
         throw std::invalid_argument("A null file pointer was given as an argument.");
     this->delete_all_words();
-    char readBuffer[9];
+    char readBuffer[HUGE_INT_NUMBER_OF_BASE_10_DIGITS_PER_WORD+ 1];
     char nextChar;
     unsigned long segmentValue;
     unsigned long multiplier;
@@ -666,7 +666,7 @@ void UnsignedHugeIntValue::read_from_text_file(FILE* integer_file) {
         placeIndex = 0;
         multiplier = 1;
         // A segment of 9 digits is read at a time to convert the segment to a long integer.
-        while (placeIndex < 9) {
+        while (placeIndex < HUGE_INT_NUMBER_OF_BASE_10_DIGITS_PER_WORD) {
             nextChar = fgetc(integer_file);
             // When the end of the file is reached, no more digits are put in the buffer, and
             // the multiplier keeps its value.
@@ -679,8 +679,7 @@ void UnsignedHugeIntValue::read_from_text_file(FILE* integer_file) {
                 multiplier *= 10;
             }
         }
-        if (placeIndex < 9) // if end of file was reached before reading a full segment
-            readBuffer[placeIndex] = '\0';
+        readBuffer[placeIndex] = '\0'; // End of the number segment.
         // Converts the string to a long integer.
         segmentValue = strtoul(readBuffer, NULL, 10);
         *this = UnsignedHugeIntValue::multiply_single_word(*this, multiplier);
