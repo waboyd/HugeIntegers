@@ -1,10 +1,6 @@
 #include "UnsignedHugeIntValue.h"
 #include "UnsignedHugeIntValue.h"
 
-// ToDo: Set the max_word_value in UnsignedHugeIntValue and HugeIntWord.
-unsigned long UnsignedHugeIntValue::max_word_value = 999999999;
-unsigned long long UnsignedHugeIntValue::word_base = UnsignedHugeIntValue::max_word_value + 1;
-
 UnsignedHugeIntValue::UnsignedHugeIntValue() {
     // ToDo: Set maximum word value.
     HugeIntWord *newWord = new HugeIntWord(0);
@@ -47,9 +43,15 @@ UnsignedHugeIntValue UnsignedHugeIntValue::number_of_digits() const {
         return UnsignedHugeIntValue(1);
     UnsignedHugeIntValue totalNumDigits(1);
     UnsignedHugeIntValue quotient(this);
-    while (this->compare(quotient, 1000000000) >= 0) {
-        totalNumDigits += 9;
-        quotient /= UnsignedHugeIntValue(1000000000);
+
+    // The value can be repeatedly divided by a power of 10 to find the number of digits.
+    unsigned long divisor = 1;
+    for (unsigned short exponent = 1; exponent <= HUGE_INT_NUMBER_OF_BASE_10_DIGITS_PER_WORD; ++exponent) {
+        divisor *= 10;
+    }
+    while (this->compare(quotient, divisor) >= 0) {
+        totalNumDigits += HUGE_INT_NUMBER_OF_BASE_10_DIGITS_PER_WORD;
+        quotient /= UnsignedHugeIntValue(divisor);
     }
     while (this->compare(quotient, UnsignedHugeIntValue(10)) >= 0) {
         totalNumDigits += 1;
@@ -165,8 +167,8 @@ UnsignedHugeIntValue UnsignedHugeIntValue::sum_of(const UnsignedHugeIntValue& ad
 
     while (lesserAddendWord != NULL) {
         thisWordSum = greaterAddendWord->get_value() + lesserAddendWord->get_value() + carryValue;
-        carryValue = thisWordSum / UnsignedHugeIntValue::word_base;
-        thisWordSum = thisWordSum % UnsignedHugeIntValue::word_base;
+        carryValue = thisWordSum / HUGE_INT_WORD_BASE;
+        thisWordSum = thisWordSum % HUGE_INT_WORD_BASE;
 
         if (sumWord == NULL) {
             sumWord = sum.add_word(thisWordSum);
@@ -182,8 +184,8 @@ UnsignedHugeIntValue UnsignedHugeIntValue::sum_of(const UnsignedHugeIntValue& ad
 
     while (greaterAddendWord != NULL) {
         thisWordSum = greaterAddendWord->get_value() + carryValue;
-        carryValue = thisWordSum / UnsignedHugeIntValue::word_base;
-        thisWordSum = thisWordSum % UnsignedHugeIntValue::word_base;
+        carryValue = thisWordSum / HUGE_INT_WORD_BASE;
+        thisWordSum = thisWordSum % HUGE_INT_WORD_BASE;
 
         if (sumWord == NULL) {
             sumWord = sum.add_word(thisWordSum);
@@ -197,8 +199,8 @@ UnsignedHugeIntValue UnsignedHugeIntValue::sum_of(const UnsignedHugeIntValue& ad
     }
 
     while (carryValue > 0) {
-        thisWordSum = carryValue % UnsignedHugeIntValue::word_base;
-        carryValue = carryValue / UnsignedHugeIntValue::word_base;
+        thisWordSum = carryValue % HUGE_INT_WORD_BASE;
+        carryValue = carryValue / HUGE_INT_WORD_BASE;
 
         if (sumWord == NULL) {
             sumWord = sum.add_word(thisWordSum);
@@ -219,11 +221,11 @@ UnsignedHugeIntValue UnsignedHugeIntValue::sum_of(const UnsignedHugeIntValue& ad
     unsigned long thisCarryValue = 0;
     HugeIntWord *thisAddendWord = addendA.get_least_significant_word();
 
-    thisWordSum = addendB % UnsignedHugeIntValue::word_base;
-    thisCarryValue = addendB / UnsignedHugeIntValue::word_base;
+    thisWordSum = addendB % HUGE_INT_WORD_BASE;
+    thisCarryValue = addendB / HUGE_INT_WORD_BASE;
     thisWordSum += thisAddendWord->get_value();
-    thisCarryValue += thisWordSum / UnsignedHugeIntValue::word_base;
-    thisWordSum = thisWordSum % UnsignedHugeIntValue::word_base;
+    thisCarryValue += thisWordSum / HUGE_INT_WORD_BASE;
+    thisWordSum = thisWordSum % HUGE_INT_WORD_BASE;
     UnsignedHugeIntValue sum(thisWordSum);
 
     thisAddendWord = thisAddendWord->get_next_more_sig_word();
@@ -234,8 +236,8 @@ UnsignedHugeIntValue UnsignedHugeIntValue::sum_of(const UnsignedHugeIntValue& ad
             thisWordSum += thisAddendWord->get_value();
             thisAddendWord = thisAddendWord->get_next_more_sig_word();
         }
-        thisCarryValue = thisWordSum / UnsignedHugeIntValue::word_base;
-        thisWordSum = thisWordSum % UnsignedHugeIntValue::word_base;
+        thisCarryValue = thisWordSum / HUGE_INT_WORD_BASE;
+        thisWordSum = thisWordSum % HUGE_INT_WORD_BASE;
         sum.add_word(thisWordSum);
     }
     return sum;
@@ -261,7 +263,7 @@ UnsignedHugeIntValue UnsignedHugeIntValue::subtract(const UnsignedHugeIntValue& 
     thisSubtrahendWordValue = subtrahendWord->get_value();
     if (thisMinuendWordValue < thisSubtrahendWordValue) {
         carryValue = 1;
-        thisWordDifference = (UnsignedHugeIntValue::word_base + thisMinuendWordValue) - thisSubtrahendWordValue;
+        thisWordDifference = (HUGE_INT_WORD_BASE + thisMinuendWordValue) - thisSubtrahendWordValue;
     }
     else {
         carryValue = 0;
@@ -352,7 +354,7 @@ UnsignedHugeIntValue UnsignedHugeIntValue::multiply(const UnsignedHugeIntValue& 
 
 UnsignedHugeIntValue UnsignedHugeIntValue::multiply_by_int(const unsigned long long factor) const {
     // If factor is small enough to fit in one word of an UnsignedHugeIntValue object, use the faster multiplication function.
-    if (factor < UnsignedHugeIntValue::word_base)
+    if (factor < HUGE_INT_WORD_BASE)
         return UnsignedHugeIntValue::multiply_single_word(*this, factor);
     UnsignedHugeIntValue factorObject(factor);
     return UnsignedHugeIntValue::multiply(*this, factorObject);
@@ -367,8 +369,8 @@ UnsignedHugeIntValue UnsignedHugeIntValue::multiply_single_word(const UnsignedHu
 
     // Set the first word of the product.
     productValue = factorWord->value * small_factor;
-    carryValue = productValue / UnsignedHugeIntValue::word_base;
-    productValue = productValue % UnsignedHugeIntValue::word_base;
+    carryValue = productValue / HUGE_INT_WORD_BASE;
+    productValue = productValue % HUGE_INT_WORD_BASE;
     UnsignedHugeIntValue resultProduct(productValue);
     productWord = resultProduct.get_least_significant_word();
     factorWord = factorWord->get_next_more_sig_word();
@@ -376,8 +378,8 @@ UnsignedHugeIntValue UnsignedHugeIntValue::multiply_single_word(const UnsignedHu
     // Multiply the other words of the UnsignedHugeIntValue factor.
     while (factorWord != NULL) {
         productValue = factorWord->value * small_factor + carryValue;
-        carryValue = productValue / UnsignedHugeIntValue::word_base;
-        productValue = productValue % UnsignedHugeIntValue::word_base;
+        carryValue = productValue / HUGE_INT_WORD_BASE;
+        productValue = productValue % HUGE_INT_WORD_BASE;
         productWord = new HugeIntWord(productValue, productWord);
         factorWord = factorWord->get_next_more_sig_word();
     }
@@ -424,9 +426,9 @@ std::pair<UnsignedHugeIntValue, UnsignedHugeIntValue> UnsignedHugeIntValue::divi
         remainderEstimateWord = subRemainder.get_most_significant_word();
         if (divisorEstimateWord->get_next_lower_sig_word() != NULL) {
             divisorUpperEstimate = divisorEstimateWord->get_value() +
-                (((double)divisorEstimateWord->get_next_lower_sig_word()->get_value() + 1) / UnsignedHugeIntValue::word_base);
+                (((double)divisorEstimateWord->get_next_lower_sig_word()->get_value() + 1) / HUGE_INT_WORD_BASE);
             dividendLowerEstimate = remainderEstimateWord->get_value() +
-                (((double)remainderEstimateWord->get_next_lower_sig_word()->get_value()) / UnsignedHugeIntValue::word_base);
+                (((double)remainderEstimateWord->get_next_lower_sig_word()->get_value()) / HUGE_INT_WORD_BASE);
         }
         else {
             divisorUpperEstimate = divisorEstimateWord->get_value();
@@ -455,7 +457,7 @@ std::pair<UnsignedHugeIntValue, UnsignedHugeIntValue> UnsignedHugeIntValue::divi
         remainderEstimateWord = subRemainder.get_most_significant_word();
         remainderNumWords = subRemainder.num_words();
         if (remainderNumWords > divisorNumWords) {
-            dividendLowerEstimate = (UnsignedHugeIntValue::word_base * remainderEstimateWord->get_value()) +
+            dividendLowerEstimate = (HUGE_INT_WORD_BASE * remainderEstimateWord->get_value()) +
                 remainderEstimateWord->get_next_lower_sig_word()->get_value();
         }
         else if (remainderNumWords < divisorNumWords) {
@@ -463,7 +465,7 @@ std::pair<UnsignedHugeIntValue, UnsignedHugeIntValue> UnsignedHugeIntValue::divi
         }
         else if (remainderEstimateWord->get_next_lower_sig_word() != NULL)
             dividendLowerEstimate = remainderEstimateWord->get_value() +
-                (((double)remainderEstimateWord->get_next_lower_sig_word()->get_value()) / UnsignedHugeIntValue::word_base);
+                (((double)remainderEstimateWord->get_next_lower_sig_word()->get_value()) / HUGE_INT_WORD_BASE);
         else
             dividendLowerEstimate = remainderEstimateWord->get_value();
         quotientWordEstimate = (unsigned long)(dividendLowerEstimate / divisorUpperEstimate);
@@ -581,7 +583,7 @@ UnsignedHugeIntValue& UnsignedHugeIntValue::operator*=(const UnsignedHugeIntValu
 
 UnsignedHugeIntValue& UnsignedHugeIntValue::operator*=(const unsigned long long factor) {
     // If factor is small enough to fit in one word of an UnsignedHugeIntValue object, use the faster multiplication function.
-    if (factor < UnsignedHugeIntValue::word_base) {
+    if (factor < HUGE_INT_WORD_BASE) {
         *this = UnsignedHugeIntValue::multiply_single_word(*this, factor);
         return *this;
     }
@@ -665,7 +667,7 @@ void UnsignedHugeIntValue::read_from_text_file(FILE* integer_file) {
     do {
         placeIndex = 0;
         multiplier = 1;
-        // A segment of 9 digits is read at a time to convert the segment to a long integer.
+        // A segment of digits is read at a time and converted to a long integer.
         while (placeIndex < HUGE_INT_NUMBER_OF_BASE_10_DIGITS_PER_WORD) {
             nextChar = fgetc(integer_file);
             // When the end of the file is reached, no more digits are put in the buffer, and
@@ -711,13 +713,17 @@ void UnsignedHugeIntValue::write_to_text_file(FILE* integer_file) const {
     }
 
     // The number of digits must be found to determine the size of the output file.
-    unsigned long long numDigits(9);
-    auto divisionResult = this->divide(this, 1000000000);
+    unsigned long long numDigits(HUGE_INT_NUMBER_OF_BASE_10_DIGITS_PER_WORD);
+    unsigned long segmentBase = 1;
+    for (unsigned short exponent = 1; exponent <= HUGE_INT_NUMBER_OF_BASE_10_DIGITS_PER_WORD; ++exponent){
+        segmentBase *= 10;
+    }
+    auto divisionResult = this->divide(this, segmentBase);
     UnsignedHugeIntValue &quotient = divisionResult.first;
     UnsignedHugeIntValue &remainder = divisionResult.second;
     while (quotient.num_words() > 1) {
-        divisionResult = this->divide(quotient, 1000000000);
-        numDigits += 9;
+        divisionResult = this->divide(quotient, segmentBase);
+        numDigits += HUGE_INT_NUMBER_OF_BASE_10_DIGITS_PER_WORD;
     }
     bufferString = std::to_string(quotient.leastSigWord->get_value());
     numDigits += bufferString.length();
@@ -725,18 +731,20 @@ void UnsignedHugeIntValue::write_to_text_file(FILE* integer_file) const {
     // The first sets of digits were already found, so they are sent to the output file.
     fputs(bufferString.c_str(), integer_file);
     bufferString = std::to_string(remainder.leastSigWord->get_value());
-    bufferString = std::string(9 - bufferString.length(), '0') + bufferString;
+    bufferString = std::string(HUGE_INT_NUMBER_OF_BASE_10_DIGITS_PER_WORD - bufferString.length(), '0') + bufferString;
     fputs(bufferString.c_str(), integer_file);
 
     // The other output digits are found in segments, in order of least significant segment of digits.
-    divisionResult = this->divide(this, 1000000000);
+    divisionResult = this->divide(this, segmentBase);
     unsigned long long segmentIndex;
-    for (segmentIndex = numDigits - 9; segmentIndex > 9; segmentIndex -= 9) {
+    for (segmentIndex = numDigits - HUGE_INT_NUMBER_OF_BASE_10_DIGITS_PER_WORD;
+            segmentIndex > HUGE_INT_NUMBER_OF_BASE_10_DIGITS_PER_WORD;
+            segmentIndex -= HUGE_INT_NUMBER_OF_BASE_10_DIGITS_PER_WORD) {
         bufferString = std::to_string(remainder.leastSigWord->get_value());
-        bufferString = std::string(9 - bufferString.length(), '0') + bufferString;
+        bufferString = std::string(HUGE_INT_NUMBER_OF_BASE_10_DIGITS_PER_WORD - bufferString.length(), '0') + bufferString;
         fseek(integer_file, segmentIndex, SEEK_SET);
         fputs(bufferString.c_str(), integer_file);
-        divisionResult = this->divide(quotient, 1000000000);
+        divisionResult = this->divide(quotient, segmentBase);
     }
 }
 
@@ -858,9 +866,15 @@ std::string UnsignedHugeIntValue::to_string() const {
         return "0";
     std::string fullNumberString;
     unsigned long long allocationSize;
-    allocationSize = this->num_words() * HUGE_INT_NUMBER_OF_BASE_10_DIGITS_PER_WORD + 1;
+    // The maximum number of digits can be found from the number of bits used.
+    allocationSize = 0.30103 * HUGE_INT_NUMBER_OF_BITS_PER_WORD * this->num_words() + 1;
     fullNumberString.resize(allocationSize, '0');
-    UnsignedHugeIntValue segmentBase(1000000000);  // base for segment of the string found.
+    // The base used for segments is determined by the maximum power of ten that can be stored in a word.
+    unsigned long segmentBaseLong = 1;
+    for (unsigned short exponent = 1; exponent <= HUGE_INT_NUMBER_OF_BASE_10_DIGITS_PER_WORD; ++exponent) {
+        segmentBaseLong *= 10;
+    }
+    UnsignedHugeIntValue segmentBase(segmentBaseLong);  // base for segment of the string found.
 
     // Setting the digits of the result string in segments.
     unsigned long remainder;
@@ -870,13 +884,13 @@ std::string UnsignedHugeIntValue::to_string() const {
     remainder = divisionResult.second.get_least_significant_word()->get_value();
 
     while (this->compare(quotient, zero_object) > 0) {
-        segmentStart -= 9;
+        segmentStart -= HUGE_INT_NUMBER_OF_BASE_10_DIGITS_PER_WORD;
         std::ostringstream numberToStringStream;
         numberToStringStream << remainder;
         std::string segmentString(numberToStringStream.str());
-        unsigned short numLeadingZeros = 9 - segmentString.length();
+        unsigned short numLeadingZeros = HUGE_INT_NUMBER_OF_BASE_10_DIGITS_PER_WORD - segmentString.length();
         segmentString = std::string(numLeadingZeros, '0') + std::string(segmentString);
-        fullNumberString.replace(segmentStart, 9, segmentString);
+        fullNumberString.replace(segmentStart, HUGE_INT_NUMBER_OF_BASE_10_DIGITS_PER_WORD, segmentString);
 
         divisionResult = this->divide(quotient, segmentBase);
         remainder = divisionResult.second.get_least_significant_word()->get_value();
@@ -919,38 +933,42 @@ void UnsignedHugeIntValue::change_to_copy_of(const UnsignedHugeIntValue& orig) {
 }
 
 void UnsignedHugeIntValue::set_value_from_string(std::string integer_string) {
-    unsigned long long num_digits =  integer_string.length();
-    if (num_digits == 0) {
+    unsigned long long numDigits =  integer_string.length();
+    if (numDigits == 0) {
         throw std::invalid_argument("An attempt was made to convert an empty string into an UnsignedHugeInt.");
     }
 
-    // Use segments of 9 digits (base 10).
-    unsigned long long segment_start_index = num_digits % 9;
-    std::string segment_string;
-    unsigned long segment_value;
+    // Segments are used that have a base of a power of 10.
+    unsigned long segmentBaseValue = 1;
+    for (unsigned short exponent = 1; exponent <= HUGE_INT_NUMBER_OF_BASE_10_DIGITS_PER_WORD; ++exponent) {
+        segmentBaseValue *= 10;
+    }
+    unsigned long long segmentStartIndex = numDigits % HUGE_INT_NUMBER_OF_BASE_10_DIGITS_PER_WORD;
+    std::string segmentString;
+    unsigned long segmentValue;
 
-    // Read the most significant digits.
-    if (segment_start_index == 0) {
-        segment_value = 0;
+    // The most significant digits are read first.
+    if (segmentStartIndex == 0) {
+        segmentValue = 0;
     }
     else {
-        segment_string = integer_string.substr(0, segment_start_index);
-        segment_value = std::stol(segment_string);
-        if (segment_value < 0) {
+        segmentString = integer_string.substr(0, segmentStartIndex);
+        segmentValue = std::stol(segmentString);
+        if (segmentValue < 0) {
             throw std::invalid_argument("An attempt was made to read a negative value as a string into an UnsignedHugeInt.");
         }
     }
-    this->mostSigWord = this->leastSigWord = new HugeIntWord(segment_value);
+    this->mostSigWord = this->leastSigWord = new HugeIntWord(segmentValue);
 
-    // Read the remaining digits of the string in segments of 9 digits.
-    for (; segment_start_index < num_digits; segment_start_index += 9) {
-        segment_string = integer_string.substr(segment_start_index, 9);
-        segment_value = std::stol(segment_string);
-        if (segment_value < 0) {
+    // The remaining digits of the string are read in segments.
+    for (; segmentStartIndex < numDigits; segmentStartIndex += HUGE_INT_NUMBER_OF_BASE_10_DIGITS_PER_WORD) {
+        segmentString = integer_string.substr(segmentStartIndex, HUGE_INT_NUMBER_OF_BASE_10_DIGITS_PER_WORD);
+        segmentValue = std::stol(segmentString);
+        if (segmentValue < 0) {
             throw std::invalid_argument("A string could not be converted to an UnsignedHugeInt.");
         }
-        *this = UnsignedHugeIntValue::multiply_single_word(*this, 1000000000);
-        this->add_value_at_word(this->leastSigWord, segment_value);
+        *this = UnsignedHugeIntValue::multiply_single_word(*this, segmentBaseValue);
+        this->add_value_at_word(this->leastSigWord, segmentValue);
     }
     this->remove_extra_leading_words();
 }
@@ -980,7 +998,7 @@ HugeIntWord* UnsignedHugeIntValue::add_word() {
 }
 
 HugeIntWord* UnsignedHugeIntValue::add_word(const unsigned long long value) {
-    if (value > UnsignedHugeIntValue::max_word_value) {
+    if (value > HUGE_INT_MAX_WORD_VALUE) {
         HugeIntWord *newLesserWord, *newGreaterWord;
         newLesserWord = new HugeIntWord((unsigned long long)0);
         newGreaterWord = newLesserWord->add_value(value);

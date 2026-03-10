@@ -6,8 +6,6 @@
 
 #include "HugeIntWord.h"
 
-#define MAX_DIGITS_PER_WORD 9
-#define READ_BUFFER_SIZE    144
 #define BUFFER_NUM_WORDS    16
 
 class UnsignedHugeIntValue {
@@ -359,12 +357,6 @@ public:
     std::string to_string() const;
 
 protected:
-    // The maximum value that is permitted in one word of UnsignedHugeIntValue.
-    static unsigned long max_word_value;
-
-    // The base value for a word of UnsignedHugeIntValue. Each word represents a power of the word base.
-    static unsigned long long word_base;
-
     // Protected Methods
 
     /**

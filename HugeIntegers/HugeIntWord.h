@@ -3,8 +3,18 @@
 #include <iostream>
 #include <sstream>
 
-#define HUGE_INT_MAX_WORD_VALUE   999999999
-#define HUGE_INT_NUMBER_OF_BASE_10_DIGITS_PER_WORD    9
+// The largest possible value of one word of an UnsignedHugeInt value.
+#define HUGE_INT_MAX_WORD_VALUE     999999999
+
+// The base value for the words of UnsignedHugeInt.
+// This value must always be one more than HUGE_INT_MAX_WORD_VALUE.
+#define HUGE_INT_WORD_BASE          1000000000
+
+// The number of bits used to store each word value of an UnsignedHugeInt.
+#define HUGE_INT_NUMBER_OF_BITS_PER_WORD    32
+
+// The greatest number of 9 digits in a base 10 integer than can be stored in a single UnsignedHugeInt word.
+#define HUGE_INT_NUMBER_OF_BASE_10_DIGITS_PER_WORD  9
 
 class HugeIntWord
 {
