@@ -262,12 +262,12 @@ UnsignedHugeIntValue UnsignedHugeIntValue::subtract(const UnsignedHugeIntValue& 
     thisMinuendWordValue = minuendWord->get_value();
     thisSubtrahendWordValue = subtrahendWord->get_value();
     if (thisMinuendWordValue < thisSubtrahendWordValue) {
-        carryValue = 1;
         thisWordDifference = (HUGE_INT_WORD_BASE + thisMinuendWordValue) - thisSubtrahendWordValue;
+        carryValue = 1;
     }
     else {
-        carryValue = 0;
         thisWordDifference = thisMinuendWordValue - thisSubtrahendWordValue;
+        carryValue = 0;
     }
     UnsignedHugeIntValue difference(thisWordDifference);
     difference.get_least_significant_word();
@@ -279,12 +279,12 @@ UnsignedHugeIntValue UnsignedHugeIntValue::subtract(const UnsignedHugeIntValue& 
         thisMinuendWordValue = minuendWord->get_value();
         thisSubtrahendWordValue = subtrahendWord->get_value() + carryValue;
         if (thisMinuendWordValue < thisSubtrahendWordValue) {
-            carryValue = 1;
             thisWordDifference = (HugeIntWord::base_value + thisMinuendWordValue) - thisSubtrahendWordValue;
+            carryValue = 1;
         }
         else {
-            carryValue = 0;
             thisWordDifference = thisMinuendWordValue - thisSubtrahendWordValue;
+            carryValue = 0;
         }
         difference.add_word(thisWordDifference);
         minuendWord = minuendWord->get_next_more_sig_word();
@@ -295,12 +295,12 @@ UnsignedHugeIntValue UnsignedHugeIntValue::subtract(const UnsignedHugeIntValue& 
     while (minuendWord != NULL && carryValue > 0) {
         thisMinuendWordValue = minuendWord->get_value();
         if (thisMinuendWordValue < carryValue) {
-            carryValue = 1;
             thisWordDifference = (HugeIntWord::base_value + thisMinuendWordValue) - carryValue;
+            carryValue = 1;
         }
         else {
-            carryValue = 0;
             thisWordDifference = thisMinuendWordValue - carryValue;
+            carryValue = 0;
         }
         difference.add_word(thisWordDifference);
         minuendWord = minuendWord->get_next_more_sig_word();
