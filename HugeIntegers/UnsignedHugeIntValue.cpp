@@ -394,6 +394,10 @@ UnsignedHugeIntValue UnsignedHugeIntValue::multiply_single_word(const UnsignedHu
 
 std::pair<UnsignedHugeIntValue, UnsignedHugeIntValue> UnsignedHugeIntValue::divide(const UnsignedHugeIntValue& dividend, const UnsignedHugeIntValue& divisor) {
     std::pair<UnsignedHugeIntValue, UnsignedHugeIntValue> divisionResults;
+    if (divisor.num_words() == 1) {
+        auto quickDivisionResults = UnsignedHugeIntValue::divide_single_word_divisor(dividend, divisor.get_least_significant_word()->get_value());
+        return std::pair(std::move(quickDivisionResults.first), UnsignedHugeIntValue(quickDivisionResults.second));
+    }
     unsigned long long dividendNumWords = dividend.num_words();
     unsigned long long divisorNumWords = divisor.num_words();
     unsigned long long remainderNumWords;
@@ -489,6 +493,32 @@ std::pair<UnsignedHugeIntValue, UnsignedHugeIntValue> UnsignedHugeIntValue::divi
     divisionResults.first = std::move(quotient);
     divisionResults.second = std::move(subRemainder);
     return divisionResults;
+}
+
+std::pair<UnsignedHugeIntValue, unsigned long> UnsignedHugeIntValue::divide_single_word_divisor(const UnsignedHugeIntValue& dividend, const unsigned long divisor) {
+    if (divisor == 0) {
+        throw std::invalid_argument("An attempt was made to divide by zero.");
+    }
+    HugeIntWord *thisDividendWord = dividend.get_most_significant_word();
+    unsigned long long subRemainder = thisDividendWord->get_value();
+
+    // The most significant word of the quotient is found first.
+    UnsignedHugeIntValue quotient(subRemainder / divisor);
+    subRemainder %= divisor;
+
+    // The quotient word is found for each corresponding dividend word.
+    thisDividendWord = thisDividendWord->get_next_lower_sig_word();
+    while (thisDividendWord != NULL) {
+        subRemainder *= HUGE_INT_WORD_BASE;
+        subRemainder += thisDividendWord->get_value();
+        quotient.insert_least_significant_word(subRemainder / divisor);
+        subRemainder %= divisor;
+        thisDividendWord = thisDividendWord->get_next_lower_sig_word();
+    }
+
+    // Leading words that have 0 stored are removed.
+    quotient.remove_extra_leading_words();
+    return std::pair(std::move(quotient), (unsigned long)subRemainder);
 }
 
 UnsignedHugeIntValue& UnsignedHugeIntValue::operator+=(const UnsignedHugeIntValue& addend) {

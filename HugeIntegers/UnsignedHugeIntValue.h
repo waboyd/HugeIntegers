@@ -446,6 +446,28 @@ private:
      * @return The result from multiplying the integers as an UnsignedHugeIntValue object.
      */
     static UnsignedHugeIntValue multiply_single_word(const UnsignedHugeIntValue& large_factor, const unsigned long long small_factor);
+
+    /**
+     * @brief Divides an UnsignedHugeIntValue object by an unsigned integer that is small enough to fit within one word of UnsignedHugeIntValue.
+     * This method expects a divisor with a value less than the word base value, but it does not check the size of the divisor.
+     * If the divisor is greater than the maximum word size, incorrect values may be produced. Division using this method is
+     * somewhat simpler and faster than division by an UnsignedHugeIntValue, so this method should be used for division whenever
+     * the divisor is small enough.
+     * @param dividend The dividend of the division operation.
+     * @param divisor The divisor of the division operation, which must be less than the word base value.
+     * @return The whole number quotient (first) and remainder (second) results of the division operation.
+     */
+    static std::pair<UnsignedHugeIntValue, unsigned long> divide_single_word_divisor(const UnsignedHugeIntValue& dividend, const unsigned long divisor);
+
+    /**
+     * @brief Divides UnsignedHugeIntValue objects, where the divisor is not small enough to fit within one word of UnsignedHugeIntValue.
+     * This method expects a divisor with a value greater than the maximum word value, but it does not check the size of the divisor.
+     * If the divisor is less than the maximum word base value, incorrect values may be produced.
+     * @param dividend The dividend of the division operation.
+     * @param divisor The divisor of the division operation, which must be greater than or equal to the word base value.
+     * @return The whole number quotient (first) and remainder (second) results of the division operation.
+     */
+    static std::pair<UnsignedHugeIntValue, UnsignedHugeIntValue> divide_many_word_divisor(const UnsignedHugeIntValue& dividend, const UnsignedHugeIntValue& divisor);
 };
 
 // Operators involving UnsignedHugeIntValue, but not considered part of UnsignedHugeIntValue by the compiler.
