@@ -4,11 +4,11 @@
 #include <sstream>
 
 // The largest possible value of one word of an UnsignedHugeInt value.
-#define HUGE_INT_MAX_WORD_VALUE     999999999
+#define HUGE_INT_MAX_WORD_VALUE     4294967295
 
 // The base value for the words of UnsignedHugeInt.
 // This value must always be one more than HUGE_INT_MAX_WORD_VALUE.
-#define HUGE_INT_WORD_BASE          1000000000
+#define HUGE_INT_WORD_BASE          4294967296
 
 // The number of bits used to store each word value of an UnsignedHugeInt.
 #define HUGE_INT_NUMBER_OF_BITS_PER_WORD    32
