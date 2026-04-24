@@ -1,3 +1,12 @@
+/*  Test cases for the UnsignedHugeInt library.
+    These test cases all depend on the Catch2 test framework.
+    These test cases were created when the word base was expected to be a power of 10.
+    The word base was changed to be a power of 2, but these test cases are all expected
+    to pass anyway, so they should not be removed.
+    Newer test cases are in the file hugeIntBinTests.cpp.
+    The UnsignedHugeInt library and these test cases were created by William Boyd.
+*/
+
 #include <catch2/catch_test_macros.hpp>
 
 #include "UnsignedHugeInt.h"
@@ -8,11 +17,11 @@ TEST_CASE("Blank Number", "Instantiate an UnsignedHugeInt with an unspecified va
     UnsignedHugeInt newNumber;
     std::string valueString = newNumber.to_string();
     REQUIRE(valueString == "0");
+    REQUIRE(newNumber.number_of_digits() == 1);
 }
 
 TEST_CASE("Read Small Integer", "Instantiate an UnsignedHugeInt from an integer.") {
     int valueInt = 83;
-//    std::string expectedString = std::to_string(valueInt);
     std::string expectedString = "83";
     UnsignedHugeInt *newNumber = new UnsignedHugeInt(valueInt);
     CHECK(expectedString == newNumber->to_string());
@@ -21,7 +30,6 @@ TEST_CASE("Read Small Integer", "Instantiate an UnsignedHugeInt from an integer.
 
 TEST_CASE("Read Large Integer", "Instantiate an UnsignedHugeInt from a long long integer.") {
     long long valueInt = 174506700476973203;
-//    std::string expectedString = std::to_string(valueInt);
     std::string expectedString = "174506700476973203";
     UnsignedHugeInt *newNumber = new UnsignedHugeInt(valueInt);
     CHECK(expectedString == newNumber->to_string());

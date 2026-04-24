@@ -45,6 +45,9 @@
 		<Unit filename="../HugeIntegers/UnsignedHugeInt.h" />
 		<Unit filename="../HugeIntegers/UnsignedHugeIntValue.cpp" />
 		<Unit filename="../HugeIntegers/UnsignedHugeIntValue.h" />
+		<Unit filename="../HugeIntegers/hugeIntBinTests.cpp">
+			<Option target="Debug" />
+		</Unit>
 		<Unit filename="../HugeIntegers/hugeIntTests.cpp" />
 		<Extensions />
 	</Project>

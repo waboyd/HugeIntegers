@@ -23,7 +23,7 @@
 	"UnsignedHugeIntValue.h"
 	"UnsignedHugeIntValue.h"
 
-1773424997 source:/home/willboyd/Programming/HugeIntegers/HugeIntegers/hugeIntTests.cpp
+1776983908 source:/home/willboyd/Programming/HugeIntegers/HugeIntegers/hugeIntTests.cpp
 	<catch2/catch_test_macros.hpp>
 	"UnsignedHugeInt.h"
 
@@ -35,4 +35,8 @@
 	<catch2/internal/catch_test_registry.hpp>
 	<catch2/internal/catch_unique_name.hpp>
 	<catch2/internal/catch_unreachable.hpp>
+
+1776992199 source:/home/willboyd/Programming/HugeIntegers/HugeIntegers/hugeIntBinTests.cpp
+	<catch2/catch_test_macros.hpp>
+	"UnsignedHugeInt.h"
 
