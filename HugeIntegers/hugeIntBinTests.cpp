@@ -88,3 +88,47 @@ TEST_CASE("Write And Read Value With Many Zero Bits",
     REQUIRE(origNumberString == binFileInt.to_string());
     remove(binFilePath);
 }
+
+TEST_CASE("Add UnsignedHugeInt to Int With Carry 32Bit", "Add an UnsignedHugeInt and an integer, with carry necessary between words.") {
+    UnsignedHugeInt numA("18446744073709547443");
+    int numB = 9224;
+    std::string expectedSum = "18446744073709556667";
+    UnsignedHugeInt sum = numA + numB;
+    CHECK(expectedSum == sum.to_string());
+}
+
+TEST_CASE("Add Int to UnsignedHugeInt No Carry 32Bit", "Add an integer and an UnsignedHugeInt, with no carry necessary between words.") {
+    int numA = 7478923;
+    UnsignedHugeInt *numB = new UnsignedHugeInt("7498309386745986236700766201");
+    std::string expectedSum = "7498309386745986236708245124";
+    UnsignedHugeInt *sum = new UnsignedHugeInt(numA + *numB);
+    CHECK(expectedSum == sum->to_string());
+    delete(numB);
+    delete(sum);
+}
+
+TEST_CASE("Add With Varied Numbers of Words 32Bit", "Add two UnsignedHugeInts with different numbers of words and necessary carrying.") {
+    UnsignedHugeInt numA("5940276688849732346");
+    UnsignedHugeInt numB("340077134980950716124611356782946210985589200856714857618");
+    std::string expectedSum = "340077134980950716124611356782946210991529477545564589964";
+    UnsignedHugeInt sum = numA + numB;
+    std::string resultString = sum.to_string();
+    REQUIRE(expectedSum == resultString);
+}
+
+TEST_CASE("Subtract Without Carry 32Bit", "Subtract two UnsignedHugeInt objects without carrying or borrowing across words.") {
+    UnsignedHugeInt numA("3778406916379603647819349");
+    UnsignedHugeInt numB("2098678934016151378793996");
+    std::string expectedString = "1679727982363452269025353";
+    UnsignedHugeInt difference;
+    difference = numA - numB;
+    REQUIRE(expectedString == difference.to_string());
+}
+
+TEST_CASE("Subtract With Carry 32Bit", "Subtract two UnsignedHugeInt objects with some carrying across words.") {
+    UnsignedHugeInt numA("7499874551618242286487271");
+    UnsignedHugeInt numB("7400572865197658486766329");
+    std::string expectedString = "99301686420583799720942";
+    UnsignedHugeInt difference = numA - numB;
+    REQUIRE(expectedString == difference.to_string());
+}
