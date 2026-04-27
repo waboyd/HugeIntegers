@@ -132,3 +132,41 @@ TEST_CASE("Subtract With Carry 32Bit", "Subtract two UnsignedHugeInt objects wit
     UnsignedHugeInt difference = numA - numB;
     REQUIRE(expectedString == difference.to_string());
 }
+
+TEST_CASE("Increment Prefix With New Word Carry 32Bit",
+        "Use the ++ prefix operator to increment an UnsignedHugeInt object. A new word needs to be created for the resulting amount.") {
+    UnsignedHugeInt x("79228162514264337593543950335");
+    std::string expectedResultString = "79228162514264337593543950336";
+    UnsignedHugeInt y = ++x;
+    REQUIRE(expectedResultString == x.to_string());
+    REQUIRE(expectedResultString == y.to_string());
+}
+
+TEST_CASE("Increment Suffix With One Word Carry 32Bit",
+        "Use the ++ suffix operator to increment an UnsignedHugeInt object. An value must be carried across one word.") {
+    std::string origValueString = "93218479788427304747443747872500088831";
+    std::string expectedResultString = "93218479788427304747443747872500088832";
+    UnsignedHugeInt x(origValueString);
+    UnsignedHugeInt y = x++;
+    REQUIRE(expectedResultString == x.to_string());
+    REQUIRE(origValueString == y.to_string());
+}
+
+TEST_CASE("Decrement Prefix With Word Removal 32Bit",
+        "Use the -- prefix operator to decrement an UnsignedHugeInt object. A word needs to be removed from the resulting amount.") {
+    UnsignedHugeInt x("79228162514264337593543950336");
+    std::string expectedResultString = "79228162514264337593543950335";
+    UnsignedHugeInt y = --x;
+    REQUIRE(expectedResultString == x.to_string());
+    REQUIRE(expectedResultString == y.to_string());
+}
+
+TEST_CASE("Decrement Suffix With One Word Carry 32Bit",
+        "Use the -- suffix operator to decrement an UnsignedHugeInt object. Some regrouping across words is required.") {
+    std::string origValueString = "93218479788427304747443747872500088832";
+    std::string expectedResultString = "93218479788427304747443747872500088831";
+    UnsignedHugeInt x(origValueString);
+    UnsignedHugeInt y = x--;
+    REQUIRE(expectedResultString == x.to_string());
+    REQUIRE(origValueString == y.to_string());
+}
