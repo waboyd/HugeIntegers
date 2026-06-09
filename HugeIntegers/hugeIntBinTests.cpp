@@ -7,9 +7,15 @@
     The UnsignedHugeInt library and these test cases were created by William Boyd.
 */
 
+#include <random>
 #include <catch2/catch_test_macros.hpp>
+#include <catch2/generators/catch_generators.hpp>
+#include <catch2/generators/catch_generators_random.hpp>
+#include <catch2/generators/catch_generators_adapters.hpp>
+#include <catch2/catch_get_random_seed.hpp>
 
 #define HUGE_INT_WORD_BASE          4294967296
+#define HUGE_INT_MAX_WORD_VALUE     4294967295
 
 #include "UnsignedHugeInt.h"
 
@@ -169,4 +175,37 @@ TEST_CASE("Decrement Suffix With One Word Carry 32Bit",
     UnsignedHugeInt y = x--;
     REQUIRE(expectedResultString == x.to_string());
     REQUIRE(origValueString == y.to_string());
+}
+
+TEST_CASE("Random Add Subtract",
+        "Checks consistency for addition and subtraction using random UnsignedHugeInt values.") {
+    constexpr unsigned long long numWords = 1000;
+    std::uint32_t catchSeed = Catch::getSeed();
+    std::mt19937 randGen(catchSeed);
+    std::uniform_int_distribution<unsigned long> longGenerator(0, HUGE_INT_MAX_WORD_VALUE);
+
+    // Setting the most significant word of each addend.
+    unsigned long wordValue(longGenerator(randGen));
+    if (wordValue == 0)
+        wordValue = HUGE_INT_MAX_WORD_VALUE;
+    UnsignedHugeInt addendA(wordValue);
+    wordValue = longGenerator(randGen);
+    if (wordValue == 0)
+        wordValue = HUGE_INT_MAX_WORD_VALUE;
+    UnsignedHugeInt addendB(wordValue);
+
+    // Setting the remaining words of each addend.
+    for (unsigned long wordNum = 1; wordNum < numWords; ++wordNum) {
+        wordValue = longGenerator(randGen);
+        addendA *= HUGE_INT_WORD_BASE;
+        addendA += wordValue;
+        wordValue = longGenerator(randGen);
+        addendB *= HUGE_INT_WORD_BASE;
+        addendB += wordValue;
+    }
+
+    // Checking that the results of addition and subtraction are consistent.
+    UnsignedHugeInt hugeSum = addendA + addendB;
+    REQUIRE(addendA == hugeSum - addendB);
+    REQUIRE(addendB == hugeSum - addendA);
 }
