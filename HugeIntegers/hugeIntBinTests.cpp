@@ -21,6 +21,27 @@
 
 const char test_folder_path[] = "../TestFiles/";
 
+// Creates an UnsignedHugeInt with the specified number of words and a random value.
+UnsignedHugeInt randomHugeInt(unsigned long num_words) {
+    std::uint32_t catchSeed = Catch::getSeed();
+    std::mt19937 randGen(catchSeed);
+    std::uniform_int_distribution<unsigned long> longGenerator(0, HUGE_INT_MAX_WORD_VALUE);
+
+    // Setting the most significant word of each addend.
+    unsigned long wordValue(longGenerator(randGen));
+    if (wordValue == 0)
+        wordValue = HUGE_INT_MAX_WORD_VALUE;
+    UnsignedHugeInt resultHugeInt(wordValue);
+
+    // Setting the remaining words of each addend.
+    for (unsigned long wordNum = 1; wordNum < num_words; ++wordNum) {
+        wordValue = longGenerator(randGen);
+        resultHugeInt *= HUGE_INT_WORD_BASE;
+        resultHugeInt += wordValue;
+    }
+    return resultHugeInt;
+}
+
 TEST_CASE("Instantiate Value With Many Central Zero Bits",
             "Instantiate an UnsignedHugeInt with many consecutive zeros in the middle bits.") {
     std::string valueString = "3246626956972881084445";
@@ -179,33 +200,18 @@ TEST_CASE("Decrement Suffix With One Word Carry 32Bit",
 
 TEST_CASE("Random Add Subtract",
         "Checks consistency for addition and subtraction using random UnsignedHugeInt values.") {
-    constexpr unsigned long long numWords = 1000;
-    std::uint32_t catchSeed = Catch::getSeed();
-    std::mt19937 randGen(catchSeed);
-    std::uniform_int_distribution<unsigned long> longGenerator(0, HUGE_INT_MAX_WORD_VALUE);
-
-    // Setting the most significant word of each addend.
-    unsigned long wordValue(longGenerator(randGen));
-    if (wordValue == 0)
-        wordValue = HUGE_INT_MAX_WORD_VALUE;
-    UnsignedHugeInt addendA(wordValue);
-    wordValue = longGenerator(randGen);
-    if (wordValue == 0)
-        wordValue = HUGE_INT_MAX_WORD_VALUE;
-    UnsignedHugeInt addendB(wordValue);
-
-    // Setting the remaining words of each addend.
-    for (unsigned long wordNum = 1; wordNum < numWords; ++wordNum) {
-        wordValue = longGenerator(randGen);
-        addendA *= HUGE_INT_WORD_BASE;
-        addendA += wordValue;
-        wordValue = longGenerator(randGen);
-        addendB *= HUGE_INT_WORD_BASE;
-        addendB += wordValue;
-    }
-
-    // Checking that the results of addition and subtraction are consistent.
+    constexpr unsigned long numWords = 1000;
+    UnsignedHugeInt addendA = randomHugeInt(numWords);
+    UnsignedHugeInt addendB = randomHugeInt(numWords);
     UnsignedHugeInt hugeSum = addendA + addendB;
     REQUIRE(addendA == hugeSum - addendB);
     REQUIRE(addendB == hugeSum - addendA);
+}
+
+TEST_CASE("Random Divide Multiply",
+        "Checks consistency for multiplication and division using random UnsignedHugeInt values.") {
+    UnsignedHugeInt dividendInput = randomHugeInt(2000);
+    UnsignedHugeInt divisorInput = randomHugeInt(1000);
+    auto divisionResult = UnsignedHugeInt::divide(dividendInput, divisorInput);
+    REQUIRE(dividendInput == divisionResult.first * divisorInput + divisionResult.second);
 }
