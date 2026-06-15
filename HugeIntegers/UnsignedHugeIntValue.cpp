@@ -2,14 +2,12 @@
 #include "UnsignedHugeIntValue.h"
 
 UnsignedHugeIntValue::UnsignedHugeIntValue() {
-    // ToDo: Set maximum word value.
     HugeIntWord *newWord = new HugeIntWord(0);
     this->mostSigWord = newWord;
     this->leastSigWord = newWord;
 }
 
 UnsignedHugeIntValue::UnsignedHugeIntValue(const unsigned long long value) {
-    // ToDo: Set maximum word value.
     HugeIntWord *newWord = new HugeIntWord(0);
     this->leastSigWord = newWord;
     this->mostSigWord = newWord->add_value(value);
@@ -663,6 +661,114 @@ UnsignedHugeIntValue& UnsignedHugeIntValue::operator--() {
         }
         minuendWord = minuendWord->get_next_more_sig_word();
     }
+    this->remove_extra_leading_words();
+    return *this;
+}
+
+UnsignedHugeIntValue UnsignedHugeIntValue::operator&(const UnsignedHugeIntValue& operand) const {
+    HugeIntWord *greaterOperandWord, *lesserOperandWord;
+    HugeIntWord *resultMostSigWord;
+
+    if (operand.num_words() > this->num_words()) {
+        greaterOperandWord = operand.get_least_significant_word();
+        lesserOperandWord = this->get_least_significant_word();
+    }
+    else {
+        greaterOperandWord = this->get_least_significant_word();
+        lesserOperandWord = operand.get_least_significant_word();
+    }
+    UnsignedHugeIntValue result(greaterOperandWord->get_value() & lesserOperandWord->get_value());
+    resultMostSigWord = result.get_least_significant_word();
+    lesserOperandWord = lesserOperandWord->get_next_more_sig_word();
+    greaterOperandWord = greaterOperandWord->get_next_more_sig_word();
+
+    while (lesserOperandWord != NULL) {
+        resultMostSigWord = result.add_word(greaterOperandWord->get_value() & lesserOperandWord->get_value());
+        greaterOperandWord = greaterOperandWord->get_next_more_sig_word();
+        lesserOperandWord = lesserOperandWord->get_next_more_sig_word();
+    }
+    result.mostSigWord = resultMostSigWord;
+    result.remove_extra_leading_words();
+    return result;
+}
+
+UnsignedHugeIntValue UnsignedHugeIntValue::operator&(const unsigned long long operand) const {
+    HugeIntWord *operandWord = this->get_least_significant_word();
+    unsigned long long operandCarry = operand / HUGE_INT_WORD_BASE;
+    UnsignedHugeIntValue result(operandWord->get_value() & (operand % HUGE_INT_WORD_BASE));
+    HugeIntWord *resultMostSigWord = result.get_least_significant_word();
+    operandWord = operandWord->get_next_more_sig_word();
+    while (operandWord != NULL && operandCarry > 0) {
+        resultMostSigWord = result.add_word(operandWord->get_value() & (operandCarry % HUGE_INT_WORD_BASE));
+        operandCarry /= HUGE_INT_WORD_BASE;
+        operandWord = operandWord->get_next_more_sig_word();
+    }
+    result.mostSigWord = resultMostSigWord;
+    result.remove_extra_leading_words();
+    return result;
+}
+
+UnsignedHugeIntValue& UnsignedHugeIntValue::operator&=(const UnsignedHugeIntValue& operand) {
+    HugeIntWord *greaterOperandWord, *lesserOperandWord;
+    HugeIntWord *resultMostSigWord;
+
+    if (operand.num_words() > this->num_words()) {
+        greaterOperandWord = operand.get_least_significant_word();
+        lesserOperandWord = this->get_least_significant_word();
+    }
+    else {
+        greaterOperandWord = this->get_least_significant_word();
+        lesserOperandWord = operand.get_least_significant_word();
+    }
+    resultMostSigWord = this->get_least_significant_word();
+    resultMostSigWord->value = greaterOperandWord->get_value() & lesserOperandWord->get_value();
+    lesserOperandWord = lesserOperandWord->get_next_more_sig_word();
+    greaterOperandWord = greaterOperandWord->get_next_more_sig_word();
+
+    while (lesserOperandWord != NULL) {
+        resultMostSigWord = resultMostSigWord->get_next_more_sig_word();
+        resultMostSigWord->value = greaterOperandWord->get_value() & lesserOperandWord->get_value();
+        greaterOperandWord = greaterOperandWord->get_next_more_sig_word();
+        lesserOperandWord = lesserOperandWord->get_next_more_sig_word();
+    }
+
+    // Excess words in the result must be deleted.
+    HugeIntWord *wordToDelete = resultMostSigWord->get_next_more_sig_word();
+    HugeIntWord *nextMoreSigWord;
+    while (wordToDelete != NULL) {
+        nextMoreSigWord = wordToDelete->get_next_more_sig_word();
+        delete(wordToDelete);
+        wordToDelete = nextMoreSigWord;
+    }
+    resultMostSigWord->moreSigWord = NULL;
+    this->mostSigWord = resultMostSigWord;
+    this->remove_extra_leading_words();
+    return *this;
+}
+
+UnsignedHugeIntValue& UnsignedHugeIntValue::operator&=(const unsigned long long operand) {
+    // ToDo: Define this operation.
+    HugeIntWord *operandWord = this->get_least_significant_word();
+    unsigned long long operandCarry = operand / HUGE_INT_WORD_BASE;
+    HugeIntWord *resultMostSigWord = this->get_least_significant_word();
+    resultMostSigWord->value &= (operand % HUGE_INT_WORD_BASE);
+    operandWord = operandWord->get_next_more_sig_word();
+    while (operandWord != NULL && operandCarry > 0) {
+        resultMostSigWord = operandWord;
+        resultMostSigWord->value &= (operandCarry % HUGE_INT_WORD_BASE);
+        operandCarry /= HUGE_INT_WORD_BASE;
+        operandWord = operandWord->get_next_more_sig_word();
+    }
+
+    // Excess words in the result must be deleted.
+    HugeIntWord *nextMoreSigWord;
+    while (operandWord != NULL) {
+        nextMoreSigWord = operandWord->get_next_more_sig_word();
+        delete(operandWord);
+        operandWord = nextMoreSigWord;
+    }
+    resultMostSigWord->moreSigWord = NULL;
+    this->mostSigWord = resultMostSigWord;
     this->remove_extra_leading_words();
     return *this;
 }

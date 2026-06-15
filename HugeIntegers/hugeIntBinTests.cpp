@@ -198,6 +198,37 @@ TEST_CASE("Decrement Suffix With One Word Carry 32Bit",
     REQUIRE(origValueString == y.to_string());
 }
 
+TEST_CASE("Bitwise AND Between Huge Integers",
+        "Perform a bitwise AND between two UnsignedHugeInt objects.") {
+    UnsignedHugeInt x(3086491544);
+    x *= 4294967296; x += 2770030562;
+    x *= 4294967296; x += 195973469;
+    UnsignedHugeInt y(5786902765);
+    y *= 4294967296; y += 4109587345;
+    y *= 4294967296; y += 1378486781;
+    y *= 4294967296; y += 4286056106;
+
+    std::string expectedResultString = "55997536345846770117456166920";
+    REQUIRE(expectedResultString == (x & y).to_string());
+    REQUIRE(expectedResultString == (y & x).to_string());
+    REQUIRE(expectedResultString == (x &= y).to_string());
+    REQUIRE(expectedResultString == x.to_string());
+}
+
+TEST_CASE("Bitwise AND With a Smaller Integer",
+        "Perform a bitwise AND between an UnsignedHugeInt and a literal value.") {
+    UnsignedHugeInt x(4064589063);
+    x *= 4294967296; x += 3092847650;
+    x *= 4294967296; x += 2786128765;
+    x *= 4294967296; x += 3006617892;
+
+    std::string expectedResultString = "148742145658917156";
+    REQUIRE(expectedResultString == (x & 195749016596722022).to_string());
+    REQUIRE(expectedResultString == (195749016596722022 & x).to_string());
+    REQUIRE(expectedResultString == (x &= 195749016596722022).to_string());
+    REQUIRE(expectedResultString == x.to_string());
+}
+
 TEST_CASE("Random Add Subtract",
         "Checks consistency for addition and subtraction using random UnsignedHugeInt values.") {
     constexpr unsigned long numWords = 1000;

@@ -399,6 +399,28 @@ public:
     friend UnsignedHugeInt operator%(const unsigned long long dividend, const UnsignedHugeInt& divisor);
 
     /**
+     * @brief Performs a bitwise AND operation on the two unsigned integers.
+     * @param operand Value that will be used in a bitwise AND operation..
+     * @return The result of the bitwise AND operation.
+     */
+    UnsignedHugeInt operator&(const UnsignedHugeInt& operand) const;
+
+    /**
+     * @brief Performs a bitwise AND operation on the two unsigned integers.
+     * @param operand Value that will be used in a bitwise AND operation..
+     * @return The result of the bitwise AND operation.
+     */
+    UnsignedHugeInt operator&(const unsigned long long operand) const;
+
+    /**
+     * @brief Performs a bitwise AND operation on the two unsigned integers.
+     * @param operandA The unsigned integer on the left side of the '&' operator.
+     * @param operandB The unsigned integer on the right-hand side of the '&' operator.
+     * @return The result of the bitwise AND operation.
+     */
+    friend UnsignedHugeInt operator&(const unsigned long long operandA, const UnsignedHugeInt& operandB);
+
+    /**
      * @brief Increases the object's value by the specified unsigned integer amount.
      * This operation changes the value of the object itself.
      * @param addend Value that will be added to the object's value.
@@ -509,6 +531,22 @@ public:
      * @return A copy of the UnsignedHugeInt object before its value is changed.
      */
     UnsignedHugeInt operator--(int dummy);
+
+    /**
+     * @brief Replaces the value with the result of a bitwise AND operation with the operand.
+     * This operation changes the value of the object itself.
+     * @param operand Value that will be used in a bitwise AND operation with the original value.
+     * @return Reference to the UnsignedHugeInt object after its value is changed.
+     */
+    UnsignedHugeInt& operator&=(const UnsignedHugeInt& operand);
+
+    /**
+     * @brief Replaces the value with the result of a bitwise AND operation with the operand.
+     * This operation changes the value of the object itself.
+     * @param operand Value that will be used in a bitwise AND operation with the original value.
+     * @return Reference to the UnsignedHugeInt object after its value is changed.
+     */
+    UnsignedHugeInt& operator&=(const unsigned long long operand);
 
     /**
      * @brief Returns the value of this UnsignedHugeInt object as a string.

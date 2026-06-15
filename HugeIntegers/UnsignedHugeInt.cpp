@@ -62,23 +62,23 @@ void UnsignedHugeInt::read_from_text_file(std::string file_path) {
 void UnsignedHugeInt::read_from_text_file(FILE* integer_file) {
     this->value->read_from_text_file(integer_file);
 }
-    
+
 void UnsignedHugeInt::write_to_text_file(std::string file_path) const {
     this->value->write_to_text_file(file_path);
 }
-    
+
 void UnsignedHugeInt::write_to_text_file(FILE* integer_file) const {
     this->value->write_to_text_file(integer_file);
 }
-    
+
 void UnsignedHugeInt::read_from_binary_file(std::string file_path) {
     this->value->read_from_binary_file(file_path);
 }
-    
+
 void UnsignedHugeInt::write_to_binary_file(std::string file_path) const {
     this->value->write_to_binary_file(file_path);
 }
-    
+
 UnsignedHugeInt::operator std::string() const {
     return this->value->to_string();
 }
@@ -92,7 +92,7 @@ UnsignedHugeInt& UnsignedHugeInt::operator=(const UnsignedHugeInt* orig) {
     this->value->operator=(orig->value);
     return *this;
 }
-    
+
 UnsignedHugeInt& UnsignedHugeInt::operator=(UnsignedHugeInt&& orig) {
     delete(this->value);
     this->value = orig.value;
@@ -118,7 +118,7 @@ UnsignedHugeInt& UnsignedHugeInt::operator=(const char* value_string) {
 short UnsignedHugeInt::compare(const UnsignedHugeInt& numberA, const UnsignedHugeInt& numberB) {
     return UnsignedHugeIntValue::compare(numberA.value, numberB.value);
 }
-    
+
 bool UnsignedHugeInt::operator<(const UnsignedHugeInt& right_operand) const {
     return (UnsignedHugeIntValue::compare(*this->value, right_operand.value) < 0);
 }
@@ -226,7 +226,7 @@ UnsignedHugeInt UnsignedHugeInt::operator-(const unsigned long long subtrahend) 
 UnsignedHugeInt operator-(const unsigned long long minuend, const UnsignedHugeInt& subtrahend) {
     return UnsignedHugeInt(UnsignedHugeIntValue::subtract(UnsignedHugeIntValue(minuend), *subtrahend.value));
 }
-    
+
 UnsignedHugeInt UnsignedHugeInt::multiply(const UnsignedHugeInt& factorA, const UnsignedHugeInt& factorB) {
     return UnsignedHugeInt(UnsignedHugeIntValue::multiply(*factorA.value, *factorB.value));
 }
@@ -273,6 +273,19 @@ UnsignedHugeInt UnsignedHugeInt::operator%(const unsigned long long divisor) con
 UnsignedHugeInt operator%(const unsigned long long dividend, const UnsignedHugeInt& divisor) {
     return UnsignedHugeInt(UnsignedHugeIntValue::divide(UnsignedHugeIntValue(dividend), *divisor.value).second);
 }
+
+UnsignedHugeInt UnsignedHugeInt::operator&(const UnsignedHugeInt& operand) const {
+    return UnsignedHugeInt(*this->value & operand.value);
+}
+
+UnsignedHugeInt UnsignedHugeInt::operator&(const unsigned long long operand) const {
+    return UnsignedHugeInt(*this->value & operand);
+}
+
+UnsignedHugeInt operator&(const unsigned long long operandA, const UnsignedHugeInt& operandB) {
+    return UnsignedHugeInt(operandB.value->operator&(operandA));
+}
+
 
 UnsignedHugeInt& UnsignedHugeInt::operator+=(const UnsignedHugeInt& addend) {
     this->value->operator+=(*addend.value);
@@ -344,6 +357,16 @@ UnsignedHugeInt UnsignedHugeInt::operator--(int dummy) {
     UnsignedHugeInt originalValue(*this);
     this->value->operator--();
     return originalValue;
+}
+
+UnsignedHugeInt& UnsignedHugeInt::operator&=(const UnsignedHugeInt& operand) {
+    this->value->operator&=(operand.value);
+    return *this;
+}
+
+UnsignedHugeInt& UnsignedHugeInt::operator&=(const unsigned long long operand) {
+    this->value->operator&=(operand);
+    return *this;
 }
 
 std::string UnsignedHugeInt::to_string() const {
