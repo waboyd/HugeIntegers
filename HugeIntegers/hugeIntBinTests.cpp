@@ -229,6 +229,22 @@ TEST_CASE("Bitwise AND With a Smaller Integer",
     REQUIRE(expectedResultString == x.to_string());
 }
 
+TEST_CASE("Bitwise AND Between With Deleted Words",
+        "Perform a bitwise AND between two UnsignedHugeInt objects that involves deleting the most significant words.") {
+    UnsignedHugeInt x(619283830);
+    x *= 4294967296; x += 1167598464;
+    x *= 4294967296; x += 3461839506;
+    UnsignedHugeInt y(2434157193);
+    y *= 4294967296; y += 2988725329;
+    y *= 4294967296; y += 2758002789;
+
+    std::string expectedResultString = "2219001856";
+    REQUIRE(expectedResultString == (x & y).to_string());
+    REQUIRE(expectedResultString == (y & x).to_string());
+    REQUIRE(expectedResultString == (x &= y).to_string());
+    REQUIRE(expectedResultString == x.to_string());
+}
+
 TEST_CASE("Random Add Subtract",
         "Checks consistency for addition and subtraction using random UnsignedHugeInt values.") {
     constexpr unsigned long numWords = 1000;
