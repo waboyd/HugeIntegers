@@ -245,6 +245,37 @@ TEST_CASE("Bitwise AND Between With Deleted Words",
     REQUIRE(expectedResultString == x.to_string());
 }
 
+TEST_CASE("Bitwise OR Between Huge Integers",
+        "Perform a bitwise OR between two UnsignedHugeInt objects.") {
+    UnsignedHugeInt x(4160063942);
+    x *= 4294967296; x += 1056963321;
+    x *= 4294967296; x += 3057012676;
+    UnsignedHugeInt y(37690268);
+    y *= 4294967296; y += 2047893631;
+    y *= 4294967296; y += 2995471765;
+    y *= 4294967296; y += 3077673828;
+
+    std::string expectedResultString = "2986130757526146066064971105272586212";
+    REQUIRE(expectedResultString == (x | y).to_string());
+    REQUIRE(expectedResultString == (y | x).to_string());
+    REQUIRE(expectedResultString == (x |= y).to_string());
+    REQUIRE(expectedResultString == x.to_string());
+}
+
+TEST_CASE("Bitwise OR With a Smaller Integer",
+        "Perform a bitwise OR between an UnsignedHugeInt and a literal value.") {
+    UnsignedHugeInt x(1564228508);
+    x *= 4294967296; x += 2047183850;
+    x *= 4294967296; x += 3028875455;
+    x *= 4294967296; x += 1036543592;
+
+    std::string expectedResultString = "123930950479033110078028219340625280622";
+    REQUIRE(expectedResultString == (x | 2157749616730429542).to_string());
+    REQUIRE(expectedResultString == (2157749616730429542 | x).to_string());
+    REQUIRE(expectedResultString == (x |= 2157749616730429542).to_string());
+    REQUIRE(expectedResultString == x.to_string());
+}
+
 TEST_CASE("Random Add Subtract",
         "Checks consistency for addition and subtraction using random UnsignedHugeInt values.") {
     constexpr unsigned long numWords = 1000;
