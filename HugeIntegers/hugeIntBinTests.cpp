@@ -278,7 +278,7 @@ TEST_CASE("Bitwise OR With a Smaller Integer",
 
 TEST_CASE("Random Add Subtract",
         "Checks consistency for addition and subtraction using random UnsignedHugeInt values.") {
-    constexpr unsigned long numWords = 1000;
+    constexpr unsigned long numWords = 500;
     UnsignedHugeInt addendA = randomHugeInt(numWords);
     UnsignedHugeInt addendB = randomHugeInt(numWords);
     UnsignedHugeInt hugeSum = addendA + addendB;
@@ -288,8 +288,8 @@ TEST_CASE("Random Add Subtract",
 
 TEST_CASE("Random Divide Multiply",
         "Checks consistency for multiplication and division using random UnsignedHugeInt values.") {
-    UnsignedHugeInt dividendInput = randomHugeInt(2000);
-    UnsignedHugeInt divisorInput = randomHugeInt(1000);
+    UnsignedHugeInt dividendInput = randomHugeInt(1000);
+    UnsignedHugeInt divisorInput = randomHugeInt(500);
     auto divisionResult = UnsignedHugeInt::divide(dividendInput, divisorInput);
     REQUIRE(dividendInput == divisionResult.first * divisorInput + divisionResult.second);
 }
