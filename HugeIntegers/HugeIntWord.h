@@ -18,7 +18,6 @@
 
 class HugeIntWord
 {
-
     friend class UnsignedHugeIntValue;
 
 public:
