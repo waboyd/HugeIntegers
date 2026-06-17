@@ -277,7 +277,7 @@ UnsignedHugeIntValue UnsignedHugeIntValue::subtract(const UnsignedHugeIntValue& 
         thisMinuendWordValue = minuendWord->get_value();
         thisSubtrahendWordValue = subtrahendWord->get_value() + carryValue;
         if (thisMinuendWordValue < thisSubtrahendWordValue) {
-            thisWordDifference = (HugeIntWord::base_value + thisMinuendWordValue) - thisSubtrahendWordValue;
+            thisWordDifference = (HUGE_INT_WORD_BASE + thisMinuendWordValue) - thisSubtrahendWordValue;
             carryValue = 1;
         }
         else {
@@ -293,7 +293,7 @@ UnsignedHugeIntValue UnsignedHugeIntValue::subtract(const UnsignedHugeIntValue& 
     while (minuendWord != NULL && carryValue > 0) {
         thisMinuendWordValue = minuendWord->get_value();
         if (thisMinuendWordValue < carryValue) {
-            thisWordDifference = (HugeIntWord::base_value + thisMinuendWordValue) - carryValue;
+            thisWordDifference = (HUGE_INT_WORD_BASE + thisMinuendWordValue) - carryValue;
             carryValue = 1;
         }
         else {
@@ -562,7 +562,7 @@ UnsignedHugeIntValue& UnsignedHugeIntValue::operator-=(const UnsignedHugeIntValu
         thisSubtrahendWordValue = subtrahendWord->get_value() + carryValue;
         if (thisMinuendWordValue < thisSubtrahendWordValue) {
             carryValue = 1;
-            thisWordDifference = (HugeIntWord::base_value + thisMinuendWordValue) - thisSubtrahendWordValue;
+            thisWordDifference = (HUGE_INT_WORD_BASE + thisMinuendWordValue) - thisSubtrahendWordValue;
         }
         else {
             carryValue = 0;
@@ -577,7 +577,7 @@ UnsignedHugeIntValue& UnsignedHugeIntValue::operator-=(const UnsignedHugeIntValu
     while (carryValue > 0 && minuendWord != NULL) {
         thisMinuendWordValue = minuendWord->get_value();
         if (thisMinuendWordValue < carryValue) {
-            thisWordDifference = (HugeIntWord::base_value + thisMinuendWordValue) - carryValue;
+            thisWordDifference = (HUGE_INT_WORD_BASE + thisMinuendWordValue) - carryValue;
             carryValue = 1;
         }
         else {
@@ -653,7 +653,7 @@ UnsignedHugeIntValue& UnsignedHugeIntValue::operator--() {
     while (minuendWord != NULL) {
         thisMinuendWordValue = minuendWord->get_value();
         if (thisMinuendWordValue < 1) {
-            minuendWord->value = HugeIntWord::base_value - 1;
+            minuendWord->value = HUGE_INT_WORD_BASE - 1;
         }
         else {
             minuendWord->value = thisMinuendWordValue - 1;

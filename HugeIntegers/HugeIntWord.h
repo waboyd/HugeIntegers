@@ -61,12 +61,6 @@ public:
     std::string to_string();
 
 protected:
-    // The maximum value that is permitted in one HugeIntWord object.
-    static unsigned long max_value;
-
-    // The base value for a HugeIntWord object. Each word represents a power of the base value.
-    static unsigned long base_value;
-
     // Link to the next less significant word object.
     HugeIntWord *lessSigWord;
 

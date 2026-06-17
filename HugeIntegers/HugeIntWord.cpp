@@ -1,8 +1,5 @@
 #include "HugeIntWord.h"
 
-unsigned long HugeIntWord::max_value = HUGE_INT_MAX_WORD_VALUE;
-unsigned long HugeIntWord::base_value = max_value + 1;
-
 HugeIntWord::HugeIntWord(unsigned long value){
     this->value = value;
     this->lessSigWord = NULL;
@@ -93,11 +90,11 @@ HugeIntWord* HugeIntWord::add_value(unsigned long long addend) {
     HugeIntWord *mostSignificantAddedWord;
     unsigned long long thisNewValue;
     unsigned long carryValue;
-    if (addend <= HugeIntWord::max_value) {
+    if (addend <= HUGE_INT_MAX_WORD_VALUE) {
         thisNewValue = this->value + addend;
-        if (thisNewValue > HugeIntWord::max_value) {
-            carryValue = thisNewValue / HugeIntWord::base_value;
-            thisNewValue = thisNewValue % HugeIntWord::base_value;
+        if (thisNewValue > HUGE_INT_MAX_WORD_VALUE) {
+            carryValue = thisNewValue / HUGE_INT_WORD_BASE;
+            thisNewValue = thisNewValue % HUGE_INT_WORD_BASE;
             this->value = thisNewValue;
             if (this->moreSigWord == NULL) {
                 this->moreSigWord = new HugeIntWord(0, this);
@@ -110,9 +107,9 @@ HugeIntWord* HugeIntWord::add_value(unsigned long long addend) {
         }
     }
     else {
-        thisNewValue = (addend % HugeIntWord::base_value) + this->value;
-        carryValue = (addend / HugeIntWord::base_value) + (thisNewValue / HugeIntWord::base_value);
-        thisNewValue = thisNewValue % HugeIntWord::base_value;
+        thisNewValue = (addend % HUGE_INT_WORD_BASE) + this->value;
+        carryValue = (addend / HUGE_INT_WORD_BASE) + (thisNewValue / HUGE_INT_WORD_BASE);
+        thisNewValue = thisNewValue % HUGE_INT_WORD_BASE;
         this->value = thisNewValue;
         if (this->moreSigWord == NULL) {
             this->moreSigWord = new HugeIntWord(0, this);
