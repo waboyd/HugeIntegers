@@ -436,11 +436,33 @@ public:
 
     /**
      * @brief Performs a bitwise OR operation on the two unsigned integers.
-     * @param operandA The unsigned integer on the left side of the '&' operator.
-     * @param operandB The unsigned integer on the right-hand side of the '&' operator.
+     * @param operandA The unsigned integer on the left side of the '|' operator.
+     * @param operandB The unsigned integer on the right-hand side of the '|' operator.
      * @return The result of the bitwise OR operation.
      */
     friend UnsignedHugeInt operator|(const unsigned long long operandA, const UnsignedHugeInt& operandB);
+
+    /**
+     * @brief Performs a bitwise XOR operation on the two unsigned integers.
+     * @param operand Value that will be used in a bitwise XOR operation..
+     * @return The result of the bitwise XOR operation.
+     */
+    UnsignedHugeInt operator^(const UnsignedHugeInt& operand) const;
+
+    /**
+     * @brief Performs a bitwise XOR operation on the two unsigned integers.
+     * @param operand Value that will be used in a bitwise XOR operation..
+     * @return The result of the bitwise XOR operation.
+     */
+    UnsignedHugeInt operator^(const unsigned long long operand) const;
+
+    /**
+     * @brief Performs a bitwise XOR operation on the two unsigned integers.
+     * @param operandA The unsigned integer on the left side of the '^' operator.
+     * @param operandB The unsigned integer on the right-hand side of the '^' operator.
+     * @return The result of the bitwise XOR operation.
+     */
+    friend UnsignedHugeInt operator^(const unsigned long long operandA, const UnsignedHugeInt& operandB);
 
     /**
      * @brief Increases the object's value by the specified unsigned integer amount.
@@ -585,6 +607,22 @@ public:
      * @return Reference to the UnsignedHugeInt object after its value is changed.
      */
     UnsignedHugeInt& operator|=(const unsigned long long operand);
+
+    /**
+     * @brief Replaces the value with the result of a bitwise XOR operation with the operand.
+     * This operation changes the value of the object itself.
+     * @param operand Value that will be used in a bitwise XOR operation with the original value.
+     * @return Reference to the UnsignedHugeInt object after its value is changed.
+     */
+    UnsignedHugeInt& operator^=(const UnsignedHugeInt& operand);
+
+    /**
+     * @brief Replaces the value with the result of a bitwise XOR operation with the operand.
+     * This operation changes the value of the object itself.
+     * @param operand Value that will be used in a bitwise XOR operation with the original value.
+     * @return Reference to the UnsignedHugeInt object after its value is changed.
+     */
+    UnsignedHugeInt& operator^=(const unsigned long long operand);
 
     /**
      * @brief Returns the value of this UnsignedHugeInt object as a string.

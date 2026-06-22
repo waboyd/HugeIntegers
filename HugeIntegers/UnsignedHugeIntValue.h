@@ -387,6 +387,36 @@ public:
     UnsignedHugeIntValue& operator|=(const unsigned long long operand);
 
     /**
+     * @brief Returns the result of a bitwise XOR operation between two unsigned integers.
+     * @param operand Value that will be used in a bitwise XOR operation.
+     * @return The result of the bitwise XOR between the two arguments.
+     */
+    UnsignedHugeIntValue operator^(const UnsignedHugeIntValue& operand) const;
+
+    /**
+     * @brief Returns the result of a bitwise XOR operation between two unsigned integers.
+     * @param operand Value that will be used in a bitwise XOR operation.
+     * @return The result of the bitwise XOR between the two arguments.
+     */
+    UnsignedHugeIntValue operator^(const unsigned long long operand) const;
+
+    /**
+     * @brief Replaces this value with the result of a bitwise XOR operation with the operand.
+     * This operation changes the value of the object itself.
+     * @param addend Value that will be used in a bitwise XOR operation with the original value.
+     * @return Reference to the UnsignedHugeIntValue object after its value is changed.
+     */
+    UnsignedHugeIntValue& operator^=(const UnsignedHugeIntValue& operand);
+
+    /**
+     * @brief Replaces this value with the result of a bitwise XOR operation with the operand.
+     * This operation changes the value of the object itself.
+     * @param addend Value that will be used in a bitwise XOR operation with the original value.
+     * @return Reference to the UnsignedHugeIntValue object after its value is changed.
+     */
+    UnsignedHugeIntValue& operator^=(const unsigned long long operand);
+
+    /**
      * @brief Returns the number of words that make up the UnsignedHugeIntValue object.
      * @return The number of words in the object.
      */

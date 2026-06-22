@@ -226,7 +226,7 @@ TEST_CASE("Bitwise AND With a Smaller Integer",
     REQUIRE(expectedResultString == x.to_string());
 }
 
-TEST_CASE("Bitwise AND Between With Deleted Words",
+TEST_CASE("Bitwise AND Between UnsignedHugeInts With Deleted Words",
         "Perform a bitwise AND between two UnsignedHugeInt objects that involves deleting the most significant words.") {
     UnsignedHugeInt x(619283830);
     x *= 4294967296; x += 1167598464;
@@ -297,14 +297,14 @@ TEST_CASE("Bitwise XOR With a Smaller Integer",
     x *= 4294967296; x += 1332099528;
     x *= 4294967296; x += 3322960329;
 
-    std::string expectedResultString = "175733262713133877043667988128977019325";
+    std::string expectedResultString = "175733262713133877041631126895603376573";
     REQUIRE(expectedResultString == (x ^ 1056788256052885620).to_string());
     REQUIRE(expectedResultString == (1056788256052885620 ^ x).to_string());
     REQUIRE(expectedResultString == (x ^= 1056788256052885620).to_string());
     REQUIRE(expectedResultString == x.to_string());
 }
 
-TEST_CASE("Bitwise XOR Between With Deleted Words",
+TEST_CASE("Bitwise XOR Between UnsignedHugeInts With Deleted Words",
         "Perform a bitwise XOR between two UnsignedHugeInt objects that involves deleting the most significant words.") {
     UnsignedHugeInt x(4077794742);
     x *= 4294967296; x += 3721940497;
@@ -314,9 +314,9 @@ TEST_CASE("Bitwise XOR Between With Deleted Words",
     y *= 4294967296; y += 3929910533;
 
     unsigned long expectedResult = 1235070280;
-    REQUIRE(expectedResult == x ^ y);
-    REQUIRE(expectedResult == y ^ x);
-    REQUIRE(expectedResult == x ^= y);
+    REQUIRE(expectedResult == (x ^ y));
+    REQUIRE(expectedResult == (y ^ x));
+    REQUIRE(expectedResult == (x ^= y));
     REQUIRE(expectedResult == x);
 }
 
