@@ -273,6 +273,53 @@ TEST_CASE("Bitwise OR With a Smaller Integer",
     REQUIRE(expectedResultString == x.to_string());
 }
 
+TEST_CASE("Bitwise XOR Between Huge Integers",
+        "Perform a bitwise XOR between two UnsignedHugeInt objects.") {
+    UnsignedHugeInt x(1371424049);
+    x *= 4294967296; x += 4168949941;
+    x *= 4294967296; x += 2064789873;
+    UnsignedHugeInt y(2582067735);
+    y *= 4294967296; y += 2001254484;
+    y *= 4294967296; y += 3657213554;
+    y *= 4294967296; y += 946751722;
+
+    std::string expectedResultString = "204572482143477446110529366386087328155";
+    REQUIRE(expectedResultString == (x ^ y).to_string());
+    REQUIRE(expectedResultString == (y ^ x).to_string());
+    REQUIRE(expectedResultString == (x ^= y).to_string());
+    REQUIRE(expectedResultString == x.to_string());
+}
+
+TEST_CASE("Bitwise XOR With a Smaller Integer",
+        "Perform a bitwise XOR between an UnsignedHugeInt and a literal value.") {
+    UnsignedHugeInt x(2218065611);
+    x *= 4294967296; x += 950024177;
+    x *= 4294967296; x += 1332099528;
+    x *= 4294967296; x += 3322960329;
+
+    std::string expectedResultString = "175733262713133877043667988128977019325";
+    REQUIRE(expectedResultString == (x ^ 1056788256052885620).to_string());
+    REQUIRE(expectedResultString == (1056788256052885620 ^ x).to_string());
+    REQUIRE(expectedResultString == (x ^= 1056788256052885620).to_string());
+    REQUIRE(expectedResultString == x.to_string());
+}
+
+TEST_CASE("Bitwise XOR Between With Deleted Words",
+        "Perform a bitwise XOR between two UnsignedHugeInt objects that involves deleting the most significant words.") {
+    UnsignedHugeInt x(4077794742);
+    x *= 4294967296; x += 3721940497;
+    x *= 4294967296; x += 2745172045;
+    UnsignedHugeInt y(4077794742);
+    y *= 4294967296; y += 3721940497;
+    y *= 4294967296; y += 3929910533;
+
+    unsigned long expectedResult = 1235070280;
+    REQUIRE(expectedResult == x ^ y);
+    REQUIRE(expectedResult == y ^ x);
+    REQUIRE(expectedResult == x ^= y);
+    REQUIRE(expectedResult == x);
+}
+
 TEST_CASE("Random Add Subtract",
         "Checks consistency for addition and subtraction using random UnsignedHugeInt values.") {
     constexpr unsigned long numWords = 500;
