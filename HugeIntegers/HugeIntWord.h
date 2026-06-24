@@ -43,7 +43,7 @@ public:
      * @brief Return the value held by this HugeIntWord object.
      * @return The value held by this HugeIntWord object.
      */
-    unsigned long get_value() const;
+    uint32_t get_value() const;
 
     /**
      * @brief Returns the place value of this HugeIntWord object within the integer.

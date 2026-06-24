@@ -15,7 +15,7 @@ HugeIntWord::HugeIntWord(unsigned long value, HugeIntWord* lowerSignificantWord)
     lowerSignificantWord->set_more_significant_word(this);
 }
 
-unsigned long HugeIntWord::get_value() const {
+uint32_t HugeIntWord::get_value() const {
     return this->value;
 }
 
