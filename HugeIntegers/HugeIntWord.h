@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdint>
 #include <iostream>
 #include <sstream>
 
@@ -67,7 +68,7 @@ protected:
     HugeIntWord *moreSigWord;
 
     // Current numerical value of this word.
-    unsigned long value;
+    uint32_t value;
 
     // Location of this word in the number. 0 is least significant place.
     unsigned long long place_value;
