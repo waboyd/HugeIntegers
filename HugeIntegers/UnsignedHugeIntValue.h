@@ -547,7 +547,7 @@ private:
      * @param divisor The divisor of the division operation, which must be less than the word base value.
      * @return The whole number quotient (first) and remainder (second) results of the division operation.
      */
-    static std::pair<UnsignedHugeIntValue, unsigned long> divide_single_word_divisor(const UnsignedHugeIntValue& dividend, const unsigned long divisor);
+    static std::pair<UnsignedHugeIntValue, uint32_t> divide_single_word_divisor(const UnsignedHugeIntValue& dividend, const uint32_t divisor);
 
     /**
      * @brief Divides UnsignedHugeIntValue objects, where the divisor is not small enough to fit within one word of UnsignedHugeIntValue.

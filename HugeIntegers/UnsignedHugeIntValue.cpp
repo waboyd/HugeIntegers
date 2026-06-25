@@ -399,7 +399,7 @@ std::pair<UnsignedHugeIntValue, UnsignedHugeIntValue> UnsignedHugeIntValue::divi
     return UnsignedHugeIntValue::divide_many_word_divisor(dividend, divisor);
 }
 
-std::pair<UnsignedHugeIntValue, unsigned long> UnsignedHugeIntValue::divide_single_word_divisor(const UnsignedHugeIntValue& dividend, const unsigned long divisor) {
+std::pair<UnsignedHugeIntValue, uint32_t> UnsignedHugeIntValue::divide_single_word_divisor(const UnsignedHugeIntValue& dividend, const uint32_t divisor) {
     if (divisor == 0) {
         throw std::invalid_argument("An attempt was made to divide by zero.");
     }
@@ -1070,7 +1070,7 @@ void UnsignedHugeIntValue::write_to_text_file(FILE* integer_file) const {
     }
     auto divisionResult = UnsignedHugeIntValue::divide_single_word_divisor(this, segmentBase);
     UnsignedHugeIntValue &quotient = divisionResult.first;
-    unsigned long &remainder = divisionResult.second;
+    uint32_t &remainder = divisionResult.second;
     while (quotient.num_words() > 1) {
         divisionResult = UnsignedHugeIntValue::divide_single_word_divisor(quotient, segmentBase);
         numDigits += HUGE_INT_NUMBER_OF_BASE_10_DIGITS_PER_WORD;
@@ -1229,7 +1229,7 @@ std::string UnsignedHugeIntValue::to_string() const {
     unsigned long long segmentStart = allocationSize; // index of the start of the current segment in the result string.
     auto divisionResult = UnsignedHugeIntValue::divide_single_word_divisor(this, segmentBase);
     UnsignedHugeIntValue &quotient = divisionResult.first;
-    unsigned long &remainder = divisionResult.second;
+    uint32_t &remainder = divisionResult.second;
 
     while (this->compare(quotient, zero_object) > 0) {
         segmentStart -= HUGE_INT_NUMBER_OF_BASE_10_DIGITS_PER_WORD;
