@@ -320,6 +320,26 @@ TEST_CASE("Bitwise XOR Between UnsignedHugeInts With Deleted Words",
     REQUIRE(expectedResult == x);
 }
 
+TEST_CASE("Bit Shift Left Multiple Words",
+        "Do a bitwise left shift that requires the addition of multiple words.") {
+    UnsignedHugeInt x(11760445202119584);
+    UnsignedHugeInt y = x << 76;
+    std::string expectedResultString = "888594115937834459493453944637225959424";
+    REQUIRE(expectedResultString == y.to_string());
+    REQUIRE(expectedResultString == (x <<= 76).to_string());
+    REQUIRE(expectedResultString == x.to_string());
+}
+
+TEST_CASE("Bit Shift Left Less Than One Word",
+        "Do a left shift by fewer bits than a word size.") {
+    UnsignedHugeInt x(3189496001646783569);
+    UnsignedHugeInt y = x << 7;
+    std::string expectedResultString = "408255488210788296832";
+    REQUIRE(expectedResultString == y.to_string());
+    REQUIRE(expectedResultString == (x <<= 7).to_string());
+    REQUIRE(expectedResultString == x.to_string());
+}
+
 TEST_CASE("Random Add Subtract",
         "Checks consistency for addition and subtraction using random UnsignedHugeInt values.") {
     constexpr unsigned long numWords = 500;
