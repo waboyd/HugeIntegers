@@ -340,6 +340,35 @@ TEST_CASE("Bit Shift Left Less Than One Word",
     REQUIRE(expectedResultString == x.to_string());
 }
 
+TEST_CASE("Bit Shift Right Multiple Words",
+        "Do a bitwise right shift that removes multiple words.") {
+    UnsignedHugeInt x("38931662892971033006133627835528632298634425");
+    UnsignedHugeInt y = x >> 81;
+    std::string expectedResultString = "16101758379757878294";
+    REQUIRE(expectedResultString == y.to_string());
+    REQUIRE(expectedResultString == (x >>= 81).to_string());
+    REQUIRE(expectedResultString == x.to_string());
+}
+
+TEST_CASE("Bit Shift Right Less Than One Word",
+        "Do a right shift by fewer bits than a word size.") {
+    UnsignedHugeInt x("5748907273582089237073619775896028165078597");
+    UnsignedHugeInt y = x >> 12;
+    std::string expectedResultString = "1403541814839377255144926703099616251239";
+    REQUIRE(expectedResultString == y.to_string());
+    REQUIRE(expectedResultString == (x >>= 12).to_string());
+    REQUIRE(expectedResultString == x.to_string());
+}
+
+TEST_CASE("Bit Shift Right Past Full Value",
+        "Do a bitwise right shift that removes the full original value.") {
+    UnsignedHugeInt x("278966265550678759616749606172834569");
+    UnsignedHugeInt y = x >> 150;
+    REQUIRE(0 == y);
+    REQUIRE(0 == (x >>= 150));
+    REQUIRE(0 == x);
+}
+
 TEST_CASE("Random Add Subtract",
         "Checks consistency for addition and subtraction using random UnsignedHugeInt values.") {
     constexpr unsigned long numWords = 500;
