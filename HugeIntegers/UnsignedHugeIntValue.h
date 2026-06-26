@@ -417,6 +417,21 @@ public:
     UnsignedHugeIntValue& operator^=(const unsigned long long operand);
 
     /**
+     * @brief Returns the result of a bitwise left shift operation.
+     * @param number_of_bits Number of bits by which to shift the value.
+     * @return The result of the bitwise left shift operation.
+     */
+    UnsignedHugeIntValue operator<<(const unsigned long long number_of_bits) const;
+
+    /**
+     * @brief Replaces this value with the result of a bitwise left shift operation.
+     * This operation changes the value of the object itself.
+     * @param number_of_bits Number of bits by which to shift the value.
+     * @return Reference to the UnsignedHugeIntValue object after its value is changed.
+     */
+    UnsignedHugeIntValue& operator<<=(const unsigned long long number_of_bits);
+
+    /**
      * @brief Returns the number of words that make up the UnsignedHugeIntValue object.
      * @return The number of words in the object.
      */

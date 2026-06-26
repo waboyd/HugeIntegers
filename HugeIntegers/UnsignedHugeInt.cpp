@@ -310,6 +310,10 @@ UnsignedHugeInt operator^(const unsigned long long operandA, const UnsignedHugeI
     return UnsignedHugeInt(operandB.value->operator^(operandA));
 }
 
+UnsignedHugeInt UnsignedHugeInt::operator<<(const unsigned long long number_of_bits) const {
+    return UnsignedHugeInt(*this->value << number_of_bits);
+}
+
 UnsignedHugeInt& UnsignedHugeInt::operator+=(const UnsignedHugeInt& addend) {
     this->value->operator+=(*addend.value);
     return *this;
@@ -409,6 +413,11 @@ UnsignedHugeInt& UnsignedHugeInt::operator^=(const UnsignedHugeInt& operand) {
 
 UnsignedHugeInt& UnsignedHugeInt::operator^=(const unsigned long long operand) {
     this->value->operator^=(operand);
+    return *this;
+}
+
+UnsignedHugeInt& UnsignedHugeInt::operator<<=(const unsigned long long number_of_bits) {
+    this->value->operator<<=(number_of_bits);
     return *this;
 }
 

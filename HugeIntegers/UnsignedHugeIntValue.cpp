@@ -968,6 +968,98 @@ UnsignedHugeIntValue& UnsignedHugeIntValue::operator^=(const UnsignedHugeIntValu
     return *this;
 }
 
+UnsignedHugeIntValue UnsignedHugeIntValue::operator<<(const unsigned long long number_of_bits) const {
+    if ((this->num_words() == 1) && (this->get_least_significant_word()->get_value() == 0)) {
+        return UnsignedHugeIntValue();
+    }
+    if (number_of_bits == 0) {
+        return UnsignedHugeIntValue(*this);
+    }
+    const unsigned long long numFullWordsShifted = number_of_bits / HUGE_INT_NUMBER_OF_BITS_PER_WORD;
+    const int wordShiftSize = number_of_bits % HUGE_INT_NUMBER_OF_BITS_PER_WORD;
+    const int carryShiftSize = HUGE_INT_NUMBER_OF_BITS_PER_WORD - wordShiftSize;
+    uint32_t origWordValue, carryValue;
+    HugeIntWord *origWord = this->get_least_significant_word(); // Word of the original value.
+
+    UnsignedHugeIntValue resultValue;
+    // Words with value 0 are created for every multiple of a full word that was shifted.
+    for (unsigned long long wordNum = 0; wordNum < numFullWordsShifted; ++wordNum) {
+        resultValue.add_word();
+    }
+
+    // The next word gets its value from shifting the corresponding original word value.
+    origWordValue = origWord->get_value();
+    carryValue = origWordValue >> carryShiftSize;
+    resultValue.get_most_significant_word()->value = origWordValue << wordShiftSize;
+    origWord = origWord->get_next_more_sig_word();
+
+    // The next result word values are combined from two words of the original value.
+    while (origWord != NULL) {
+        origWordValue = origWord->get_value();
+        resultValue.add_word((origWordValue << wordShiftSize) | carryValue);
+        carryValue = origWordValue >> carryShiftSize;
+        origWord = origWord->get_next_more_sig_word();
+    }
+
+    // The most significant result word value is created only from the carry value.
+    if (carryValue > 0) {
+        resultValue.add_word(carryValue);
+    }
+    return resultValue;
+}
+
+UnsignedHugeIntValue& UnsignedHugeIntValue::operator<<=(const unsigned long long number_of_bits) {
+    if ((this->num_words() == 1) && (this->get_least_significant_word()->get_value() == 0)) {
+        return *this;
+    }
+    if (number_of_bits == 0) {
+        return *this;
+    }
+
+    const unsigned long long numFullWordsShifted = number_of_bits / HUGE_INT_NUMBER_OF_BITS_PER_WORD;
+    const int wordShiftSize = number_of_bits % HUGE_INT_NUMBER_OF_BITS_PER_WORD;
+    const int carryShiftSize = HUGE_INT_NUMBER_OF_BITS_PER_WORD - wordShiftSize;
+    uint32_t readWordValue, carryValue, shiftedWordValue;
+    HugeIntWord *readWord = this->get_most_significant_word(); // Word being read.
+    HugeIntWord *writeWord; // Word being changed.
+
+    // Words are created for every multiple of a full word that was shifted.
+    for (unsigned long long wordNum = 0; wordNum < numFullWordsShifted; ++wordNum) {
+        this->add_word();
+    }
+    writeWord = this->get_most_significant_word();
+
+    // The bits that were shifted left from the most significant word become
+    // the value of the new most significant word.
+    readWordValue = readWord->get_value();
+    carryValue = readWordValue >> carryShiftSize;
+    if (carryValue > 0) {
+        this->add_word(carryValue);
+    }
+    shiftedWordValue = readWordValue << wordShiftSize;
+    readWord = readWord->get_next_lower_sig_word();
+
+    // The next new word values are combined from two words of the original value.
+    while (readWord != NULL) {
+        readWordValue = readWord->get_value();
+        writeWord->value = (readWordValue >> carryShiftSize) | shiftedWordValue;
+        shiftedWordValue = readWordValue << wordShiftSize;
+        writeWord = writeWord->get_next_lower_sig_word();
+        readWord = readWord->get_next_lower_sig_word();
+    }
+
+    // The shifted least significant word of the original value is put into the new value.
+    writeWord->value = shiftedWordValue;
+    writeWord = writeWord->get_next_lower_sig_word();
+
+    // The words that were shifted in from the right should have a value of 0.
+    while (writeWord != NULL) {
+        writeWord->value = 0;
+        writeWord = writeWord->get_next_lower_sig_word();
+    }
+    return *this;
+}
+
 UnsignedHugeIntValue& UnsignedHugeIntValue::operator^=(const unsigned long long operand) {
     HugeIntWord *thisWord = this->get_least_significant_word();
     uint64_t operandCarry = operand / HUGE_INT_WORD_BASE;
