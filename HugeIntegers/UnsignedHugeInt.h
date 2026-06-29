@@ -472,6 +472,13 @@ public:
     UnsignedHugeInt operator<<(const unsigned long long number_of_bits) const;
 
     /**
+     * @brief Returns the result of a bitwise right shift operation.
+     * @param number_of_bits Number of bits by which to shift the value.
+     * @return The result of the bitwise right shift operation.
+     */
+    UnsignedHugeInt operator>>(const unsigned long long number_of_bits) const;
+
+    /**
      * @brief Increases the object's value by the specified unsigned integer amount.
      * This operation changes the value of the object itself.
      * @param addend Value that will be added to the object's value.
@@ -556,14 +563,6 @@ public:
     UnsignedHugeInt& operator%=(const unsigned long long divisor);
 
     /**
-     * @brief Performs a bitwise left shift on the value of this object.
-     * This operation changes the value of the object itself.
-     * @param number_of_bits Number of bits by which to shift the value.
-     * @return Reference to the UnsignedHugeInt object after its value is changed.
-     */
-    UnsignedHugeInt& operator<<=(const unsigned long long number_of_bits);
-
-    /**
      * @brief Increments the value of the unsigned integer by 1.
      * This operation changes the value of the object itself.
      * @return Reference to the UnsignedHugeInt object after its value is changed.
@@ -638,6 +637,22 @@ public:
      * @return Reference to the UnsignedHugeInt object after its value is changed.
      */
     UnsignedHugeInt& operator^=(const unsigned long long operand);
+
+    /**
+     * @brief Performs a bitwise left shift on the value of this object.
+     * This operation changes the value of the object itself.
+     * @param number_of_bits Number of bits by which to shift the value.
+     * @return Reference to the UnsignedHugeInt object after its value is changed.
+     */
+    UnsignedHugeInt& operator<<=(const unsigned long long number_of_bits);
+
+    /**
+     * @brief Performs a bitwise right shift on the value of this object.
+     * This operation changes the value of the object itself.
+     * @param number_of_bits Number of bits by which to shift the value.
+     * @return Reference to the UnsignedHugeInt object after its value is changed.
+     */
+    UnsignedHugeInt& operator>>=(const unsigned long long number_of_bits);
 
     /**
      * @brief Returns the value of this UnsignedHugeInt object as a string.
