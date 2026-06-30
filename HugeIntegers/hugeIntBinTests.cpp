@@ -386,3 +386,24 @@ TEST_CASE("Random Divide Multiply",
     auto divisionResult = UnsignedHugeInt::divide(dividendInput, divisorInput);
     REQUIRE(dividendInput == divisionResult.first * divisorInput + divisionResult.second);
 }
+
+TEST_CASE("Random Bit Shift",
+        "Check for consistency when doing a random bitwise shift left and right.") {
+    unsigned int numWords, numBitsShifted;
+    {
+        std::uint32_t catchSeed = Catch::getSeed();
+        std::mt19937 randGen(catchSeed);
+        std::uniform_int_distribution<unsigned int> sizeDist(0, 100);
+        numWords = sizeDist(randGen) + 1;
+        numBitsShifted = sizeDist(randGen);
+    }
+    UnsignedHugeInt origInt = randomHugeInt(numWords);
+    UnsignedHugeInt leftShiftedInt = origInt << numBitsShifted;
+    if (numBitsShifted > 0)
+        REQUIRE(leftShiftedInt > origInt);
+    UnsignedHugeInt rightShiftedInt = leftShiftedInt >> numBitsShifted;
+    REQUIRE(origInt == rightShiftedInt);
+    origInt <<= numBitsShifted;
+    origInt >>= numBitsShifted;
+    REQUIRE(rightShiftedInt == origInt);
+}
