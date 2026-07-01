@@ -369,6 +369,42 @@ TEST_CASE("Bit Shift Right Past Full Value",
     REQUIRE(0 == x);
 }
 
+TEST_CASE("Ones Bit Shift Left Multiple Words",
+        "Do a bitwise left shift that adds words with all bits equal to 1.") {
+    UnsignedHugeInt x("736900781648969391056");
+    UnsignedHugeInt y = UnsignedHugeInt::left_ones_shifted(x, 71);
+    UnsignedHugeInt z = x.left_ones_shifted(71);
+    UnsignedHugeInt expectedResult("1739957776229767989950697386408963878158335");
+    REQUIRE(expectedResult == y);
+    REQUIRE(expectedResult == z);
+    REQUIRE(expectedResult == x.left_ones_shift_transform(71));
+    REQUIRE(expectedResult == x);
+}
+
+TEST_CASE("Ones Bit Shift Left Less Than One Word",
+        "Do a bitwise left shift that inserts ones from the right side, but not enough of a shift to fill a full word.") {
+    UnsignedHugeInt x("489312286970094849612");
+    UnsignedHugeInt y = UnsignedHugeInt::left_ones_shifted(x, 19);
+    UnsignedHugeInt z = x.left_ones_shifted(19);
+    UnsignedHugeInt expectedResult("256540560310977088513900543");
+    REQUIRE(expectedResult == y);
+    REQUIRE(expectedResult == z);
+    REQUIRE(expectedResult == x.left_ones_shift_transform(19));
+    REQUIRE(expectedResult == x);
+}
+
+TEST_CASE("Ones Bit Shift Left From Zero",
+        "Do a bitwise left shift on 0 that inserts ones from the right side.") {
+    UnsignedHugeInt x("0");
+    UnsignedHugeInt y = UnsignedHugeInt::left_ones_shifted(x, 99);
+    UnsignedHugeInt z = x.left_ones_shifted(99);
+    UnsignedHugeInt expectedResult("633825300114114700748351602687");
+    REQUIRE(expectedResult == y);
+    REQUIRE(expectedResult == z);
+    REQUIRE(expectedResult == x.left_ones_shift_transform(99));
+    REQUIRE(expectedResult == x);
+}
+
 TEST_CASE("Random Add Subtract",
         "Checks consistency for addition and subtraction using random UnsignedHugeInt values.") {
     constexpr unsigned long numWords = 500;
