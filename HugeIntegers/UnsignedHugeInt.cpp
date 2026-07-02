@@ -318,6 +318,14 @@ UnsignedHugeInt UnsignedHugeInt::operator>>(const unsigned long long number_of_b
     return UnsignedHugeInt(*this->value >> number_of_bits);
 }
 
+UnsignedHugeInt UnsignedHugeInt::left_ones_shifted(const UnsignedHugeInt& operand, const unsigned long long number_of_bits) {
+    return UnsignedHugeInt(operand.value->left_ones_shifted(number_of_bits));
+}
+
+UnsignedHugeInt UnsignedHugeInt::left_ones_shifted(const unsigned long long number_of_bits) const {
+    return UnsignedHugeInt(this->value->left_ones_shifted(number_of_bits));
+}
+
 UnsignedHugeInt& UnsignedHugeInt::operator+=(const UnsignedHugeInt& addend) {
     this->value->operator+=(*addend.value);
     return *this;
@@ -427,6 +435,11 @@ UnsignedHugeInt& UnsignedHugeInt::operator<<=(const unsigned long long number_of
 
 UnsignedHugeInt& UnsignedHugeInt::operator>>=(const unsigned long long number_of_bits) {
     this->value->operator>>=(number_of_bits);
+    return *this;
+}
+
+UnsignedHugeInt& UnsignedHugeInt::left_ones_shift_transform(const unsigned long long number_of_bits) {
+    this->value->left_ones_shift_transform(number_of_bits);
     return *this;
 }
 
