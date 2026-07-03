@@ -443,3 +443,24 @@ TEST_CASE("Random Bit Shift",
     origInt >>= numBitsShifted;
     REQUIRE(rightShiftedInt == origInt);
 }
+
+TEST_CASE("Random Ones Bit Shift",
+        "Check for consistency with doing a random bitwise ones left shift and a right shift.") {
+    unsigned int numWords, numBitsShifted;
+    {
+        std::uint32_t catchSeed = Catch::getSeed();
+        std::mt19937 randGen(catchSeed);
+        std::uniform_int_distribution<unsigned int> sizeDist(0, 100);
+        numWords = sizeDist(randGen) + 1;
+        numBitsShifted = sizeDist(randGen);
+    }
+    UnsignedHugeInt origInt = randomHugeInt(numWords);
+    UnsignedHugeInt leftShiftedInt = origInt.left_ones_shifted(numBitsShifted);
+    if (numBitsShifted > 0)
+        REQUIRE(leftShiftedInt > origInt);
+    UnsignedHugeInt rightShiftedInt = leftShiftedInt >> numBitsShifted;
+    REQUIRE(origInt == rightShiftedInt);
+    origInt.left_ones_shift_transform(numBitsShifted);
+    origInt >>= numBitsShifted;
+    REQUIRE(rightShiftedInt == origInt);
+}
