@@ -340,6 +340,16 @@ TEST_CASE("Bit Shift Left Less Than One Word",
     REQUIRE(expectedResultString == x.to_string());
 }
 
+TEST_CASE("Bit Shift Left Two Words",
+        "Do a left shift by the exact number of bits in two words.") {
+    UnsignedHugeInt x(547839634015647419);
+    UnsignedHugeInt y = x << 64;
+    std::string expectedResultString = "10105857522121353713320648782437679104";
+    REQUIRE(expectedResultString == y.to_string());
+    REQUIRE(expectedResultString == (x <<= 64).to_string());
+    REQUIRE(expectedResultString == x.to_string());
+}
+
 TEST_CASE("Bit Shift Right Multiple Words",
         "Do a bitwise right shift that removes multiple words.") {
     UnsignedHugeInt x("38931662892971033006133627835528632298634425");
@@ -367,6 +377,16 @@ TEST_CASE("Bit Shift Right Past Full Value",
     REQUIRE(0 == y);
     REQUIRE(0 == (x >>= 150));
     REQUIRE(0 == x);
+}
+
+TEST_CASE("Bit Shift Right Two Words",
+        "Do a right shift by the exact number of bits in two words.") {
+    UnsignedHugeInt x("669300561293894566720306156472378437");
+    UnsignedHugeInt y = x >> 64;
+    std::string expectedResultString = "36282856130030400";
+    REQUIRE(expectedResultString == y.to_string());
+    REQUIRE(expectedResultString == (x >>= 64).to_string());
+    REQUIRE(expectedResultString == x.to_string());
 }
 
 TEST_CASE("Ones Bit Shift Left Multiple Words",
@@ -402,6 +422,18 @@ TEST_CASE("Ones Bit Shift Left From Zero",
     REQUIRE(expectedResult == y);
     REQUIRE(expectedResult == z);
     REQUIRE(expectedResult == x.left_ones_shift_transform(99));
+    REQUIRE(expectedResult == x);
+}
+
+TEST_CASE("Ones Bit Shift Left Two Words",
+        "Do a bitwise left shift that adds exactly two words with all bits equal to 1.") {
+    UnsignedHugeInt x("49928956667193782");
+    UnsignedHugeInt y = UnsignedHugeInt::left_ones_shifted(x, 64);
+    UnsignedHugeInt z = x.left_ones_shifted(64);
+    UnsignedHugeInt expectedResult("921026685507057921986099481912803327");
+    REQUIRE(expectedResult == y);
+    REQUIRE(expectedResult == z);
+    REQUIRE(expectedResult == x.left_ones_shift_transform(64));
     REQUIRE(expectedResult == x);
 }
 
@@ -459,8 +491,8 @@ TEST_CASE("Random Ones Bit Shift",
     if (numBitsShifted > 0)
         REQUIRE(leftShiftedInt > origInt);
     UnsignedHugeInt rightShiftedInt = leftShiftedInt >> numBitsShifted;
-    REQUIRE(origInt == rightShiftedInt);
+    CHECK(origInt == rightShiftedInt);
     origInt.left_ones_shift_transform(numBitsShifted);
     origInt >>= numBitsShifted;
-    REQUIRE(rightShiftedInt == origInt);
+    CHECK(rightShiftedInt == origInt);
 }
