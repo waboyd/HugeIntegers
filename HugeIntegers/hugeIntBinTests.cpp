@@ -437,6 +437,26 @@ TEST_CASE("Ones Bit Shift Left Two Words",
     REQUIRE(expectedResult == x);
 }
 
+TEST_CASE("Bitwise NOT Over Some Bits",
+        "Do a bitwise NOT operation, excluding some bits of the integer value.") {
+    UnsignedHugeInt x("7443408567968172346868368929");
+    UnsignedHugeInt y = x.bitwise_not(70);
+    std::string expectedResultString = "830022031765306210782";
+    REQUIRE(expectedResultString == y.to_string());
+    y = UnsignedHugeInt::bitwise_not(x, 70);
+    REQUIRE(expectedResultString == y.to_string());
+}
+
+TEST_CASE("Bitwise NOT Over All Bits",
+        "Do a bitwise NOT operation over more bits than are in the integer value.") {
+    UnsignedHugeInt x("205681984675698243");
+    UnsignedHugeInt y = x.bitwise_not(75);
+    std::string expectedResultString = "37778726180972486011324";
+    REQUIRE(expectedResultString == y.to_string());
+    y = UnsignedHugeInt::bitwise_not(x, 75);
+    REQUIRE(expectedResultString == y.to_string());
+}
+
 TEST_CASE("Random Add Subtract",
         "Checks consistency for addition and subtraction using random UnsignedHugeInt values.") {
     constexpr unsigned long numWords = 500;
