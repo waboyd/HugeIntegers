@@ -310,6 +310,14 @@ UnsignedHugeInt operator^(const unsigned long long operandA, const UnsignedHugeI
     return UnsignedHugeInt(operandB.value->operator^(operandA));
 }
 
+UnsignedHugeInt UnsignedHugeInt::bitwise_not(const UnsignedHugeInt& operand, const unsigned long long number_of_bits) {
+    return UnsignedHugeInt(operand.value->bitwise_not(number_of_bits));
+}
+
+UnsignedHugeInt UnsignedHugeInt::bitwise_not(const unsigned long long number_of_bits) const {
+    return UnsignedHugeInt(this->value->bitwise_not(number_of_bits));
+}
+
 UnsignedHugeInt UnsignedHugeInt::operator<<(const unsigned long long number_of_bits) const {
     return UnsignedHugeInt(*this->value << number_of_bits);
 }

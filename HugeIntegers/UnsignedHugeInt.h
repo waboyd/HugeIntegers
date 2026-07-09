@@ -465,6 +465,25 @@ public:
     friend UnsignedHugeInt operator^(const unsigned long long operandA, const UnsignedHugeInt& operandB);
 
     /**
+     * @brief Returns the result of a bitwise NOT operation over the specified number of bits.
+     * The NOT operation will be applied to the rightmost (least significant) bits of the operand,
+     * and any bit left of the specified number of bits will be completely ignored.
+     * @param operand Integer to which the bitwise NOT operation is applied.
+     * @param number_of_bits The number of bits of the operand that are considered.
+     * @return The result of the bitwise NOT operation.
+     */
+    static UnsignedHugeInt bitwise_not(const UnsignedHugeInt& operand, const unsigned long long number_of_bits);
+
+    /**
+     * @brief Returns the result of a bitwise NOT operation over the specified number of bits.
+     * The NOT operation will be applied to the rightmost (least significant) bits of the value,
+     * and any bit left of the specified number of bits will be completely ignored.
+     * @param number_of_bits The number of bits of the value that are considered.
+     * @return The result of the bitwise NOT operation.
+     */
+    UnsignedHugeInt bitwise_not(const unsigned long long number_of_bits) const;
+
+    /**
      * @brief Returns the result of a bitwise left shift operation.
      * @param number_of_bits Number of bits by which to shift the value.
      * @return The result of the bitwise left shift operation.
