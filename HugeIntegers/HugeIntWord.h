@@ -14,7 +14,7 @@
 // The number of bits used to store each word value of an UnsignedHugeInt.
 #define HUGE_INT_NUMBER_OF_BITS_PER_WORD    32
 
-// The greatest number of 9 digits in a base 10 integer than can be stored in a single UnsignedHugeInt word.
+// The greatest number of digits in a base 10 integer than can be stored in a single UnsignedHugeInt word.
 #define HUGE_INT_NUMBER_OF_BASE_10_DIGITS_PER_WORD  9
 
 class HugeIntWord
