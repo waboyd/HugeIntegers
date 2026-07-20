@@ -1,8 +1,12 @@
 #pragma once
 
+#include <cstdint>
 #include <fstream>
+#include <iostream>
 #include <string.h>
+#include <sstream>
 #include <sys/stat.h>
+#include <vector>
 
 #include "HugeIntWord.h"
 
@@ -476,18 +480,21 @@ public:
      */
     long num_words() const;
 
+    // ToDo: Remove this function to remove dependence on HugeIntWord class.
     /**
      * @brief Returns the most significant word of the UnsignedHugeIntValue object.
      * @return The most significant word of the object.
      */
     HugeIntWord* get_most_significant_word() const;
 
+    // ToDo: Remove this function to remove dependence on HugeIntWord class.
     /**
      * @brief Returns the least significant word of the UnsignedHugeIntValue object.
      * @return The least significant word of the object.
      */
     HugeIntWord* get_least_significant_word() const;
 
+    // ToDo: Remove this function to remove dependence on HugeIntWord class.
     /**
      * @brief Removes and deletes the most significant word of the UnsignedHugeIntValue object.
      * @return The most significant word of the object after the change.
@@ -527,24 +534,28 @@ protected:
      */
     void remove_extra_leading_words();
 
+    // ToDo: Remove this function to remove dependence on HugeIntWord class.
     /**
      * @brief Adds a new most significant word with a value of 0.
      * @return Pointer to the new word that was added.
      */
     HugeIntWord* add_word();
 
+    // ToDo: Remove this function to remove dependence on HugeIntWord class.
     /**
      * @brief Adds new most significant words with a total value given in the parameter.
      * @return Pointer to the most significant new word that was added.
      */
     HugeIntWord* add_word(const unsigned long long value);
 
+    // ToDo: Remove this function to remove dependence on HugeIntWord class.
     /**
      * @brief Adds the word given in the parameter as the new most significant word.
      * @return Pointer to the new word that was added.
      */
     HugeIntWord* add_word(HugeIntWord* new_word);
 
+    // ToDo: Remove or change this function to remove dependence on HugeIntWord class.
     /**
      * @brief Changes this number by inserting a new least significant word with the given value.
      * @param least_significant_value The value of the new least significant word to be added.
@@ -553,10 +564,15 @@ protected:
     HugeIntWord* insert_least_significant_word(unsigned long least_significant_value);
 
 private:
+    // ToDo: Remove these pointers to remove dependence on HugeIntWord class.
     HugeIntWord *leastSigWord, *mostSigWord;
+
+    // Holds all of the word (value segment) values.
+    std::vector<int> word_values;
 
     // Private Methods
 
+    // Change this function to remove dependence on HugeIntWord class.
     /**
      * @brief Adds a specified value at a specified word of this UnsignedHugeIntValue.
      * @param location_to_add Word at which the value will be added. This word will be changed.
@@ -565,6 +581,7 @@ private:
      */
     HugeIntWord* add_value_at_word(HugeIntWord* location_to_add, const UnsignedHugeIntValue& value_to_add);
 
+    // Change or remove this function to remove dependence on HugeIntWord class.
     /**
      * @brief Creates a new UnsignedHugeIntValue object using the argument and its linked more significant words.
      * @param least_significant_word An existing word that will be copied as the least significant word of the new UnsignedHugeIntValue.
@@ -572,6 +589,7 @@ private:
      */
     static UnsignedHugeIntValue integer_with_least_significant_word(const HugeIntWord* least_significant_word);
 
+    // Change this function to remove dependence on HugeIntWord class.
     /**
      * @brief For a multiplication operation, the subtotal from multiplying words toward one word of the product is found.
      * This method is called by the multiply() method to find the value at one word of the product.

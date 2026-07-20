@@ -2,12 +2,14 @@
 #include "UnsignedHugeIntValue.h"
 
 UnsignedHugeIntValue::UnsignedHugeIntValue() {
+    // ToDo: Change this function to remove dependence on HugeIntWord class.
     HugeIntWord *newWord = new HugeIntWord(0);
     this->mostSigWord = newWord;
     this->leastSigWord = newWord;
 }
 
 UnsignedHugeIntValue::UnsignedHugeIntValue(const unsigned long long value) {
+    // ToDo: Change this function to remove dependence on HugeIntWord class.
     HugeIntWord *newWord = new HugeIntWord(0);
     this->leastSigWord = newWord;
     this->mostSigWord = newWord->add_value(value);
@@ -31,12 +33,14 @@ UnsignedHugeIntValue::UnsignedHugeIntValue(const UnsignedHugeIntValue* orig) {
 }
 
 UnsignedHugeIntValue::UnsignedHugeIntValue(UnsignedHugeIntValue&& orig) {
+    // ToDo: Change this function to remove dependence on HugeIntWord class.
     this->mostSigWord = orig.mostSigWord;
     this->leastSigWord = orig.leastSigWord;
     orig.mostSigWord = orig.leastSigWord = NULL;
 }
 
 UnsignedHugeIntValue UnsignedHugeIntValue::number_of_digits() const {
+    // ToDo: Change this function to remove dependence on HugeIntWord class.
     if (this->mostSigWord == NULL)
         return UnsignedHugeIntValue(1);
     UnsignedHugeIntValue totalNumDigits(1);
@@ -59,6 +63,7 @@ UnsignedHugeIntValue UnsignedHugeIntValue::number_of_digits() const {
 }
 
 UnsignedHugeIntValue::~UnsignedHugeIntValue() {
+    // ToDo: Change this function to remove dependence on HugeIntWord class.
     this->delete_all_words();
 }
 
@@ -67,6 +72,7 @@ UnsignedHugeIntValue::operator std::string() const {
 }
 
 UnsignedHugeIntValue& UnsignedHugeIntValue::operator=(const UnsignedHugeIntValue& orig) {
+    // ToDo: Change this function to remove dependence on HugeIntWord class.
     if (this == &orig)
         return *this;
     this->delete_all_words();
@@ -75,6 +81,7 @@ UnsignedHugeIntValue& UnsignedHugeIntValue::operator=(const UnsignedHugeIntValue
 }
 
 UnsignedHugeIntValue& UnsignedHugeIntValue::operator=(const UnsignedHugeIntValue* orig) {
+    // ToDo: Change this function to remove dependence on HugeIntWord class.
     if (this == orig)
         return *this;
     this->delete_all_words();
@@ -83,6 +90,7 @@ UnsignedHugeIntValue& UnsignedHugeIntValue::operator=(const UnsignedHugeIntValue
 }
 
 UnsignedHugeIntValue& UnsignedHugeIntValue::operator=(UnsignedHugeIntValue&& orig) {
+    // ToDo: Change this function to remove dependence on HugeIntWord class.
     if (this == &orig)
         return *this;
     this->delete_all_words();
@@ -93,6 +101,7 @@ UnsignedHugeIntValue& UnsignedHugeIntValue::operator=(UnsignedHugeIntValue&& ori
 }
 
 UnsignedHugeIntValue& UnsignedHugeIntValue::operator=(const unsigned long long value) {
+    // ToDo: Change this function to remove dependence on HugeIntWord class.
     this->delete_all_words();
     HugeIntWord *newWord = new HugeIntWord(0);
     this->leastSigWord = newWord;
@@ -101,12 +110,14 @@ UnsignedHugeIntValue& UnsignedHugeIntValue::operator=(const unsigned long long v
 }
 
 UnsignedHugeIntValue& UnsignedHugeIntValue::operator=(const std::string value_string) {
+    // ToDo: Change this function to remove dependence on HugeIntWord class.
     this->delete_all_words();
     this->set_value_from_string(value_string);
     return *this;
 }
 
 UnsignedHugeIntValue& UnsignedHugeIntValue::operator=(const char* value_string) {
+    // ToDo: Change this function to remove dependence on HugeIntWord class.
     this->delete_all_words();
     std::string cppStringValue(value_string);
     this->set_value_from_string(cppStringValue);
@@ -114,6 +125,7 @@ UnsignedHugeIntValue& UnsignedHugeIntValue::operator=(const char* value_string) 
 }
 
 short UnsignedHugeIntValue::compare(const UnsignedHugeIntValue& numberA, const UnsignedHugeIntValue& numberB) {
+    // ToDo: Change this function to remove dependence on HugeIntWord class.
     unsigned long long numWordsA = numberA.num_words();
     unsigned long long numWordsB = numberB.num_words();
     HugeIntWord *thisWordA, *thisWordB;
@@ -146,6 +158,7 @@ short UnsignedHugeIntValue::compare(const UnsignedHugeIntValue& numberA, const U
 }
 
 UnsignedHugeIntValue UnsignedHugeIntValue::sum_of(const UnsignedHugeIntValue& addendA, const UnsignedHugeIntValue& addendB) {
+    // ToDo: Change this function to remove dependence on HugeIntWord class.
     HugeIntWord *greaterAddendWord, *lesserAddendWord;
     HugeIntWord *sumWord, *sumMostSigWord;
     uint64_t thisWordSum;
@@ -215,6 +228,7 @@ UnsignedHugeIntValue UnsignedHugeIntValue::sum_of(const UnsignedHugeIntValue& ad
 
 
 UnsignedHugeIntValue UnsignedHugeIntValue::sum_of(const UnsignedHugeIntValue& addendA, const unsigned long long addendB) {
+    // ToDo: Change this function to remove dependence on HugeIntWord class.
     uint64_t thisWordSum;
     unsigned short thisCarryValue = 0;
     HugeIntWord *thisAddendWord = addendA.get_least_significant_word();
@@ -242,6 +256,7 @@ UnsignedHugeIntValue UnsignedHugeIntValue::sum_of(const UnsignedHugeIntValue& ad
 }
 
 UnsignedHugeIntValue UnsignedHugeIntValue::subtract(const UnsignedHugeIntValue& minuend, const UnsignedHugeIntValue& subtrahend) {
+    // ToDo: Change this function to remove dependence on HugeIntWord class.
     if (UnsignedHugeIntValue::compare(minuend, subtrahend) < 0) {
         throw std::range_error("The subtrahend of an unsigned subtraction operation was greater than the minuend.");
     }
@@ -315,6 +330,7 @@ UnsignedHugeIntValue UnsignedHugeIntValue::subtract(const UnsignedHugeIntValue& 
 }
 
 UnsignedHugeIntValue UnsignedHugeIntValue::multiply(const UnsignedHugeIntValue& factorA, const UnsignedHugeIntValue& factorB) {
+    // ToDo: Change this function to remove dependence on HugeIntWord class.
     // ToDo: Possibly apply multithreading to this method.
     // Find the product of the least significant word of each factor.
     HugeIntWord *startWordA = factorA.get_least_significant_word(); // Starting words when finding a partial product.
@@ -359,6 +375,7 @@ UnsignedHugeIntValue UnsignedHugeIntValue::multiply_by_int(const unsigned long l
 }
 
 UnsignedHugeIntValue UnsignedHugeIntValue::multiply_single_word(const UnsignedHugeIntValue& large_factor, const unsigned long long small_factor) {
+    // ToDo: Change this function to remove dependence on HugeIntWord class.
     HugeIntWord *factorWord, *productWord;
     uint64_t productValue, carryValue;
     factorWord = large_factor.get_least_significant_word();
@@ -391,6 +408,7 @@ UnsignedHugeIntValue UnsignedHugeIntValue::multiply_single_word(const UnsignedHu
 }
 
 std::pair<UnsignedHugeIntValue, UnsignedHugeIntValue> UnsignedHugeIntValue::divide(const UnsignedHugeIntValue& dividend, const UnsignedHugeIntValue& divisor) {
+    // ToDo: Change this function to remove dependence on HugeIntWord class.
     std::pair<UnsignedHugeIntValue, UnsignedHugeIntValue> divisionResults;
     if (divisor.num_words() == 1) {
         auto quickDivisionResults = UnsignedHugeIntValue::divide_single_word_divisor(dividend, divisor.get_least_significant_word()->get_value());
@@ -400,6 +418,7 @@ std::pair<UnsignedHugeIntValue, UnsignedHugeIntValue> UnsignedHugeIntValue::divi
 }
 
 std::pair<UnsignedHugeIntValue, uint32_t> UnsignedHugeIntValue::divide_single_word_divisor(const UnsignedHugeIntValue& dividend, const uint32_t divisor) {
+    // ToDo: Change this function to remove dependence on HugeIntWord class.
     if (divisor == 0) {
         throw std::invalid_argument("An attempt was made to divide by zero.");
     }
@@ -426,6 +445,7 @@ std::pair<UnsignedHugeIntValue, uint32_t> UnsignedHugeIntValue::divide_single_wo
 }
 
 std::pair<UnsignedHugeIntValue, UnsignedHugeIntValue> UnsignedHugeIntValue::divide_many_word_divisor(const UnsignedHugeIntValue& dividend, const UnsignedHugeIntValue& divisor) {
+    // ToDo: Change this function to remove dependence on HugeIntWord class.
     std::pair<UnsignedHugeIntValue, UnsignedHugeIntValue> divisionResults;
     unsigned long long dividendNumWords = dividend.num_words();
     unsigned long long divisorNumWords = divisor.num_words();
@@ -511,6 +531,7 @@ std::pair<UnsignedHugeIntValue, UnsignedHugeIntValue> UnsignedHugeIntValue::divi
 }
 
 UnsignedHugeIntValue& UnsignedHugeIntValue::operator+=(const UnsignedHugeIntValue& addend) {
+    // ToDo: Change this function to remove dependence on HugeIntWord class.
     HugeIntWord *thisWord = this->leastSigWord;
     HugeIntWord *addendWord = addend.get_least_significant_word();
 
@@ -535,6 +556,7 @@ UnsignedHugeIntValue& UnsignedHugeIntValue::operator+=(const UnsignedHugeIntValu
 }
 
 UnsignedHugeIntValue& UnsignedHugeIntValue::operator+=(const unsigned long long addend) {
+    // ToDo: Change this function to remove dependence on HugeIntWord class.
     this->leastSigWord->add_value(addend);
     // Set the most significant word.
     HugeIntWord *nextWord = this->mostSigWord->get_next_more_sig_word();
@@ -546,6 +568,7 @@ UnsignedHugeIntValue& UnsignedHugeIntValue::operator+=(const unsigned long long 
 }
 
 UnsignedHugeIntValue& UnsignedHugeIntValue::operator-=(const UnsignedHugeIntValue& subtrahend) {
+    // ToDo: Change this function to remove dependence on HugeIntWord class.
     if (UnsignedHugeIntValue::compare(*this, subtrahend) < 0) {
         throw std::range_error("The subtrahend of an unsigned compound subtraction operation was greater than the minuend.");
     }
@@ -631,6 +654,7 @@ UnsignedHugeIntValue& UnsignedHugeIntValue::operator%=(const unsigned long long 
 }
 
 UnsignedHugeIntValue& UnsignedHugeIntValue::operator++() {
+    // ToDo: Change this function to remove dependence on HugeIntWord class.
     this->leastSigWord->add_value(1);
     // Set the most significant word.
     HugeIntWord *nextWord = this->mostSigWord->get_next_more_sig_word();
@@ -642,6 +666,7 @@ UnsignedHugeIntValue& UnsignedHugeIntValue::operator++() {
 }
 
 UnsignedHugeIntValue& UnsignedHugeIntValue::operator--() {
+    // ToDo: Change this function to remove dependence on HugeIntWord class.
     if ((this->num_words() <= 1) && (this->leastSigWord->get_value() < 1)) {
         throw std::range_error("An unsigned integer equal to 0 was decremented.");
     }
@@ -666,6 +691,7 @@ UnsignedHugeIntValue& UnsignedHugeIntValue::operator--() {
 }
 
 UnsignedHugeIntValue UnsignedHugeIntValue::operator&(const UnsignedHugeIntValue& operand) const {
+    // ToDo: Change this function to remove dependence on HugeIntWord class.
     HugeIntWord *greaterOperandWord, *lesserOperandWord;
     HugeIntWord *resultMostSigWord;
 
@@ -693,6 +719,7 @@ UnsignedHugeIntValue UnsignedHugeIntValue::operator&(const UnsignedHugeIntValue&
 }
 
 UnsignedHugeIntValue UnsignedHugeIntValue::operator&(const unsigned long long operand) const {
+    // ToDo: Change this function to remove dependence on HugeIntWord class.
     HugeIntWord *operandWord = this->get_least_significant_word();
     uint64_t operandCarry = operand / HUGE_INT_WORD_BASE;
     UnsignedHugeIntValue result(operandWord->get_value() & (operand % HUGE_INT_WORD_BASE));
@@ -709,6 +736,7 @@ UnsignedHugeIntValue UnsignedHugeIntValue::operator&(const unsigned long long op
 }
 
 UnsignedHugeIntValue& UnsignedHugeIntValue::operator&=(const UnsignedHugeIntValue& operand) {
+    // ToDo: Change this function to remove dependence on HugeIntWord class.
     HugeIntWord *greaterOperandWord, *lesserOperandWord;
     HugeIntWord *resultMostSigWord;
 
@@ -747,6 +775,7 @@ UnsignedHugeIntValue& UnsignedHugeIntValue::operator&=(const UnsignedHugeIntValu
 }
 
 UnsignedHugeIntValue& UnsignedHugeIntValue::operator&=(const unsigned long long operand) {
+    // ToDo: Change this function to remove dependence on HugeIntWord class.
     HugeIntWord *operandWord = this->get_least_significant_word();
     uint64_t operandCarry = operand / HUGE_INT_WORD_BASE;
     HugeIntWord *resultMostSigWord = this->get_least_significant_word();
@@ -773,6 +802,7 @@ UnsignedHugeIntValue& UnsignedHugeIntValue::operator&=(const unsigned long long 
 }
 
 UnsignedHugeIntValue UnsignedHugeIntValue::operator|(const UnsignedHugeIntValue& operand) const {
+    // ToDo: Change this function to remove dependence on HugeIntWord class.
     HugeIntWord *greaterOperandWord, *lesserOperandWord;
     HugeIntWord *resultMostSigWord;
 
@@ -809,6 +839,7 @@ UnsignedHugeIntValue UnsignedHugeIntValue::operator|(const UnsignedHugeIntValue&
 }
 
 UnsignedHugeIntValue UnsignedHugeIntValue::operator|(const unsigned long long operand) const {
+    // ToDo: Change this function to remove dependence on HugeIntWord class.
     HugeIntWord *operandWord = this->get_least_significant_word();
     uint64_t operandCarry = operand / HUGE_INT_WORD_BASE;
     UnsignedHugeIntValue result(operandWord->get_value() | (operand % HUGE_INT_WORD_BASE));
@@ -828,6 +859,7 @@ UnsignedHugeIntValue UnsignedHugeIntValue::operator|(const unsigned long long op
 }
 
 UnsignedHugeIntValue& UnsignedHugeIntValue::operator|=(const UnsignedHugeIntValue& operand) {
+    // ToDo: Change this function to remove dependence on HugeIntWord class.
     HugeIntWord *thisWord = this->get_least_significant_word();
     HugeIntWord *operandWord = operand.get_least_significant_word();
 
@@ -856,6 +888,7 @@ UnsignedHugeIntValue& UnsignedHugeIntValue::operator|=(const UnsignedHugeIntValu
 }
 
 UnsignedHugeIntValue& UnsignedHugeIntValue::operator|=(const unsigned long long operand) {
+    // ToDo: Change this function to remove dependence on HugeIntWord class.
     HugeIntWord *thisWord = this->get_least_significant_word();
     uint64_t operandCarry = operand / HUGE_INT_WORD_BASE;
     thisWord->value |= (operand % HUGE_INT_WORD_BASE);
@@ -882,6 +915,7 @@ UnsignedHugeIntValue& UnsignedHugeIntValue::operator|=(const unsigned long long 
 }
 
 UnsignedHugeIntValue UnsignedHugeIntValue::operator^(const UnsignedHugeIntValue& operand) const {
+    // ToDo: Change this function to remove dependence on HugeIntWord class.
     HugeIntWord *greaterOperandWord, *lesserOperandWord;
     HugeIntWord *resultMostSigWord;
 
@@ -919,6 +953,7 @@ UnsignedHugeIntValue UnsignedHugeIntValue::operator^(const UnsignedHugeIntValue&
 }
 
 UnsignedHugeIntValue UnsignedHugeIntValue::operator^(const unsigned long long operand) const {
+    // ToDo: Change this function to remove dependence on HugeIntWord class.
     HugeIntWord *operandWord = this->get_least_significant_word();
     uint64_t operandCarry = operand / HUGE_INT_WORD_BASE;
     UnsignedHugeIntValue result(operandWord->get_value() ^ (operand % HUGE_INT_WORD_BASE));
@@ -939,6 +974,7 @@ UnsignedHugeIntValue UnsignedHugeIntValue::operator^(const unsigned long long op
 }
 
 UnsignedHugeIntValue& UnsignedHugeIntValue::operator^=(const UnsignedHugeIntValue& operand) {
+    // ToDo: Change this function to remove dependence on HugeIntWord class.
     HugeIntWord *thisWord = this->get_least_significant_word();
     HugeIntWord *operandWord = operand.get_least_significant_word();
 
@@ -969,6 +1005,7 @@ UnsignedHugeIntValue& UnsignedHugeIntValue::operator^=(const UnsignedHugeIntValu
 }
 
 UnsignedHugeIntValue& UnsignedHugeIntValue::operator^=(const unsigned long long operand) {
+    // ToDo: Change this function to remove dependence on HugeIntWord class.
     HugeIntWord *thisWord = this->get_least_significant_word();
     uint64_t operandCarry = operand / HUGE_INT_WORD_BASE;
     thisWord->value ^= (operand % HUGE_INT_WORD_BASE);
@@ -997,6 +1034,7 @@ UnsignedHugeIntValue& UnsignedHugeIntValue::operator^=(const unsigned long long 
 }
 
 UnsignedHugeIntValue UnsignedHugeIntValue::bitwise_not(const unsigned long long number_of_bits) const {
+    // ToDo: Change this function to remove dependence on HugeIntWord class.
     if (number_of_bits == 0) {
         return UnsignedHugeIntValue();
     }
@@ -1039,6 +1077,7 @@ UnsignedHugeIntValue UnsignedHugeIntValue::bitwise_not(const unsigned long long 
 }
 
 UnsignedHugeIntValue UnsignedHugeIntValue::operator<<(const unsigned long long number_of_bits) const {
+    // ToDo: Change this function to remove dependence on HugeIntWord class.
     if ((this->num_words() == 1) && (this->get_least_significant_word()->get_value() == 0)) {
         return UnsignedHugeIntValue();
     }
@@ -1085,6 +1124,7 @@ UnsignedHugeIntValue UnsignedHugeIntValue::operator<<(const unsigned long long n
 }
 
 UnsignedHugeIntValue& UnsignedHugeIntValue::operator<<=(const unsigned long long number_of_bits) {
+    // ToDo: Change this function to remove dependence on HugeIntWord class.
     if ((this->num_words() == 1) && (this->get_least_significant_word()->get_value() == 0)) {
         return *this;
     }
@@ -1145,6 +1185,7 @@ UnsignedHugeIntValue& UnsignedHugeIntValue::operator<<=(const unsigned long long
 }
 
 UnsignedHugeIntValue UnsignedHugeIntValue::operator>>(const unsigned long long number_of_bits) const {
+    // ToDo: Change this function to remove dependence on HugeIntWord class.
     if ((this->num_words() == 1) && (this->get_least_significant_word()->get_value() == 0)) {
         return UnsignedHugeIntValue();
     }
@@ -1201,6 +1242,7 @@ UnsignedHugeIntValue UnsignedHugeIntValue::operator>>(const unsigned long long n
 }
 
 UnsignedHugeIntValue& UnsignedHugeIntValue::operator>>=(const unsigned long long number_of_bits) {
+    // ToDo: Change this function to remove dependence on HugeIntWord class.
     if ((this->num_words() == 1) && (this->get_least_significant_word()->get_value() == 0)) {
         return *this;
     }
@@ -1263,6 +1305,7 @@ UnsignedHugeIntValue& UnsignedHugeIntValue::operator>>=(const unsigned long long
 }
 
 UnsignedHugeIntValue UnsignedHugeIntValue::left_ones_shifted(const unsigned long long number_of_bits) const {
+    // ToDo: Change this function to remove dependence on HugeIntWord class.
     if (number_of_bits == 0) {
         return UnsignedHugeIntValue(*this);
     }
@@ -1312,6 +1355,7 @@ UnsignedHugeIntValue UnsignedHugeIntValue::left_ones_shifted(const unsigned long
 }
 
 UnsignedHugeIntValue& UnsignedHugeIntValue::left_ones_shift_transform(const unsigned long long number_of_bits) {
+    // ToDo: Change this function to remove dependence on HugeIntWord class.
     if (number_of_bits == 0) {
         return *this;
     }
@@ -1381,6 +1425,7 @@ void UnsignedHugeIntValue::read_from_text_file(std::string file_path) {
 }
 
 void UnsignedHugeIntValue::read_from_text_file(FILE* integer_file) {
+    // ToDo: Change this function to remove dependence on HugeIntWord class.
     if (integer_file == NULL)
         throw std::invalid_argument("A null file pointer was given as an argument.");
     this->delete_all_words();
@@ -1426,6 +1471,7 @@ void UnsignedHugeIntValue::write_to_text_file(std::string file_path) const {
 }
 
 void UnsignedHugeIntValue::write_to_text_file(FILE* integer_file) const {
+    // ToDo: Change this function to remove dependence on HugeIntWord class.
     if (integer_file == NULL)
         throw std::invalid_argument("A null file pointer was given as an argument.");
     if (this->num_words() <= 0) {
@@ -1475,6 +1521,7 @@ void UnsignedHugeIntValue::write_to_text_file(FILE* integer_file) const {
 }
 
 void UnsignedHugeIntValue::read_from_binary_file(std::string file_path) {
+    // ToDo: Change this function to remove dependence on HugeIntWord class.
     this->delete_all_words();
     this->mostSigWord = this->leastSigWord = NULL;
     unsigned long long remainingNumWords;
@@ -1520,6 +1567,7 @@ void UnsignedHugeIntValue::read_from_binary_file(std::string file_path) {
 }
 
 void UnsignedHugeIntValue::write_to_binary_file(std::string file_path) const {
+    // ToDo: Change this function to remove dependence on HugeIntWord class.
     // Prevent writing to an existing file.
     struct stat placeholder_stat;
     if (stat(file_path.c_str(), &placeholder_stat) >= 0)
@@ -1555,20 +1603,24 @@ void UnsignedHugeIntValue::write_to_binary_file(std::string file_path) const {
 }
 
 long UnsignedHugeIntValue::num_words() const {
+    // ToDo: Change this function to remove dependence on HugeIntWord class.
     if (this->mostSigWord == NULL)
         return 0;
     return (this->mostSigWord->get_word_number() + 1);
 }
 
 HugeIntWord* UnsignedHugeIntValue::get_most_significant_word() const {
+    // ToDo: Remove this function to remove dependence on HugeIntWord class.
     return this->mostSigWord;
 }
 
 HugeIntWord* UnsignedHugeIntValue::get_least_significant_word() const {
+    // ToDo: Remove this function to remove dependence on HugeIntWord class.
     return this->leastSigWord;
 }
 
 HugeIntWord* UnsignedHugeIntValue::remove_most_significant_word() {
+    // ToDo: Change or remove this function to remove dependence on HugeIntWord class.
     HugeIntWord *oldMostSigWord = this->mostSigWord;
     if (oldMostSigWord == NULL) {
         throw std::logic_error("An UnsignedHugeIntValue object has no words or value.");
@@ -1584,6 +1636,7 @@ HugeIntWord* UnsignedHugeIntValue::remove_most_significant_word() {
 }
 
 std::string UnsignedHugeIntValue::to_string() const {
+    // ToDo: Change this function to remove dependence on HugeIntWord class.
     if (this->mostSigWord == NULL)
         return "0";
     uint32_t zero_long(0);
@@ -1630,6 +1683,7 @@ std::string UnsignedHugeIntValue::to_string() const {
 }
 
 void UnsignedHugeIntValue::change_to_copy_of(const UnsignedHugeIntValue& orig) {
+    // ToDo: Change this function to remove dependence on HugeIntWord class.
     HugeIntWord *thisCopyWord, *thisOrigWord;
     thisOrigWord = orig.get_least_significant_word();
     if (thisOrigWord != NULL) {
@@ -1652,6 +1706,7 @@ void UnsignedHugeIntValue::change_to_copy_of(const UnsignedHugeIntValue& orig) {
 }
 
 void UnsignedHugeIntValue::set_value_from_string(std::string integer_string) {
+    // ToDo: Change this function to remove dependence on HugeIntWord class.
     unsigned long long numDigits =  integer_string.length();
     if (numDigits == 0) {
         throw std::invalid_argument("An attempt was made to convert an empty string into an UnsignedHugeInt.");
@@ -1693,6 +1748,7 @@ void UnsignedHugeIntValue::set_value_from_string(std::string integer_string) {
 }
 
 void UnsignedHugeIntValue::delete_all_words() {
+    // ToDo: Change or remove this function to remove dependence on HugeIntWord class.
     HugeIntWord *thisWord = this->mostSigWord;
     HugeIntWord *wordToDelete, *nextWord;
     while (thisWord != NULL) {
@@ -1706,6 +1762,7 @@ void UnsignedHugeIntValue::delete_all_words() {
 }
 
 void UnsignedHugeIntValue::remove_extra_leading_words() {
+    // ToDo: Change this function to remove dependence on HugeIntWord class.
     while ((this->mostSigWord->value == 0) && (this->mostSigWord != this->leastSigWord)) {
         this->mostSigWord = this->mostSigWord->get_next_lower_sig_word();
         this->mostSigWord->remove_more_significant_word();
@@ -1713,10 +1770,12 @@ void UnsignedHugeIntValue::remove_extra_leading_words() {
 }
 
 HugeIntWord* UnsignedHugeIntValue::add_word() {
+    // ToDo: Change or remove this function to remove dependence on HugeIntWord class.
     return this->add_word((unsigned long long)0);
 }
 
 HugeIntWord* UnsignedHugeIntValue::add_word(const unsigned long long value) {
+    // ToDo: Change or remove this function to remove dependence on HugeIntWord class.
     if (value > HUGE_INT_MAX_WORD_VALUE) {
         HugeIntWord *newLesserWord, *newGreaterWord;
         newLesserWord = new HugeIntWord((unsigned long long)0);
@@ -1733,6 +1792,7 @@ HugeIntWord* UnsignedHugeIntValue::add_word(const unsigned long long value) {
 }
 
 HugeIntWord* UnsignedHugeIntValue::add_word(HugeIntWord* new_word) {
+    // ToDo: Change or remove this function to remove dependence on HugeIntWord class.
     if (new_word == NULL) {
         throw std::invalid_argument("A null word was added to an UnsignedHugeIntValue.");
     }
@@ -1744,6 +1804,7 @@ HugeIntWord* UnsignedHugeIntValue::add_word(HugeIntWord* new_word) {
 }
 
 HugeIntWord* UnsignedHugeIntValue::insert_least_significant_word(unsigned long least_significant_value) {
+    // ToDo: Change this function to remove dependence on HugeIntWord class.
     if (this->mostSigWord->get_word_number() == 0 && this->mostSigWord->get_value() == 0) {
         return this->leastSigWord->add_value(least_significant_value);
     }
@@ -1762,6 +1823,7 @@ HugeIntWord* UnsignedHugeIntValue::insert_least_significant_word(unsigned long l
 }
 
 HugeIntWord* UnsignedHugeIntValue::add_value_at_word(HugeIntWord* location_to_add, const UnsignedHugeIntValue& value_to_add) {
+    // ToDo: Change this function to remove dependence on HugeIntWord class.
     HugeIntWord *thisAddLocation;
     const HugeIntWord *thisValueWord = value_to_add.get_least_significant_word();
     HugeIntWord *moreSigWord;
@@ -1803,6 +1865,7 @@ HugeIntWord* UnsignedHugeIntValue::add_value_at_word(HugeIntWord* location_to_ad
 }
 
 UnsignedHugeIntValue UnsignedHugeIntValue::integer_with_least_significant_word(const HugeIntWord* least_significant_word) {
+    // ToDo: Change this function to remove dependence on HugeIntWord class.
     UnsignedHugeIntValue newNumber(least_significant_word->get_value());
     HugeIntWord *thisWord = least_significant_word->get_next_more_sig_word();
     while (thisWord != NULL) {
@@ -1813,6 +1876,7 @@ UnsignedHugeIntValue UnsignedHugeIntValue::integer_with_least_significant_word(c
 }
 
 UnsignedHugeIntValue UnsignedHugeIntValue::find_multiplication_subtotal(const HugeIntWord* greater_factor_word, const HugeIntWord* lesser_factor_word) {
+    // ToDo: Change this function to remove dependence on HugeIntWord class.
     UnsignedHugeIntValue resultSubtotal((unsigned long long)0);
     HugeIntWord *resultLeastSigWord = resultSubtotal.get_least_significant_word();
     const HugeIntWord *thisWordA = greater_factor_word, *thisWordB = lesser_factor_word; // thisWordA is taken in descending place values.
