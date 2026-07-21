@@ -564,8 +564,8 @@ protected:
     HugeIntWord* insert_least_significant_word(unsigned long least_significant_value);
 
 private:
-    // ToDo: Remove these pointers to remove dependence on HugeIntWord class.
-    HugeIntWord *leastSigWord, *mostSigWord;
+//    // ToDo: Remove these pointers to remove dependence on HugeIntWord class.
+//    HugeIntWord *leastSigWord, *mostSigWord;
 
     // Holds all of the word (value segment) values.
     std::vector<int> word_values;
