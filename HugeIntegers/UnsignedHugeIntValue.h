@@ -511,13 +511,6 @@ protected:
     // Protected Methods
 
     /**
-     * @brief Changes this object to a copy of the of the object in the argument.
-     * It is assumed that this object does not have any already defined words.
-     * @param orig The original object that will be copied.
-     */
-    void change_to_copy_of(const UnsignedHugeIntValue& orig);
-
-    /**
      * @brief Sets the value of this object to the unsigned integer given in the argument.
      * It is assumed that this object does not have any already defined words.
      * @param integer_string A string of the digits that will be converted to an unsigned integer.
@@ -568,7 +561,7 @@ private:
 //    HugeIntWord *leastSigWord, *mostSigWord;
 
     // Holds all of the word (value segment) values.
-    std::vector<int> word_values;
+    std::vector<uint32_t> *word_values = NULL;
 
     // Private Methods
 

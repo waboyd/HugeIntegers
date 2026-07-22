@@ -1,42 +1,101 @@
 #include "UnsignedHugeIntValue.h"
-#include "UnsignedHugeIntValue.h"
 
 UnsignedHugeIntValue::UnsignedHugeIntValue() {
-    // ToDo: Change this function to remove dependence on HugeIntWord class.
-//    HugeIntWord *newWord = new HugeIntWord(0);
-//    this->mostSigWord = newWord;
-//    this->leastSigWord = newWord;
+    this->word_values = new std::vector<uint32_t>(1, 0);
 }
 
 UnsignedHugeIntValue::UnsignedHugeIntValue(const unsigned long long value) {
-    // ToDo: Change this function to remove dependence on HugeIntWord class.
-//    HugeIntWord *newWord = new HugeIntWord(0);
-//    this->leastSigWord = newWord;
-//    this->mostSigWord = newWord->add_value(value);
+    if (value <= HUGE_INT_MAX_WORD_VALUE) {
+        this->word_values = new std::vector<uint32_t>(1, value);
+        return;
+    }
+    this->word_values = new std::vector<uint32_t>(2);
+    this->word_values->at(0) = value % HUGE_INT_WORD_BASE;
+    unsigned long long quotient = value / HUGE_INT_WORD_BASE;
+    this->word_values->at(1) = quotient % HUGE_INT_WORD_BASE;
+    for (quotient /= HUGE_INT_WORD_BASE; quotient > 0; quotient /= HUGE_INT_WORD_BASE) {
+        this->word_values->push_back(quotient % HUGE_INT_WORD_BASE);
+    }
 }
 
 UnsignedHugeIntValue::UnsignedHugeIntValue(const std::string integer_string) {
     this->set_value_from_string(integer_string);
+    this->word_values = new std::vector<uint32_t>(1, 0);    // ToDo: Delete or change this line. /////////////////////////////////////////////////////////////////////
 }
 
 UnsignedHugeIntValue::UnsignedHugeIntValue(const char* integer_string) {
     std::string cppString(integer_string);
     this->set_value_from_string(cppString);
+    this->word_values = new std::vector<uint32_t>(1, 0);    // ToDo: Delete or change this line. /////////////////////////////////////////////////////////////////////
 }
 
 UnsignedHugeIntValue::UnsignedHugeIntValue(const UnsignedHugeIntValue& orig) {
-    this->change_to_copy_of(orig);
+    this->word_values = new std::vector<uint32_t>(*orig.word_values);
 }
 
 UnsignedHugeIntValue::UnsignedHugeIntValue(const UnsignedHugeIntValue* orig) {
-    this->change_to_copy_of(*orig);
+    this->word_values = new std::vector<uint32_t>(*orig->word_values);
 }
 
 UnsignedHugeIntValue::UnsignedHugeIntValue(UnsignedHugeIntValue&& orig) {
+    this->word_values = orig.word_values;
+    orig.word_values = NULL;
+}
+
+UnsignedHugeIntValue::~UnsignedHugeIntValue() {
+    delete this->word_values;
+}
+
+UnsignedHugeIntValue& UnsignedHugeIntValue::operator=(const UnsignedHugeIntValue& orig) {
+    if (this == &orig)
+        return *this;
+    delete this->word_values;
+    this->word_values = new std::vector<uint32_t>(*orig.word_values);
+    return *this;
+}
+
+UnsignedHugeIntValue& UnsignedHugeIntValue::operator=(const UnsignedHugeIntValue* orig) {
+    if (this == orig)
+        return *this;
+    delete this->word_values;
+    this->word_values = new std::vector<uint32_t>(*orig->word_values);
+    return *this;
+}
+
+UnsignedHugeIntValue& UnsignedHugeIntValue::operator=(UnsignedHugeIntValue&& orig) {
+    if (this == &orig)
+        return *this;
+    delete this->word_values;
+    this->word_values = orig.word_values;
+    orig.word_values = NULL;
+    return *this;
+}
+
+UnsignedHugeIntValue& UnsignedHugeIntValue::operator=(const unsigned long long value) {
     // ToDo: Change this function to remove dependence on HugeIntWord class.
-//    this->mostSigWord = orig.mostSigWord;
-//    this->leastSigWord = orig.leastSigWord;
-//    orig.mostSigWord = orig.leastSigWord = NULL;
+    delete this->word_values;
+//    HugeIntWord *newWord = new HugeIntWord(0);
+//    this->leastSigWord = newWord;
+//    this->mostSigWord = newWord->add_value(value);
+    this->word_values = new std::vector<uint32_t>(1, 0);    // ToDo: Delete or change this line. /////////////////////////////////////////////////////////////////////
+    return *this;
+}
+
+UnsignedHugeIntValue& UnsignedHugeIntValue::operator=(const std::string value_string) {
+    // ToDo: Change this function to remove dependence on HugeIntWord class.
+    delete this->word_values;
+    this->set_value_from_string(value_string);
+    this->word_values = new std::vector<uint32_t>(1, 0);    // ToDo: Delete or change this line. /////////////////////////////////////////////////////////////////////
+    return *this;
+}
+
+UnsignedHugeIntValue& UnsignedHugeIntValue::operator=(const char* value_string) {
+    // ToDo: Change this function to remove dependence on HugeIntWord class.
+    delete this->word_values;
+    std::string cppStringValue(value_string);
+    this->set_value_from_string(cppStringValue);
+    this->word_values = new std::vector<uint32_t>(1, 0);    // ToDo: Delete or change this line. /////////////////////////////////////////////////////////////////////
+    return *this;
 }
 
 UnsignedHugeIntValue UnsignedHugeIntValue::number_of_digits() const {
@@ -62,66 +121,8 @@ UnsignedHugeIntValue UnsignedHugeIntValue::number_of_digits() const {
     return totalNumDigits;
 }
 
-UnsignedHugeIntValue::~UnsignedHugeIntValue() {
-    // ToDo: Change this function to remove dependence on HugeIntWord class.
-    this->delete_all_words();
-}
-
 UnsignedHugeIntValue::operator std::string() const {
     return this->to_string();
-}
-
-UnsignedHugeIntValue& UnsignedHugeIntValue::operator=(const UnsignedHugeIntValue& orig) {
-    // ToDo: Change this function to remove dependence on HugeIntWord class.
-    if (this == &orig)
-        return *this;
-    this->delete_all_words();
-    this->change_to_copy_of(orig);
-    return *this;
-}
-
-UnsignedHugeIntValue& UnsignedHugeIntValue::operator=(const UnsignedHugeIntValue* orig) {
-    // ToDo: Change this function to remove dependence on HugeIntWord class.
-    if (this == orig)
-        return *this;
-    this->delete_all_words();
-    this->change_to_copy_of(*orig);
-    return *this;
-}
-
-UnsignedHugeIntValue& UnsignedHugeIntValue::operator=(UnsignedHugeIntValue&& orig) {
-    // ToDo: Change this function to remove dependence on HugeIntWord class.
-    if (this == &orig)
-        return *this;
-//    this->delete_all_words();
-//    this->mostSigWord = orig.mostSigWord;
-//    this->leastSigWord = orig.leastSigWord;
-//    orig.mostSigWord = orig.leastSigWord = NULL;
-    return *this;
-}
-
-UnsignedHugeIntValue& UnsignedHugeIntValue::operator=(const unsigned long long value) {
-    // ToDo: Change this function to remove dependence on HugeIntWord class.
-//    this->delete_all_words();
-//    HugeIntWord *newWord = new HugeIntWord(0);
-//    this->leastSigWord = newWord;
-//    this->mostSigWord = newWord->add_value(value);
-    return *this;
-}
-
-UnsignedHugeIntValue& UnsignedHugeIntValue::operator=(const std::string value_string) {
-    // ToDo: Change this function to remove dependence on HugeIntWord class.
-//    this->delete_all_words();
-    this->set_value_from_string(value_string);
-    return *this;
-}
-
-UnsignedHugeIntValue& UnsignedHugeIntValue::operator=(const char* value_string) {
-    // ToDo: Change this function to remove dependence on HugeIntWord class.
-//    this->delete_all_words();
-    std::string cppStringValue(value_string);
-    this->set_value_from_string(cppStringValue);
-    return *this;
 }
 
 short UnsignedHugeIntValue::compare(const UnsignedHugeIntValue& numberA, const UnsignedHugeIntValue& numberB) {
@@ -412,10 +413,10 @@ UnsignedHugeIntValue UnsignedHugeIntValue::multiply_single_word(const UnsignedHu
 std::pair<UnsignedHugeIntValue, UnsignedHugeIntValue> UnsignedHugeIntValue::divide(const UnsignedHugeIntValue& dividend, const UnsignedHugeIntValue& divisor) {
     // ToDo: Change this function to remove dependence on HugeIntWord class.
     std::pair<UnsignedHugeIntValue, UnsignedHugeIntValue> divisionResults;
-    if (divisor.num_words() == 1) {
-        auto quickDivisionResults = UnsignedHugeIntValue::divide_single_word_divisor(dividend, divisor.get_least_significant_word()->get_value());
-        return std::pair(std::move(quickDivisionResults.first), UnsignedHugeIntValue(quickDivisionResults.second));
-    }
+//    if (divisor.num_words() == 1) {
+//        auto quickDivisionResults = UnsignedHugeIntValue::divide_single_word_divisor(dividend, divisor.get_least_significant_word()->get_value());
+//        return std::pair(std::move(quickDivisionResults.first), UnsignedHugeIntValue(quickDivisionResults.second));
+//    }
     return UnsignedHugeIntValue::divide_many_word_divisor(dividend, divisor);
 }
 
@@ -1471,6 +1472,7 @@ void UnsignedHugeIntValue::read_from_text_file(FILE* integer_file) {
 //        *this = UnsignedHugeIntValue::multiply_single_word(*this, multiplier);
 //        this->add_value_at_word(this->leastSigWord, segmentValue);
 //    } while (nextChar != EOF);
+    this->word_values = new std::vector<uint32_t>(1, 0);    // ToDo: Delete or change this line. /////////////////////////////////////////////////////////////////////
 }
 
 void UnsignedHugeIntValue::write_to_text_file(std::string file_path) const {
@@ -1544,12 +1546,12 @@ void UnsignedHugeIntValue::read_from_binary_file(std::string file_path) {
     unsigned int bufferIndex;
     char *readDest = (char*)readBuffer;
 
-    std::ifstream fileReadStream(file_path, std::ios::in | std::ios::binary);
-    if (!fileReadStream.is_open()) {
-        fileReadStream.close();
-        throw std::invalid_argument("The file " + file_path + " could not be opened.");
-    }
-    fileReadStream >> remainingNumWords;
+//    std::ifstream fileReadStream(file_path, std::ios::in | std::ios::binary);
+//    if (!fileReadStream.is_open()) {
+//        fileReadStream.close();
+//        throw std::invalid_argument("The file " + file_path + " could not be opened.");
+//    }
+//    fileReadStream >> remainingNumWords;
 
     // Read the first word from the binary file.
 //    if (remainingNumWords < 1) {
@@ -1575,8 +1577,9 @@ void UnsignedHugeIntValue::read_from_binary_file(std::string file_path) {
 //    for (bufferIndex = 0; bufferIndex < remainingNumWords; ++bufferIndex) {
 //        thisWord = new HugeIntWord(readBuffer[bufferIndex], thisWord);
 //    }
-    fileReadStream.close();
+//    fileReadStream.close();
 //    this->mostSigWord = thisWord;
+    this->word_values = new std::vector<uint32_t>(1, 0);    // ToDo: Delete or change this line. /////////////////////////////////////////////////////////////////////
 }
 
 void UnsignedHugeIntValue::write_to_binary_file(std::string file_path) const {
@@ -1616,11 +1619,7 @@ void UnsignedHugeIntValue::write_to_binary_file(std::string file_path) const {
 }
 
 long UnsignedHugeIntValue::num_words() const {
-    // ToDo: Change this function to remove dependence on HugeIntWord class.
-//    if (this->mostSigWord == NULL)
-//        return 0;
-//    return (this->mostSigWord->get_word_number() + 1);
-    return this->word_values.size();
+    return this->word_values->size();
 }
 
 HugeIntWord* UnsignedHugeIntValue::get_most_significant_word() const {
@@ -1699,29 +1698,6 @@ std::string UnsignedHugeIntValue::to_string() const {
     return fullNumberString;
 }
 
-void UnsignedHugeIntValue::change_to_copy_of(const UnsignedHugeIntValue& orig) {
-    // ToDo: Change this function to remove dependence on HugeIntWord class.
-//    HugeIntWord *thisCopyWord, *thisOrigWord;
-//    thisOrigWord = orig.get_least_significant_word();
-//    if (thisOrigWord != NULL) {
-//        thisCopyWord = new HugeIntWord(thisOrigWord->get_value());
-//        this->leastSigWord = thisCopyWord;
-//        thisOrigWord = thisOrigWord->get_next_more_sig_word();
-//    }
-//    else {
-//        thisCopyWord = new HugeIntWord(0);
-//        this->leastSigWord = thisCopyWord;
-//        this->mostSigWord = thisCopyWord;
-//        return;
-//    }
-//    this->leastSigWord = thisCopyWord;
-//    while (thisOrigWord != NULL) {
-//        thisCopyWord = new HugeIntWord(thisOrigWord->get_value(), thisCopyWord);
-//        thisOrigWord = thisOrigWord->get_next_more_sig_word();
-//    }
-//    this->mostSigWord = thisCopyWord;
-}
-
 void UnsignedHugeIntValue::set_value_from_string(std::string integer_string) {
     // ToDo: Change this function to remove dependence on HugeIntWord class.
     unsigned long long numDigits =  integer_string.length();
@@ -1776,6 +1752,8 @@ void UnsignedHugeIntValue::delete_all_words() {
 //    }
 //    this->mostSigWord = NULL;
 //    this->leastSigWord = NULL;
+
+    delete this->word_values;
 }
 
 void UnsignedHugeIntValue::remove_extra_leading_words() {
