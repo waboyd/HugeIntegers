@@ -1705,12 +1705,10 @@ void UnsignedHugeIntValue::set_value_from_string(std::string integer_string) {
         throw std::invalid_argument("An attempt was made to convert an empty string into an UnsignedHugeInt.");
     }
 
-    // Segments are used that have a base of a power of 10.
-    uint32_t segmentBaseValue = 1;
-    for (unsigned short exponent = 1; exponent <= HUGE_INT_NUMBER_OF_BASE_10_DIGITS_PER_WORD; ++exponent) {
-        segmentBaseValue *= 10;
-    }
-    unsigned long long segmentStartIndex = numDigits % HUGE_INT_NUMBER_OF_BASE_10_DIGITS_PER_WORD;
+    // Segments are used that fit within one word of UnsignedHugeInt.
+    const uint32_t segmentBaseValue = 1000000000;
+    const int segmentLength = 9;
+    unsigned long long segmentStartIndex = numDigits % segmentLength;
     std::string segmentString;
     uint32_t segmentValue;
 
@@ -1725,6 +1723,7 @@ void UnsignedHugeIntValue::set_value_from_string(std::string integer_string) {
             throw std::invalid_argument("An attempt was made to read a negative value as a string into an UnsignedHugeInt.");
         }
     }
+    this->word_values = new std::vector<uint32_t>(1, segmentValue);
 //    this->mostSigWord = this->leastSigWord = new HugeIntWord(segmentValue);
 //
 //    // The remaining digits of the string are read in segments.
@@ -1757,11 +1756,15 @@ void UnsignedHugeIntValue::delete_all_words() {
 }
 
 void UnsignedHugeIntValue::remove_extra_leading_words() {
-    // ToDo: Change this function to remove dependence on HugeIntWord class.
-//    while ((this->mostSigWord->value == 0) && (this->mostSigWord != this->leastSigWord)) {
-//        this->mostSigWord = this->mostSigWord->get_next_lower_sig_word();
-//        this->mostSigWord->remove_more_significant_word();
-//    }
+    unsigned long long highest_index = this->word_values->size();
+    if (highest_index <= 1)
+        return;
+    --highest_index;
+    while ((this->word_values->at(highest_index) == 0) && (highest_index > 0)) {
+        --highest_index;
+    }
+    this->word_values->resize(highest_index + 1);
+    this->word_values->shrink_to_fit();
 }
 
 HugeIntWord* UnsignedHugeIntValue::add_word() {
