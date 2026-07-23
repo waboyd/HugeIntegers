@@ -566,13 +566,29 @@ private:
     // Private Methods
 
     // Change this function to remove dependence on HugeIntWord class.
+//    /**
+//     * @brief Adds a specified value at a specified word of this UnsignedHugeIntValue.
+//     * @param location_to_add Word at which the value will be added. This word will be changed.
+//     * @param value_to_add Number that will be added to the specified word.
+//     * @return The least significant word that was updated.
+//     */
+//    HugeIntWord* add_value_at_word(HugeIntWord* location_to_add, const UnsignedHugeIntValue& value_to_add);
+
     /**
-     * @brief Adds a specified value at a specified word of this UnsignedHugeIntValue.
-     * @param location_to_add Word at which the value will be added. This word will be changed.
-     * @param value_to_add Number that will be added to the specified word.
-     * @return The least significant word that was updated.
+     * @brief Adds a specified value at a specified word index of this UnsignedHugeIntValue.
+     * The next more significant words of this object may be changed because of carry values.
+     * @param location_to_add Iterator to the word at which the value will be added. This word will be changed.
+     * @param value_to_add Value that will be added to the specified word.
      */
-    HugeIntWord* add_value_at_word(HugeIntWord* location_to_add, const UnsignedHugeIntValue& value_to_add);
+    void add_value_at_word(std::vector<uint32_t>::iterator location_to_add, const UnsignedHugeIntValue& value_to_add);
+
+    /**
+     * @brief Adds a specified value at a specified word index of this UnsignedHugeIntValue.
+     * The next more significant words of this object may be changed because of carry values.
+     * @param location_to_add Iterator to the word at which the value will be added. This word will be changed.
+     * @param value_to_add Value that will be added to the specified word.
+     */
+    void add_value_at_word(std::vector<uint32_t>::iterator location_to_add, unsigned long long value_to_add);
 
     // Change or remove this function to remove dependence on HugeIntWord class.
     /**

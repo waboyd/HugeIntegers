@@ -1821,47 +1821,69 @@ HugeIntWord* UnsignedHugeIntValue::insert_least_significant_word(unsigned long l
     return newWord;
 }
 
-HugeIntWord* UnsignedHugeIntValue::add_value_at_word(HugeIntWord* location_to_add, const UnsignedHugeIntValue& value_to_add) {
-    // ToDo: Change this function to remove dependence on HugeIntWord class.
-//    HugeIntWord *thisAddLocation;
-//    const HugeIntWord *thisValueWord = value_to_add.get_least_significant_word();
-//    HugeIntWord *moreSigWord;
-    HugeIntWord *wordToReturn;
+void UnsignedHugeIntValue::add_value_at_word(std::vector<uint32_t>::iterator location_to_add, const UnsignedHugeIntValue& value_to_add) {
+    std::vector<uint32_t>::const_iterator addendWordIter = value_to_add.word_values->begin();
+    const std::vector<uint32_t>::const_iterator thisEndWord = this->word_values->end();
+    const std::vector<uint32_t>::const_iterator addendEndWord = value_to_add.word_values->end();
+    uint64_t remainingValue = 0;
 
-//    if (location_to_add == NULL) {
-//        thisAddLocation = this->add_word(new HugeIntWord((unsigned long)0));
-//        wordToReturn = thisAddLocation;
-//    }
-//    else {
-//        thisAddLocation = location_to_add;
-//        wordToReturn = location_to_add;
-//    }
-//
-//    while (thisValueWord != NULL) {
-//        if (thisAddLocation == NULL) {
-//            thisAddLocation = this->add_word(thisValueWord->get_value());
-//            this->mostSigWord = thisAddLocation;
-//        }
-//        else {
-//            moreSigWord = thisAddLocation->add_value(thisValueWord->get_value());
-//            if (moreSigWord->get_next_more_sig_word() == NULL)
-//                this->mostSigWord = moreSigWord;
-//        }
-//
-//        thisValueWord = thisValueWord->get_next_more_sig_word();
-//        thisAddLocation = thisAddLocation->get_next_more_sig_word();
-//    }
-//
-//    // Set the most significant word.
-//    thisAddLocation = this->mostSigWord;
-//    moreSigWord = thisAddLocation->get_next_more_sig_word();
-//    while (moreSigWord != NULL) {
-//        thisAddLocation = moreSigWord;
-//        moreSigWord = moreSigWord->get_next_more_sig_word();
-//    }
-//    this->mostSigWord = thisAddLocation;
-//    return wordToReturn;
-    return NULL; // ToDo: Delete this line. ////////////////////////////////////////////////////////////////////////////////////////////////
+    // Corresponding words are added together.
+    while ((addendWordIter != addendEndWord) && (location_to_add != thisEndWord)) {
+        remainingValue = remainingValue + *location_to_add + *addendWordIter;
+        *location_to_add = (uint32_t)(remainingValue % HUGE_INT_WORD_BASE);
+        remainingValue /= HUGE_INT_WORD_BASE;
+        ++location_to_add;
+        ++addendWordIter;
+    }
+
+    // All the words of value_to_add must be added.
+    while (addendWordIter != addendEndWord) {
+        remainingValue += *addendWordIter;
+        this->word_values->push_back((uint32_t)(remainingValue % HUGE_INT_WORD_BASE));
+        remainingValue /= HUGE_INT_WORD_BASE;
+        ++addendWordIter;
+    }
+
+    // The carry value should be added to the current word of this object.
+    while ((remainingValue > 0) && (location_to_add != thisEndWord)) {
+        remainingValue += *location_to_add;
+        *location_to_add = (uint32_t)(remainingValue % HUGE_INT_WORD_BASE);
+        remainingValue /= HUGE_INT_WORD_BASE;
+        ++location_to_add;
+    }
+
+    // If there are no more words of this object, another must be added for the carry value.
+    if (remainingValue > 0) {
+        this->word_values->push_back((uint32_t)remainingValue);
+    }
+}
+
+void UnsignedHugeIntValue::add_value_at_word(std::vector<uint32_t>::iterator location_to_add, unsigned long long value_to_add) {
+    const std::vector<uint32_t>::const_iterator thisEndWord = this->word_values->end();
+    if (value_to_add == 0)
+        return;
+
+    // Overflow must be prevented by dividing value_to_add before adding.
+    if (location_to_add != thisEndWord) {
+        uint64_t remainderSum = (value_to_add % HUGE_INT_WORD_BASE) + *location_to_add;
+        *location_to_add = (uint32_t)(remainderSum % HUGE_INT_WORD_BASE);
+        value_to_add = (value_to_add / HUGE_INT_WORD_BASE) + (remainderSum / HUGE_INT_WORD_BASE);
+        ++location_to_add;
+    }
+
+    // Overflow from the addend value should be carried over to the next word of this object.
+    while ((value_to_add > 0) && (location_to_add != thisEndWord)) {
+        value_to_add += *location_to_add;
+        *location_to_add = (uint32_t)(value_to_add % HUGE_INT_WORD_BASE);
+        value_to_add /= HUGE_INT_WORD_BASE;
+        ++location_to_add;
+    }
+
+    // If there are no more words of this object, more must be added for the remainder of the value.
+    while (value_to_add > 0) {
+        this->word_values->push_back((uint32_t)(value_to_add % HUGE_INT_WORD_BASE));
+        value_to_add /= HUGE_INT_WORD_BASE;
+    }
 }
 
 UnsignedHugeIntValue UnsignedHugeIntValue::integer_with_least_significant_word(const HugeIntWord* least_significant_word) {
