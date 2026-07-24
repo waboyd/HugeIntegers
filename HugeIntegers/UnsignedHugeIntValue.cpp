@@ -1,15 +1,15 @@
 #include "UnsignedHugeIntValue.h"
 
 UnsignedHugeIntValue::UnsignedHugeIntValue() {
-    this->word_values = new std::vector<uint32_t>(1, 0);
+    this->word_values = new std::vector<HUGE_INT_WORD_TYPE>(1, 0);
 }
 
 UnsignedHugeIntValue::UnsignedHugeIntValue(const unsigned long long value) {
     if (value <= HUGE_INT_MAX_WORD_VALUE) {
-        this->word_values = new std::vector<uint32_t>(1, value);
+        this->word_values = new std::vector<HUGE_INT_WORD_TYPE>(1, value);
         return;
     }
-    this->word_values = new std::vector<uint32_t>(2);
+    this->word_values = new std::vector<HUGE_INT_WORD_TYPE>(2);
     this->word_values->at(0) = value % HUGE_INT_WORD_BASE;
     unsigned long long quotient = value / HUGE_INT_WORD_BASE;
     this->word_values->at(1) = quotient % HUGE_INT_WORD_BASE;
@@ -20,21 +20,21 @@ UnsignedHugeIntValue::UnsignedHugeIntValue(const unsigned long long value) {
 
 UnsignedHugeIntValue::UnsignedHugeIntValue(const std::string integer_string) {
     this->set_value_from_string(integer_string);
-    this->word_values = new std::vector<uint32_t>(1, 0);    // ToDo: Delete or change this line. /////////////////////////////////////////////////////////////////////
+    this->word_values = new std::vector<HUGE_INT_WORD_TYPE>(1, 0);    // ToDo: Delete or change this line. /////////////////////////////////////////////////////////////////////
 }
 
 UnsignedHugeIntValue::UnsignedHugeIntValue(const char* integer_string) {
     std::string cppString(integer_string);
     this->set_value_from_string(cppString);
-    this->word_values = new std::vector<uint32_t>(1, 0);    // ToDo: Delete or change this line. /////////////////////////////////////////////////////////////////////
+    this->word_values = new std::vector<HUGE_INT_WORD_TYPE>(1, 0);    // ToDo: Delete or change this line. /////////////////////////////////////////////////////////////////////
 }
 
 UnsignedHugeIntValue::UnsignedHugeIntValue(const UnsignedHugeIntValue& orig) {
-    this->word_values = new std::vector<uint32_t>(*orig.word_values);
+    this->word_values = new std::vector<HUGE_INT_WORD_TYPE>(*orig.word_values);
 }
 
 UnsignedHugeIntValue::UnsignedHugeIntValue(const UnsignedHugeIntValue* orig) {
-    this->word_values = new std::vector<uint32_t>(*orig->word_values);
+    this->word_values = new std::vector<HUGE_INT_WORD_TYPE>(*orig->word_values);
 }
 
 UnsignedHugeIntValue::UnsignedHugeIntValue(UnsignedHugeIntValue&& orig) {
@@ -42,7 +42,7 @@ UnsignedHugeIntValue::UnsignedHugeIntValue(UnsignedHugeIntValue&& orig) {
     orig.word_values = NULL;
 }
 
-UnsignedHugeIntValue::UnsignedHugeIntValue(std::vector<uint32_t>* word_values_vector) {
+UnsignedHugeIntValue::UnsignedHugeIntValue(std::vector<HUGE_INT_WORD_TYPE>* word_values_vector) {
     this->word_values = word_values_vector;
 }
 
@@ -54,7 +54,7 @@ UnsignedHugeIntValue& UnsignedHugeIntValue::operator=(const UnsignedHugeIntValue
     if (this == &orig)
         return *this;
     delete this->word_values;
-    this->word_values = new std::vector<uint32_t>(*orig.word_values);
+    this->word_values = new std::vector<HUGE_INT_WORD_TYPE>(*orig.word_values);
     return *this;
 }
 
@@ -62,7 +62,7 @@ UnsignedHugeIntValue& UnsignedHugeIntValue::operator=(const UnsignedHugeIntValue
     if (this == orig)
         return *this;
     delete this->word_values;
-    this->word_values = new std::vector<uint32_t>(*orig->word_values);
+    this->word_values = new std::vector<HUGE_INT_WORD_TYPE>(*orig->word_values);
     return *this;
 }
 
@@ -81,7 +81,7 @@ UnsignedHugeIntValue& UnsignedHugeIntValue::operator=(const unsigned long long v
 //    HugeIntWord *newWord = new HugeIntWord(0);
 //    this->leastSigWord = newWord;
 //    this->mostSigWord = newWord->add_value(value);
-    this->word_values = new std::vector<uint32_t>(1, 0);    // ToDo: Delete or change this line. /////////////////////////////////////////////////////////////////////
+    this->word_values = new std::vector<HUGE_INT_WORD_TYPE>(1, 0);    // ToDo: Delete or change this line. /////////////////////////////////////////////////////////////////////
     return *this;
 }
 
@@ -89,7 +89,7 @@ UnsignedHugeIntValue& UnsignedHugeIntValue::operator=(const std::string value_st
     // ToDo: Change this function to remove dependence on HugeIntWord class.
     delete this->word_values;
     this->set_value_from_string(value_string);
-    this->word_values = new std::vector<uint32_t>(1, 0);    // ToDo: Delete or change this line. /////////////////////////////////////////////////////////////////////
+    this->word_values = new std::vector<HUGE_INT_WORD_TYPE>(1, 0);    // ToDo: Delete or change this line. /////////////////////////////////////////////////////////////////////
     return *this;
 }
 
@@ -98,7 +98,7 @@ UnsignedHugeIntValue& UnsignedHugeIntValue::operator=(const char* value_string) 
     delete this->word_values;
     std::string cppStringValue(value_string);
     this->set_value_from_string(cppStringValue);
-    this->word_values = new std::vector<uint32_t>(1, 0);    // ToDo: Delete or change this line. /////////////////////////////////////////////////////////////////////
+    this->word_values = new std::vector<HUGE_INT_WORD_TYPE>(1, 0);    // ToDo: Delete or change this line. /////////////////////////////////////////////////////////////////////
     return *this;
 }
 
@@ -110,7 +110,7 @@ UnsignedHugeIntValue UnsignedHugeIntValue::number_of_digits() const {
     UnsignedHugeIntValue quotient(this);
 
 //    // The value can be repeatedly divided by a power of 10 to find the number of digits.
-//    uint32_t divisor = 1;
+//    HUGE_INT_WORD_TYPE divisor = 1;
 //    for (unsigned short exponent = 1; exponent <= HUGE_INT_NUMBER_OF_BASE_10_DIGITS_PER_WORD; ++exponent) {
 //        divisor *= 10;
 //    }
@@ -134,7 +134,7 @@ short UnsignedHugeIntValue::compare(const UnsignedHugeIntValue& numberA, const U
 //    unsigned long long numWordsA = numberA.num_words();
 //    unsigned long long numWordsB = numberB.num_words();
 //    HugeIntWord *thisWordA, *thisWordB;
-    uint32_t wordValueA, wordValueB;
+    HUGE_INT_WORD_TYPE wordValueA, wordValueB;
 
 //    thisWordA = numberA.get_most_significant_word();
 //    thisWordB = numberB.get_most_significant_word();
@@ -164,8 +164,8 @@ short UnsignedHugeIntValue::compare(const UnsignedHugeIntValue& numberA, const U
 
 UnsignedHugeIntValue UnsignedHugeIntValue::sum_of(const UnsignedHugeIntValue& addendA, const UnsignedHugeIntValue& addendB) {
     unsigned long long lesserNumWords, greaterNumWords, wordIndex;
-    std::vector<uint32_t>::const_iterator lesserAddendIter, greaterAddendIter;
-    std::vector<uint32_t>::iterator sumIter;
+    std::vector<HUGE_INT_WORD_TYPE>::const_iterator lesserAddendIter, greaterAddendIter;
+    std::vector<HUGE_INT_WORD_TYPE>::iterator sumIter;
 
     uint64_t thisWordSum = 0;
 
@@ -184,13 +184,13 @@ UnsignedHugeIntValue UnsignedHugeIntValue::sum_of(const UnsignedHugeIntValue& ad
         greaterAddendIter = addendA.word_values->begin();
     }
 
-    auto *sumWords = new std::vector<uint32_t>(greaterNumWords + 1);
+    auto *sumWords = new std::vector<HUGE_INT_WORD_TYPE>(greaterNumWords + 1);
     sumIter = sumWords->begin();
 
     // While both addends have words, those words are added together.
     for (wordIndex = 0; wordIndex < lesserNumWords; ++wordIndex) {
         thisWordSum = thisWordSum + *lesserAddendIter + *greaterAddendIter;
-        *sumIter = (uint32_t)(thisWordSum % HUGE_INT_WORD_BASE);
+        *sumIter = (HUGE_INT_WORD_TYPE)(thisWordSum % HUGE_INT_WORD_BASE);
         thisWordSum /= HUGE_INT_WORD_BASE;
         ++lesserAddendIter;
         ++greaterAddendIter;
@@ -200,7 +200,7 @@ UnsignedHugeIntValue UnsignedHugeIntValue::sum_of(const UnsignedHugeIntValue& ad
     // The words of the greater addend are added to the sum, along with carry values.
     for (; wordIndex < greaterNumWords; ++wordIndex) {
         thisWordSum += *greaterAddendIter;
-        *sumIter = (uint32_t)(thisWordSum % HUGE_INT_WORD_BASE);
+        *sumIter = (HUGE_INT_WORD_TYPE)(thisWordSum % HUGE_INT_WORD_BASE);
         thisWordSum /= HUGE_INT_WORD_BASE;
         ++greaterAddendIter;
         ++sumIter;
@@ -208,7 +208,7 @@ UnsignedHugeIntValue UnsignedHugeIntValue::sum_of(const UnsignedHugeIntValue& ad
 
     // If there is still a carry value, it becomes the most significant sum word.
     if (thisWordSum > 0) {
-        *sumIter = (uint32_t)thisWordSum;
+        *sumIter = (HUGE_INT_WORD_TYPE)thisWordSum;
     } else {
         sumWords->pop_back();
     }
@@ -252,7 +252,7 @@ UnsignedHugeIntValue UnsignedHugeIntValue::subtract(const UnsignedHugeIntValue& 
 
 //    HugeIntWord *minuendWord, *subtrahendWord;
     uint64_t thisMinuendWordValue;
-    uint32_t thisWordDifference, thisSubtrahendWordValue, carryValue;
+    HUGE_INT_WORD_TYPE thisWordDifference, thisSubtrahendWordValue, carryValue;
 
     // Determine the least significant word of the difference.
 //    minuendWord = minuend.get_least_significant_word();
@@ -408,7 +408,7 @@ std::pair<UnsignedHugeIntValue, UnsignedHugeIntValue> UnsignedHugeIntValue::divi
     return UnsignedHugeIntValue::divide_many_word_divisor(dividend, divisor);
 }
 
-std::pair<UnsignedHugeIntValue, uint32_t> UnsignedHugeIntValue::divide_single_word_divisor(const UnsignedHugeIntValue& dividend, const uint32_t divisor) {
+std::pair<UnsignedHugeIntValue, HUGE_INT_WORD_TYPE> UnsignedHugeIntValue::divide_single_word_divisor(const UnsignedHugeIntValue& dividend, const HUGE_INT_WORD_TYPE divisor) {
     // ToDo: Change this function to remove dependence on HugeIntWord class.
     if (divisor == 0) {
         throw std::invalid_argument("An attempt was made to divide by zero.");
@@ -502,7 +502,7 @@ std::pair<UnsignedHugeIntValue, UnsignedHugeIntValue> UnsignedHugeIntValue::divi
 //                (((double)remainderEstimateWord->get_next_lower_sig_word()->get_value()) / HUGE_INT_WORD_BASE);
 //        else
 //            dividendLowerEstimate = remainderEstimateWord->get_value();
-//        quotientWordEstimate = (uint32_t)(dividendLowerEstimate / divisorUpperEstimate);
+//        quotientWordEstimate = (HUGE_INT_WORD_TYPE)(dividendLowerEstimate / divisorUpperEstimate);
 //
 //        // Multiply the quotient word by the divisor, and subtract the product from the remainder.
 //        subRemainder = UnsignedHugeIntValue::subtract(subRemainder, UnsignedHugeIntValue::multiply_single_word(divisor, quotientWordEstimate));
@@ -1087,7 +1087,7 @@ UnsignedHugeIntValue UnsignedHugeIntValue::operator<<(const unsigned long long n
 //    const unsigned long long numFullWordsShifted = number_of_bits / HUGE_INT_NUMBER_OF_BITS_PER_WORD;
 //    const int wordShiftSize = number_of_bits % HUGE_INT_NUMBER_OF_BITS_PER_WORD;
 //    const int carryShiftSize = HUGE_INT_NUMBER_OF_BITS_PER_WORD - wordShiftSize;
-//    uint32_t origWordValue, carryValue;
+//    HUGE_INT_WORD_TYPE origWordValue, carryValue;
 //    HugeIntWord *origWord = this->get_least_significant_word(); // Word of the original value.
 //
 //    UnsignedHugeIntValue resultValue;
@@ -1136,7 +1136,7 @@ UnsignedHugeIntValue& UnsignedHugeIntValue::operator<<=(const unsigned long long
 //    const unsigned long long numFullWordsShifted = number_of_bits / HUGE_INT_NUMBER_OF_BITS_PER_WORD;
 //    const int wordShiftSize = number_of_bits % HUGE_INT_NUMBER_OF_BITS_PER_WORD;
 //    const int carryShiftSize = HUGE_INT_NUMBER_OF_BITS_PER_WORD - wordShiftSize;
-//    uint32_t readWordValue, carryValue, shiftedWordValue;
+//    HUGE_INT_WORD_TYPE readWordValue, carryValue, shiftedWordValue;
 //    HugeIntWord *readWord = this->get_most_significant_word(); // Word being read.
 //    HugeIntWord *writeWord; // Word being changed.
 //
@@ -1196,7 +1196,7 @@ UnsignedHugeIntValue UnsignedHugeIntValue::operator>>(const unsigned long long n
 //    const unsigned long long numFullWordsShifted = number_of_bits / HUGE_INT_NUMBER_OF_BITS_PER_WORD;
 //    const int wordShiftSize = number_of_bits % HUGE_INT_NUMBER_OF_BITS_PER_WORD;
 //    const int carryShiftSize = HUGE_INT_NUMBER_OF_BITS_PER_WORD - wordShiftSize;
-//    uint32_t origWordValue, shiftedWordValue, carryValue;
+//    HUGE_INT_WORD_TYPE origWordValue, shiftedWordValue, carryValue;
 //    HugeIntWord *origWord = this->get_least_significant_word(); // Word of the original value.
 //
 //    // A word of the original value is ignored for each full word that was shifted.
@@ -1255,7 +1255,7 @@ UnsignedHugeIntValue& UnsignedHugeIntValue::operator>>=(const unsigned long long
 //    const unsigned long long numFullWordsShifted = number_of_bits / HUGE_INT_NUMBER_OF_BITS_PER_WORD;
 //    const int wordShiftSize = number_of_bits % HUGE_INT_NUMBER_OF_BITS_PER_WORD;
 //    const int carryShiftSize = HUGE_INT_NUMBER_OF_BITS_PER_WORD - wordShiftSize;
-//    uint32_t readWordValue, shiftedWordValue, carryValue;
+//    HUGE_INT_WORD_TYPE readWordValue, shiftedWordValue, carryValue;
 //    HugeIntWord *readWord = this->get_least_significant_word(); // Word being read.
 //    HugeIntWord *writeWord = readWord; // Word being changed.
 //    HugeIntWord *wordToDelete;
@@ -1314,7 +1314,7 @@ UnsignedHugeIntValue UnsignedHugeIntValue::left_ones_shifted(const unsigned long
     const unsigned long long numFullWordsShifted = number_of_bits / HUGE_INT_NUMBER_OF_BITS_PER_WORD;
     const int wordShiftSize = number_of_bits % HUGE_INT_NUMBER_OF_BITS_PER_WORD;
     const int carryShiftSize = HUGE_INT_NUMBER_OF_BITS_PER_WORD - wordShiftSize;
-    uint32_t origWordValue, carryValue, newWordValue;
+    HUGE_INT_WORD_TYPE origWordValue, carryValue, newWordValue;
 //    HugeIntWord *origWord = this->get_least_significant_word(); // Word of the original value.
 
     UnsignedHugeIntValue resultValue(HUGE_INT_MAX_WORD_VALUE);
@@ -1365,7 +1365,7 @@ UnsignedHugeIntValue& UnsignedHugeIntValue::left_ones_shift_transform(const unsi
     const unsigned long long numFullWordsShifted = number_of_bits / HUGE_INT_NUMBER_OF_BITS_PER_WORD;
     const int wordShiftSize = number_of_bits % HUGE_INT_NUMBER_OF_BITS_PER_WORD;
     const int carryShiftSize = HUGE_INT_NUMBER_OF_BITS_PER_WORD - wordShiftSize;
-    uint32_t readWordValue, carryValue, shiftedWordValue;
+    HUGE_INT_WORD_TYPE readWordValue, carryValue, shiftedWordValue;
 //    HugeIntWord *readWord = this->get_most_significant_word(); // Word being read.
 //    HugeIntWord *writeWord; // Word being changed.
 
@@ -1433,8 +1433,8 @@ void UnsignedHugeIntValue::read_from_text_file(FILE* integer_file) {
     this->delete_all_words();
     char readBuffer[HUGE_INT_NUMBER_OF_BASE_10_DIGITS_PER_WORD+ 1];
     char nextChar;
-    uint32_t segmentValue;
-    uint32_t multiplier;
+    HUGE_INT_WORD_TYPE segmentValue;
+    HUGE_INT_WORD_TYPE multiplier;
     unsigned short placeIndex;
 //    this->mostSigWord = this->leastSigWord = new HugeIntWord(0);
 //    do {
@@ -1460,7 +1460,7 @@ void UnsignedHugeIntValue::read_from_text_file(FILE* integer_file) {
 //        *this = UnsignedHugeIntValue::multiply_single_word(*this, multiplier);
 //        this->add_value_at_word(this->leastSigWord, segmentValue);
 //    } while (nextChar != EOF);
-    this->word_values = new std::vector<uint32_t>(1, 0);    // ToDo: Delete or change this line. /////////////////////////////////////////////////////////////////////
+    this->word_values = new std::vector<HUGE_INT_WORD_TYPE>(1, 0);    // ToDo: Delete or change this line. /////////////////////////////////////////////////////////////////////
 }
 
 void UnsignedHugeIntValue::write_to_text_file(std::string file_path) const {
@@ -1489,13 +1489,13 @@ void UnsignedHugeIntValue::write_to_text_file(FILE* integer_file) const {
 //
 //    // The number of digits must be found to determine the size of the output file.
 //    unsigned long long numDigits(HUGE_INT_NUMBER_OF_BASE_10_DIGITS_PER_WORD);
-//    uint32_t segmentBase = 1;
+//    HUGE_INT_WORD_TYPE segmentBase = 1;
 //    for (unsigned short exponent = 1; exponent <= HUGE_INT_NUMBER_OF_BASE_10_DIGITS_PER_WORD; ++exponent){
 //        segmentBase *= 10;
 //    }
 //    auto divisionResult = UnsignedHugeIntValue::divide_single_word_divisor(this, segmentBase);
 //    UnsignedHugeIntValue &quotient = divisionResult.first;
-//    uint32_t &remainder = divisionResult.second;
+//    HUGE_INT_WORD_TYPE &remainder = divisionResult.second;
 //    while (quotient.num_words() > 1) {
 //        divisionResult = UnsignedHugeIntValue::divide_single_word_divisor(quotient, segmentBase);
 //        numDigits += HUGE_INT_NUMBER_OF_BASE_10_DIGITS_PER_WORD;
@@ -1528,9 +1528,9 @@ void UnsignedHugeIntValue::read_from_binary_file(std::string file_path) {
     this->delete_all_words();
 //    this->mostSigWord = this->leastSigWord = NULL;
     unsigned long long remainingNumWords;
-    uint32_t readBuffer[BUFFER_NUM_WORDS];
+    HUGE_INT_WORD_TYPE readBuffer[BUFFER_NUM_WORDS];
 //    HugeIntWord *thisWord;
-    unsigned int bufferSize = sizeof(uint32_t) * BUFFER_NUM_WORDS;
+    unsigned int bufferSize = sizeof(HUGE_INT_WORD_TYPE) * BUFFER_NUM_WORDS;
     unsigned int bufferIndex;
     char *readDest = (char*)readBuffer;
 
@@ -1547,7 +1547,7 @@ void UnsignedHugeIntValue::read_from_binary_file(std::string file_path) {
 //        fileReadStream.close();
 //        return;
 //    }
-//    fileReadStream.read(readDest, sizeof(uint32_t));
+//    fileReadStream.read(readDest, sizeof(HUGE_INT_WORD_TYPE));
 //    this->leastSigWord = thisWord = new HugeIntWord(readBuffer[0]);
 //    --remainingNumWords;
 //
@@ -1561,13 +1561,13 @@ void UnsignedHugeIntValue::read_from_binary_file(std::string file_path) {
 //    }
 //
 //    // Read the last partial buffer from the binary file.
-//    fileReadStream.read(readDest, sizeof(uint32_t) * remainingNumWords);
+//    fileReadStream.read(readDest, sizeof(HUGE_INT_WORD_TYPE) * remainingNumWords);
 //    for (bufferIndex = 0; bufferIndex < remainingNumWords; ++bufferIndex) {
 //        thisWord = new HugeIntWord(readBuffer[bufferIndex], thisWord);
 //    }
 //    fileReadStream.close();
 //    this->mostSigWord = thisWord;
-    this->word_values = new std::vector<uint32_t>(1, 0);    // ToDo: Delete or change this line. /////////////////////////////////////////////////////////////////////
+    this->word_values = new std::vector<HUGE_INT_WORD_TYPE>(1, 0);    // ToDo: Delete or change this line. /////////////////////////////////////////////////////////////////////
 }
 
 void UnsignedHugeIntValue::write_to_binary_file(std::string file_path) const {
@@ -1576,9 +1576,9 @@ void UnsignedHugeIntValue::write_to_binary_file(std::string file_path) const {
     struct stat placeholder_stat;
     if (stat(file_path.c_str(), &placeholder_stat) >= 0)
         std::invalid_argument("An attempt was made to write an UnsignedHugeIntValue value to an existing file.");
-    uint32_t writeBuffer[BUFFER_NUM_WORDS];
+    HUGE_INT_WORD_TYPE writeBuffer[BUFFER_NUM_WORDS];
     char *writeSource = (char*)writeBuffer;
-    unsigned int bufferSize = sizeof(uint32_t) * BUFFER_NUM_WORDS;
+    unsigned int bufferSize = sizeof(HUGE_INT_WORD_TYPE) * BUFFER_NUM_WORDS;
     unsigned int bufferIndex;
 //    HugeIntWord *thisWord = this->leastSigWord;
 
@@ -1596,7 +1596,7 @@ void UnsignedHugeIntValue::write_to_binary_file(std::string file_path) const {
 //            writeBuffer[bufferIndex] = thisWord->get_value();
 //            thisWord = thisWord->get_next_more_sig_word();
 //            if (thisWord == NULL) {
-//                fileWriteStream.write(writeSource, sizeof(uint32_t) * (bufferIndex + 1));
+//                fileWriteStream.write(writeSource, sizeof(HUGE_INT_WORD_TYPE) * (bufferIndex + 1));
 //                fileWriteStream.close();
 //                return;
 //            }
@@ -1643,7 +1643,7 @@ std::string UnsignedHugeIntValue::to_string() const {
     // ToDo: Change this function to remove dependence on HugeIntWord class.
 //    if (this->mostSigWord == NULL)
 //        return "0";
-//    uint32_t zero_long(0);
+//    HUGE_INT_WORD_TYPE zero_long(0);
 //    UnsignedHugeIntValue zero_object(zero_long);
 //    if (this->compare(this, zero_long) == 0)
 //        return "0";
@@ -1653,7 +1653,7 @@ std::string UnsignedHugeIntValue::to_string() const {
 //    allocationSize = 0.30103 * HUGE_INT_NUMBER_OF_BITS_PER_WORD * this->num_words() + 1;
 //    fullNumberString.resize(allocationSize, '0');
 //    // The base used for segments is determined by the maximum power of ten that can be stored in a word.
-//    uint32_t segmentBase = 1;
+//    HUGE_INT_WORD_TYPE segmentBase = 1;
 //    for (unsigned short exponent = 1; exponent <= HUGE_INT_NUMBER_OF_BASE_10_DIGITS_PER_WORD; ++exponent) {
 //        segmentBase *= 10;
 //    }
@@ -1662,7 +1662,7 @@ std::string UnsignedHugeIntValue::to_string() const {
 //    unsigned long long segmentStart = allocationSize; // index of the start of the current segment in the result string.
 //    auto divisionResult = UnsignedHugeIntValue::divide_single_word_divisor(this, segmentBase);
 //    UnsignedHugeIntValue &quotient = divisionResult.first;
-//    uint32_t &remainder = divisionResult.second;
+//    HUGE_INT_WORD_TYPE &remainder = divisionResult.second;
 //
 //    while (this->compare(quotient, zero_object) > 0) {
 //        segmentStart -= HUGE_INT_NUMBER_OF_BASE_10_DIGITS_PER_WORD;
@@ -1694,11 +1694,11 @@ void UnsignedHugeIntValue::set_value_from_string(std::string integer_string) {
     }
 
     // Segments are used that fit within one word of UnsignedHugeInt.
-    const uint32_t segmentBaseValue = 1000000000;
+    const HUGE_INT_WORD_TYPE segmentBaseValue = 1000000000;
     const int segmentLength = 9;
     unsigned long long segmentStartIndex = numDigits % segmentLength;
     std::string segmentString;
-    uint32_t segmentValue;
+    HUGE_INT_WORD_TYPE segmentValue;
 
     // The most significant digits are read first.
     if (segmentStartIndex == 0) {
@@ -1711,7 +1711,7 @@ void UnsignedHugeIntValue::set_value_from_string(std::string integer_string) {
             throw std::invalid_argument("An attempt was made to read a negative value as a string into an UnsignedHugeInt.");
         }
     }
-    this->word_values = new std::vector<uint32_t>(1, segmentValue);
+    this->word_values = new std::vector<HUGE_INT_WORD_TYPE>(1, segmentValue);
 //    this->mostSigWord = this->leastSigWord = new HugeIntWord(segmentValue);
 //
 //    // The remaining digits of the string are read in segments.
@@ -1809,16 +1809,16 @@ HugeIntWord* UnsignedHugeIntValue::insert_least_significant_word(unsigned long l
     return newWord;
 }
 
-void UnsignedHugeIntValue::add_value_at_word(std::vector<uint32_t>::iterator location_to_add, const UnsignedHugeIntValue& value_to_add) {
-    std::vector<uint32_t>::const_iterator addendWordIter = value_to_add.word_values->begin();
-    const std::vector<uint32_t>::const_iterator thisEndWord = this->word_values->end();
-    const std::vector<uint32_t>::const_iterator addendEndWord = value_to_add.word_values->end();
+void UnsignedHugeIntValue::add_value_at_word(std::vector<HUGE_INT_WORD_TYPE>::iterator location_to_add, const UnsignedHugeIntValue& value_to_add) {
+    std::vector<HUGE_INT_WORD_TYPE>::const_iterator addendWordIter = value_to_add.word_values->begin();
+    const std::vector<HUGE_INT_WORD_TYPE>::const_iterator thisEndWord = this->word_values->end();
+    const std::vector<HUGE_INT_WORD_TYPE>::const_iterator addendEndWord = value_to_add.word_values->end();
     uint64_t remainingValue = 0;
 
     // Corresponding words are added together.
     while ((addendWordIter != addendEndWord) && (location_to_add != thisEndWord)) {
         remainingValue = remainingValue + *location_to_add + *addendWordIter;
-        *location_to_add = (uint32_t)(remainingValue % HUGE_INT_WORD_BASE);
+        *location_to_add = (HUGE_INT_WORD_TYPE)(remainingValue % HUGE_INT_WORD_BASE);
         remainingValue /= HUGE_INT_WORD_BASE;
         ++location_to_add;
         ++addendWordIter;
@@ -1827,7 +1827,7 @@ void UnsignedHugeIntValue::add_value_at_word(std::vector<uint32_t>::iterator loc
     // All the words of value_to_add must be added.
     while (addendWordIter != addendEndWord) {
         remainingValue += *addendWordIter;
-        this->word_values->push_back((uint32_t)(remainingValue % HUGE_INT_WORD_BASE));
+        this->word_values->push_back((HUGE_INT_WORD_TYPE)(remainingValue % HUGE_INT_WORD_BASE));
         remainingValue /= HUGE_INT_WORD_BASE;
         ++addendWordIter;
     }
@@ -1835,26 +1835,26 @@ void UnsignedHugeIntValue::add_value_at_word(std::vector<uint32_t>::iterator loc
     // The carry value should be added to the current word of this object.
     while ((remainingValue > 0) && (location_to_add != thisEndWord)) {
         remainingValue += *location_to_add;
-        *location_to_add = (uint32_t)(remainingValue % HUGE_INT_WORD_BASE);
+        *location_to_add = (HUGE_INT_WORD_TYPE)(remainingValue % HUGE_INT_WORD_BASE);
         remainingValue /= HUGE_INT_WORD_BASE;
         ++location_to_add;
     }
 
     // If there are no more words of this object, another must be added for the carry value.
     if (remainingValue > 0) {
-        this->word_values->push_back((uint32_t)remainingValue);
+        this->word_values->push_back((HUGE_INT_WORD_TYPE)remainingValue);
     }
 }
 
-void UnsignedHugeIntValue::add_value_at_word(std::vector<uint32_t>::iterator location_to_add, unsigned long long value_to_add) {
-    const std::vector<uint32_t>::const_iterator thisEndWord = this->word_values->end();
+void UnsignedHugeIntValue::add_value_at_word(std::vector<HUGE_INT_WORD_TYPE>::iterator location_to_add, unsigned long long value_to_add) {
+    const std::vector<HUGE_INT_WORD_TYPE>::const_iterator thisEndWord = this->word_values->end();
     if (value_to_add == 0)
         return;
 
     // Overflow must be prevented by dividing value_to_add before adding.
     if (location_to_add != thisEndWord) {
         uint64_t remainderSum = (value_to_add % HUGE_INT_WORD_BASE) + *location_to_add;
-        *location_to_add = (uint32_t)(remainderSum % HUGE_INT_WORD_BASE);
+        *location_to_add = (HUGE_INT_WORD_TYPE)(remainderSum % HUGE_INT_WORD_BASE);
         value_to_add = (value_to_add / HUGE_INT_WORD_BASE) + (remainderSum / HUGE_INT_WORD_BASE);
         ++location_to_add;
     }
@@ -1862,14 +1862,14 @@ void UnsignedHugeIntValue::add_value_at_word(std::vector<uint32_t>::iterator loc
     // Overflow from the addend value should be carried over to the next word of this object.
     while ((value_to_add > 0) && (location_to_add != thisEndWord)) {
         value_to_add += *location_to_add;
-        *location_to_add = (uint32_t)(value_to_add % HUGE_INT_WORD_BASE);
+        *location_to_add = (HUGE_INT_WORD_TYPE)(value_to_add % HUGE_INT_WORD_BASE);
         value_to_add /= HUGE_INT_WORD_BASE;
         ++location_to_add;
     }
 
     // If there are no more words of this object, more must be added for the remainder of the value.
     while (value_to_add > 0) {
-        this->word_values->push_back((uint32_t)(value_to_add % HUGE_INT_WORD_BASE));
+        this->word_values->push_back((HUGE_INT_WORD_TYPE)(value_to_add % HUGE_INT_WORD_BASE));
         value_to_add /= HUGE_INT_WORD_BASE;
     }
 }

@@ -10,6 +10,7 @@
 
 #include "HugeIntWord.h"
 
+#define HUGE_INT_WORD_TYPE  uint32_t
 #define BUFFER_NUM_WORDS    16
 
 class UnsignedHugeIntValue {
@@ -561,7 +562,7 @@ private:
 //    HugeIntWord *leastSigWord, *mostSigWord;
 
     // Holds all of the word (value segment) values.
-    std::vector<uint32_t> *word_values = NULL;
+    std::vector<HUGE_INT_WORD_TYPE> *word_values = NULL;
 
     // Private Methods
 
@@ -571,7 +572,7 @@ private:
      * This constructor is intended for use within functions of this same class. It avoids use of a default vector object.
      * @param word_values_vector Heap-allocated non-null vector of word values.
      */
-    UnsignedHugeIntValue(std::vector<uint32_t>* word_values_vector);
+    UnsignedHugeIntValue(std::vector<HUGE_INT_WORD_TYPE>* word_values_vector);
 
 
     /**
@@ -580,7 +581,7 @@ private:
      * @param location_to_add Iterator to the word at which the value will be added. This word will be changed.
      * @param value_to_add Value that will be added to the specified word.
      */
-    void add_value_at_word(std::vector<uint32_t>::iterator location_to_add, const UnsignedHugeIntValue& value_to_add);
+    void add_value_at_word(std::vector<HUGE_INT_WORD_TYPE>::iterator location_to_add, const UnsignedHugeIntValue& value_to_add);
 
     /**
      * @brief Adds a specified value at a specified word index of this UnsignedHugeIntValue.
@@ -588,7 +589,7 @@ private:
      * @param location_to_add Iterator to the word at which the value will be added. This word will be changed.
      * @param value_to_add Value that will be added to the specified word.
      */
-    void add_value_at_word(std::vector<uint32_t>::iterator location_to_add, unsigned long long value_to_add);
+    void add_value_at_word(std::vector<HUGE_INT_WORD_TYPE>::iterator location_to_add, unsigned long long value_to_add);
 
     // Change or remove this function to remove dependence on HugeIntWord class.
     /**
@@ -628,7 +629,7 @@ private:
      * @param divisor The divisor of the division operation, which must be less than the word base value.
      * @return The whole number quotient (first) and remainder (second) results of the division operation.
      */
-    static std::pair<UnsignedHugeIntValue, uint32_t> divide_single_word_divisor(const UnsignedHugeIntValue& dividend, const uint32_t divisor);
+    static std::pair<UnsignedHugeIntValue, HUGE_INT_WORD_TYPE> divide_single_word_divisor(const UnsignedHugeIntValue& dividend, const HUGE_INT_WORD_TYPE divisor);
 
     /**
      * @brief Divides UnsignedHugeIntValue objects, where the divisor is not small enough to fit within one word of UnsignedHugeIntValue.
