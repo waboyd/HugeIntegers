@@ -565,14 +565,14 @@ private:
 
     // Private Methods
 
-    // Change this function to remove dependence on HugeIntWord class.
-//    /**
-//     * @brief Adds a specified value at a specified word of this UnsignedHugeIntValue.
-//     * @param location_to_add Word at which the value will be added. This word will be changed.
-//     * @param value_to_add Number that will be added to the specified word.
-//     * @return The least significant word that was updated.
-//     */
-//    HugeIntWord* add_value_at_word(HugeIntWord* location_to_add, const UnsignedHugeIntValue& value_to_add);
+    /**
+     * @brief Creates a new UnsignedHugeIntValue object with the provided word values.
+     * The provided vector should have nonzero length.
+     * This constructor is intended for use within functions of this same class. It avoids use of a default vector object.
+     * @param word_values_vector Heap-allocated non-null vector of word values.
+     */
+    UnsignedHugeIntValue(std::vector<uint32_t>* word_values_vector);
+
 
     /**
      * @brief Adds a specified value at a specified word index of this UnsignedHugeIntValue.

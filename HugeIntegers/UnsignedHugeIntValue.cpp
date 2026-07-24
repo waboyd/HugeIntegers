@@ -42,6 +42,10 @@ UnsignedHugeIntValue::UnsignedHugeIntValue(UnsignedHugeIntValue&& orig) {
     orig.word_values = NULL;
 }
 
+UnsignedHugeIntValue::UnsignedHugeIntValue(std::vector<uint32_t>* word_values_vector) {
+    this->word_values = word_values_vector;
+}
+
 UnsignedHugeIntValue::~UnsignedHugeIntValue() {
     delete this->word_values;
 }
@@ -161,7 +165,6 @@ short UnsignedHugeIntValue::compare(const UnsignedHugeIntValue& numberA, const U
 UnsignedHugeIntValue UnsignedHugeIntValue::sum_of(const UnsignedHugeIntValue& addendA, const UnsignedHugeIntValue& addendB) {
     unsigned long long lesserNumWords, greaterNumWords, wordIndex;
     std::vector<uint32_t>::const_iterator lesserAddendIter, greaterAddendIter;
-
     std::vector<uint32_t>::iterator sumIter;
 
     uint64_t thisWordSum = 0;
@@ -181,9 +184,8 @@ UnsignedHugeIntValue UnsignedHugeIntValue::sum_of(const UnsignedHugeIntValue& ad
         greaterAddendIter = addendA.word_values->begin();
     }
 
-    UnsignedHugeIntValue sum;
-    sum.word_values->resize(greaterNumWords + 1);
-    sumIter = sum.word_values->begin();
+    auto *sumWords = new std::vector<uint32_t>(greaterNumWords + 1);
+    sumIter = sumWords->begin();
 
     // While both addends have words, those words are added together.
     for (wordIndex = 0; wordIndex < lesserNumWords; ++wordIndex) {
@@ -208,9 +210,9 @@ UnsignedHugeIntValue UnsignedHugeIntValue::sum_of(const UnsignedHugeIntValue& ad
     if (thisWordSum > 0) {
         *sumIter = (uint32_t)thisWordSum;
     } else {
-        sum.word_values->pop_back();
+        sumWords->pop_back();
     }
-    return sum;
+    return UnsignedHugeIntValue(sumWords);
 }
 
 
