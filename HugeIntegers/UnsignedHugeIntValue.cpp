@@ -159,71 +159,57 @@ short UnsignedHugeIntValue::compare(const UnsignedHugeIntValue& numberA, const U
 }
 
 UnsignedHugeIntValue UnsignedHugeIntValue::sum_of(const UnsignedHugeIntValue& addendA, const UnsignedHugeIntValue& addendB) {
-    // ToDo: Change this function to remove dependence on HugeIntWord class.
-//    HugeIntWord *greaterAddendWord, *lesserAddendWord;
-//    HugeIntWord *sumWord, *sumMostSigWord;
-    uint64_t thisWordSum;
-    uint64_t carryValue = 0;
+    unsigned long long lesserNumWords, greaterNumWords, wordIndex;
+    std::vector<uint32_t>::const_iterator lesserAddendIter, greaterAddendIter;
 
-//    if (addendB.num_words() > addendA.num_words()) {
-//        greaterAddendWord = addendB.get_least_significant_word();
-//        lesserAddendWord = addendA.get_least_significant_word();
-//    }
-//    else {
-//        greaterAddendWord = addendA.get_least_significant_word();
-//        lesserAddendWord = addendB.get_least_significant_word();
-//    }
-    UnsignedHugeIntValue sum((unsigned long long)0);
-//    sumWord = sum.get_least_significant_word();
-//    sumMostSigWord = sum.get_most_significant_word();
-//
-//    while (lesserAddendWord != NULL) {
-//        thisWordSum = carryValue + greaterAddendWord->get_value() + lesserAddendWord->get_value();
-//        carryValue = thisWordSum / HUGE_INT_WORD_BASE;
-//        thisWordSum = thisWordSum % HUGE_INT_WORD_BASE;
-//
-//        if (sumWord == NULL) {
-//            sumWord = sum.add_word(thisWordSum);
-//            sumMostSigWord = sumWord;
-//        }
-//        else {
-//            sumMostSigWord = sumWord->add_value(thisWordSum);
-//        }
-//        greaterAddendWord = greaterAddendWord->get_next_more_sig_word();
-//        lesserAddendWord = lesserAddendWord->get_next_more_sig_word();
-//        sumWord = sumWord->get_next_more_sig_word();
-//    }
-//
-//    while (greaterAddendWord != NULL) {
-//        thisWordSum = greaterAddendWord->get_value() + carryValue;
-//        carryValue = thisWordSum / HUGE_INT_WORD_BASE;
-//        thisWordSum = thisWordSum % HUGE_INT_WORD_BASE;
-//
-//        if (sumWord == NULL) {
-//            sumWord = sum.add_word(thisWordSum);
-//            sumMostSigWord = sumWord;
-//        }
-//        else {
-//            sumMostSigWord = sumWord->add_value(thisWordSum);
-//        }
-//        greaterAddendWord = greaterAddendWord->get_next_more_sig_word();
-//        sumWord = sumWord->get_next_more_sig_word();
-//    }
-//
-//    while (carryValue > 0) {
-//        thisWordSum = carryValue % HUGE_INT_WORD_BASE;
-//        carryValue = carryValue / HUGE_INT_WORD_BASE;
-//
-//        if (sumWord == NULL) {
-//            sumWord = sum.add_word(thisWordSum);
-//            sumMostSigWord = sumWord;
-//        }
-//        else {
-//            sumMostSigWord = sumWord->add_value(thisWordSum);
-//        }
-//        sumWord = sumWord->get_next_more_sig_word();
-//    }
-//    sum.mostSigWord = sumMostSigWord;
+    std::vector<uint32_t>::iterator sumIter;
+
+    uint64_t thisWordSum = 0;
+
+    greaterNumWords = addendA.num_words();
+    lesserNumWords = addendB.num_words();
+    if (lesserNumWords > greaterNumWords) {
+        // addendB has more words. The number of words needs to be swapped.
+        wordIndex = lesserNumWords;
+        lesserNumWords = greaterNumWords;
+        greaterNumWords = wordIndex;
+        lesserAddendIter = addendA.word_values->begin();
+        greaterAddendIter = addendB.word_values->begin();
+    } else {
+        // addendB does not have more words than addendA.
+        lesserAddendIter = addendB.word_values->begin();
+        greaterAddendIter = addendA.word_values->begin();
+    }
+
+    UnsignedHugeIntValue sum;
+    sum.word_values->resize(greaterNumWords + 1);
+    sumIter = sum.word_values->begin();
+
+    // While both addends have words, those words are added together.
+    for (wordIndex = 0; wordIndex < lesserNumWords; ++wordIndex) {
+        thisWordSum = thisWordSum + *lesserAddendIter + *greaterAddendIter;
+        *sumIter = (uint32_t)(thisWordSum % HUGE_INT_WORD_BASE);
+        thisWordSum /= HUGE_INT_WORD_BASE;
+        ++lesserAddendIter;
+        ++greaterAddendIter;
+        ++sumIter;
+    }
+
+    // The words of the greater addend are added to the sum, along with carry values.
+    for (; wordIndex < greaterNumWords; ++wordIndex) {
+        thisWordSum += *greaterAddendIter;
+        *sumIter = (uint32_t)(thisWordSum % HUGE_INT_WORD_BASE);
+        thisWordSum /= HUGE_INT_WORD_BASE;
+        ++greaterAddendIter;
+        ++sumIter;
+    }
+
+    // If there is still a carry value, it becomes the most significant sum word.
+    if (thisWordSum > 0) {
+        *sumIter = (uint32_t)thisWordSum;
+    } else {
+        sum.word_values->pop_back();
+    }
     return sum;
 }
 
