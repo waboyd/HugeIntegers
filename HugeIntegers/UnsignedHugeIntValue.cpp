@@ -216,32 +216,53 @@ UnsignedHugeIntValue UnsignedHugeIntValue::sum_of(const UnsignedHugeIntValue& ad
 }
 
 
-UnsignedHugeIntValue UnsignedHugeIntValue::sum_of(const UnsignedHugeIntValue& addendA, const unsigned long long addendB) {
-    // ToDo: Change this function to remove dependence on HugeIntWord class.
-    uint64_t thisWordSum;
-    unsigned short thisCarryValue = 0;
-//    HugeIntWord *thisAddendWord = addendA.get_least_significant_word();
+UnsignedHugeIntValue UnsignedHugeIntValue::sum_of(const UnsignedHugeIntValue& addendA, unsigned long long addendB) {
+    uint64_t wordSum;
+    unsigned long long numAddendWords = addendA.word_values->size();
+    unsigned long long wordIndex;
+    std::vector<HUGE_INT_WORD_TYPE>::const_iterator addendIter = addendA.word_values->begin();
 
-    thisWordSum = addendB % HUGE_INT_WORD_BASE;
-    thisCarryValue = addendB / HUGE_INT_WORD_BASE;
-//    thisWordSum += thisAddendWord->get_value();
-    thisCarryValue += thisWordSum / HUGE_INT_WORD_BASE;
-    thisWordSum = thisWordSum % HUGE_INT_WORD_BASE;
-    UnsignedHugeIntValue sum(thisWordSum);
+    auto *sum_words = new std::vector<HUGE_INT_WORD_TYPE>(numAddendWords + 1);
+    std::vector<HUGE_INT_WORD_TYPE>::iterator sumIter = sum_words->begin();
 
-//    thisAddendWord = thisAddendWord->get_next_more_sig_word();
+    // Overflow must be avoided when finding the first word of the sum.
+    wordSum = (addendB % HUGE_INT_WORD_BASE) + *addendIter;
+    *sumIter = (HUGE_INT_WORD_TYPE)(wordSum % HUGE_INT_WORD_BASE);
+    wordSum = (wordSum / HUGE_INT_WORD_BASE) + (addendB / HUGE_INT_WORD_BASE);
+    ++addendIter;
+    ++sumIter;
 
-//    while (thisAddendWord != NULL || thisCarryValue > 0) {
-//        thisWordSum = thisCarryValue;
-//        if (thisAddendWord != NULL) {
-//            thisWordSum += thisAddendWord->get_value();
-//            thisAddendWord = thisAddendWord->get_next_more_sig_word();
-//        }
-//        thisCarryValue = thisWordSum / HUGE_INT_WORD_BASE;
-//        thisWordSum = thisWordSum % HUGE_INT_WORD_BASE;
-//        sum.add_word(thisWordSum);
-//    }
-    return sum;
+    // While there is a carry value, add it to the next word.
+    for (wordIndex = 1; (wordSum > 0) && (wordIndex < numAddendWords); ++wordIndex) {
+        wordSum += *addendIter;
+        *sumIter = (HUGE_INT_WORD_TYPE)(wordSum % HUGE_INT_WORD_BASE);
+        wordSum /= HUGE_INT_WORD_BASE;
+        ++addendIter;
+        ++sumIter;
+    }
+
+    // If the carry value is used up, and there are still more addend words, copy the addend words to the sum.
+    for (; wordIndex < numAddendWords; ++wordIndex) {
+        *sumIter = *addendIter;
+        ++addendIter;
+        ++sumIter;
+    }
+
+    // After all the addend words have been added, the carry value must be considered.
+    if (wordSum > 0) {
+        *sumIter = (HUGE_INT_WORD_TYPE)(wordSum % HUGE_INT_WORD_BASE);
+        wordSum /= HUGE_INT_WORD_BASE;
+    } else {
+        sum_words->pop_back();
+        return UnsignedHugeIntValue(sum_words);
+    }
+
+    // If there is somehow still a carry value, more words must be added to the sum.
+    while (wordSum > 0) {
+        sum_words->push_back((HUGE_INT_WORD_TYPE)(wordSum % HUGE_INT_WORD_BASE));
+        wordSum /= HUGE_INT_WORD_BASE;
+    }
+    return UnsignedHugeIntValue(sum_words);
 }
 
 UnsignedHugeIntValue UnsignedHugeIntValue::subtract(const UnsignedHugeIntValue& minuend, const UnsignedHugeIntValue& subtrahend) {

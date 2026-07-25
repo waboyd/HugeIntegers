@@ -198,7 +198,7 @@ public:
      * @param addendB One of the two unsigned integers to be added.
      * @return The result of adding the two arguments.
      */
-    static UnsignedHugeIntValue sum_of(const UnsignedHugeIntValue& addendA, const unsigned long long addendB);
+    static UnsignedHugeIntValue sum_of(const UnsignedHugeIntValue& addendA, unsigned long long addendB);
 
     /**
      * @brief Subtracts two unsigned integers to produce an UnsignedHugeIntValue object.
