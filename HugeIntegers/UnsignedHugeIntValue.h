@@ -620,6 +620,16 @@ private:
     static UnsignedHugeIntValue multiply_single_word(const UnsignedHugeIntValue& large_factor, HUGE_INT_WORD_TYPE small_factor);
 
     /**
+     * @brief Multiplies this object by an unsigned integer that is small enough to fit within one word of UnsignedHugeIntValue.
+     * The value represented by this object will be changed to the product of its starting value and the provided argument.
+     * This method is more efficient than the other muliplication methods of this class for cases in which the small_factor is
+     * less than the base of the UnsignedHugeIntValue words.
+     * @param small_factor An unsigned integer factor with a value less than the base of the UnsignedHugeIntValue words.
+     * @return Reference to this object after the value was changed from the multiplication.
+     */
+    UnsignedHugeIntValue& multiply_single_word_transform(HUGE_INT_WORD_TYPE small_factor);
+
+    /**
      * @brief Divides an UnsignedHugeIntValue object by an unsigned integer that is small enough to fit within one word of UnsignedHugeIntValue.
      * This method expects a divisor with a value less than the word base value, but it does not check the size of the divisor.
      * If the divisor is greater than the maximum word size, incorrect values may be produced. Division using this method is

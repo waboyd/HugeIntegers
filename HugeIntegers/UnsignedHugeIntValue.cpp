@@ -418,6 +418,34 @@ UnsignedHugeIntValue UnsignedHugeIntValue::multiply_single_word(const UnsignedHu
     return UnsignedHugeIntValue(productWords);
 }
 
+UnsignedHugeIntValue& UnsignedHugeIntValue::multiply_single_word_transform(HUGE_INT_WORD_TYPE small_factor) {
+    if (small_factor == 0) {
+        this->word_values->resize(1);
+        this->word_values->at(0) = 0;
+        this->word_values->shrink_to_fit();
+        return *this;
+    }
+
+    unsigned long long numOrigWords = this->word_values->size();
+    std::vector<HUGE_INT_WORD_TYPE>::iterator wordIter = this->word_values->begin();
+    uint64_t productWordValue = 0;
+    const uint64_t smallFactorCast = (uint64_t)small_factor; // Used to reduce the number of necessary type casts
+
+    // All large_factor words are multiplied by the small_factor to get the product.
+    for (unsigned long long wordIndex = 0; wordIndex < numOrigWords; ++wordIndex) {
+        productWordValue += smallFactorCast * *wordIter;
+        *wordIter = (HUGE_INT_WORD_TYPE)(productWordValue % HUGE_INT_WORD_BASE);
+        productWordValue /= HUGE_INT_WORD_BASE;
+        ++wordIter;
+    }
+
+    // Set the most significant word of the product from the carry value.
+    if (productWordValue > 0) {
+        this->word_values->push_back((HUGE_INT_WORD_TYPE)productWordValue);
+    }
+    return *this;
+}
+
 std::pair<UnsignedHugeIntValue, UnsignedHugeIntValue> UnsignedHugeIntValue::divide(const UnsignedHugeIntValue& dividend, const UnsignedHugeIntValue& divisor) {
     // ToDo: Change this function to remove dependence on HugeIntWord class.
     std::pair<UnsignedHugeIntValue, UnsignedHugeIntValue> divisionResults;
@@ -605,6 +633,10 @@ UnsignedHugeIntValue& UnsignedHugeIntValue::operator-=(const unsigned long long 
 }
 
 UnsignedHugeIntValue& UnsignedHugeIntValue::operator*=(const UnsignedHugeIntValue& factor) {
+    // If factor is small enough to fit in one word of an UnsignedHugeIntValue object, use the faster multiplication function.
+    if (factor.num_words() == 1) {
+        return this->multiply_single_word_transform((HUGE_INT_WORD_TYPE)factor.word_values->at(0));
+    }
     *this = UnsignedHugeIntValue::multiply(*this, factor);
     return *this;
 }
@@ -612,8 +644,7 @@ UnsignedHugeIntValue& UnsignedHugeIntValue::operator*=(const UnsignedHugeIntValu
 UnsignedHugeIntValue& UnsignedHugeIntValue::operator*=(const unsigned long long factor) {
     // If factor is small enough to fit in one word of an UnsignedHugeIntValue object, use the faster multiplication function.
     if (factor < HUGE_INT_WORD_BASE) {
-        *this = UnsignedHugeIntValue::multiply_single_word(*this, factor);
-        return *this;
+        return this->multiply_single_word_transform((HUGE_INT_WORD_TYPE)factor);
     }
     *this = UnsignedHugeIntValue::multiply(*this, UnsignedHugeIntValue(factor));
     return *this;
