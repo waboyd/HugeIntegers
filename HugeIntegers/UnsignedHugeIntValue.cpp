@@ -222,8 +222,8 @@ UnsignedHugeIntValue UnsignedHugeIntValue::sum_of(const UnsignedHugeIntValue& ad
     unsigned long long wordIndex;
     std::vector<HUGE_INT_WORD_TYPE>::const_iterator addendIter = addendA.word_values->begin();
 
-    auto *sum_words = new std::vector<HUGE_INT_WORD_TYPE>(numAddendWords + 1);
-    std::vector<HUGE_INT_WORD_TYPE>::iterator sumIter = sum_words->begin();
+    auto *sumWords = new std::vector<HUGE_INT_WORD_TYPE>(numAddendWords + 1);
+    std::vector<HUGE_INT_WORD_TYPE>::iterator sumIter = sumWords->begin();
 
     // Overflow must be avoided when finding the first word of the sum.
     wordSum = (addendB % HUGE_INT_WORD_BASE) + *addendIter;
@@ -253,16 +253,16 @@ UnsignedHugeIntValue UnsignedHugeIntValue::sum_of(const UnsignedHugeIntValue& ad
         *sumIter = (HUGE_INT_WORD_TYPE)(wordSum % HUGE_INT_WORD_BASE);
         wordSum /= HUGE_INT_WORD_BASE;
     } else {
-        sum_words->pop_back();
-        return UnsignedHugeIntValue(sum_words);
+        sumWords->pop_back();
+        return UnsignedHugeIntValue(sumWords);
     }
 
     // If there is somehow still a carry value, more words must be added to the sum.
     while (wordSum > 0) {
-        sum_words->push_back((HUGE_INT_WORD_TYPE)(wordSum % HUGE_INT_WORD_BASE));
+        sumWords->push_back((HUGE_INT_WORD_TYPE)(wordSum % HUGE_INT_WORD_BASE));
         wordSum /= HUGE_INT_WORD_BASE;
     }
-    return UnsignedHugeIntValue(sum_words);
+    return UnsignedHugeIntValue(sumWords);
 }
 
 UnsignedHugeIntValue UnsignedHugeIntValue::subtract(const UnsignedHugeIntValue& minuend, const UnsignedHugeIntValue& subtrahend) {
@@ -385,38 +385,37 @@ UnsignedHugeIntValue UnsignedHugeIntValue::multiply_by_int(const unsigned long l
     return UnsignedHugeIntValue::multiply(*this, factorObject);
 }
 
-UnsignedHugeIntValue UnsignedHugeIntValue::multiply_single_word(const UnsignedHugeIntValue& large_factor, const unsigned long long small_factor) {
-    // ToDo: Change this function to remove dependence on HugeIntWord class.
-//    HugeIntWord *factorWord, *productWord;
-    uint64_t productValue, carryValue;
-//    factorWord = large_factor.get_least_significant_word();
-//    if ((factorWord == NULL) || (small_factor == 0) || ((large_factor.num_words() < 2) && (factorWord->value == 0)))
-//        return UnsignedHugeIntValue((unsigned long long)0);
+UnsignedHugeIntValue UnsignedHugeIntValue::multiply_single_word(const UnsignedHugeIntValue& large_factor, HUGE_INT_WORD_TYPE small_factor) {
+    if (small_factor == 0) {
+        // A result of 0 is returned if a factor is 0.
+        return UnsignedHugeIntValue();
+    }
 
-    // Set the first word of the product.
-//    productValue = (uint64_t)factorWord->value * (uint64_t)small_factor;
-//    carryValue = productValue / HUGE_INT_WORD_BASE;
-//    productValue = productValue % HUGE_INT_WORD_BASE;
-//    UnsignedHugeIntValue resultProduct(productValue);
-//    productWord = resultProduct.get_least_significant_word();
-//    factorWord = factorWord->get_next_more_sig_word();
+    const unsigned long long numFactorWords = large_factor.num_words();
+    auto *productWords = new std::vector<HUGE_INT_WORD_TYPE>(numFactorWords + 1);
+    std::vector<HUGE_INT_WORD_TYPE>::const_iterator factorIter = large_factor.word_values->begin();
+    std::vector<HUGE_INT_WORD_TYPE>::iterator productIter = productWords->begin();
 
-    // Multiply the other words of the UnsignedHugeIntValue factor.
-//    while (factorWord != NULL) {
-//        productValue = factorWord->value * small_factor + carryValue;
-//        carryValue = productValue / HUGE_INT_WORD_BASE;
-//        productValue = productValue % HUGE_INT_WORD_BASE;
-//        productWord = new HugeIntWord(productValue, productWord);
-//        factorWord = factorWord->get_next_more_sig_word();
-//    }
+    uint64_t productWordValue = 0;
+    const uint64_t smallFactorCast = (uint64_t)small_factor; // Used to reduce the number of necessary type casts.
+
+    // All large_factor words are multiplied by the small_factor to get the product.
+    for (unsigned long long wordIndex = 0; wordIndex < numFactorWords; ++wordIndex) {
+        productWordValue += smallFactorCast * *factorIter;
+        *productIter = (HUGE_INT_WORD_TYPE)(productWordValue % HUGE_INT_WORD_BASE);
+        productWordValue /= HUGE_INT_WORD_BASE;
+        ++factorIter;
+        ++productIter;
+    }
 
     // Set the most significant word of the product from the carry value.
-//    if (carryValue > 0)
-//        resultProduct.mostSigWord = new HugeIntWord(carryValue, productWord);
-//    else
-//        resultProduct.mostSigWord = productWord;
-//    return resultProduct;
-    return UnsignedHugeIntValue();  // ToDo: Delete this line.  ///////////////////////////////////////////////////////////////////////////////////////////
+    if (productWordValue > 0) {
+        *productIter = (HUGE_INT_WORD_TYPE)productWordValue;
+    } else {
+        // If there is no carry value, the product should not have an extra word.
+        productWords->pop_back();
+    }
+    return UnsignedHugeIntValue(productWords);
 }
 
 std::pair<UnsignedHugeIntValue, UnsignedHugeIntValue> UnsignedHugeIntValue::divide(const UnsignedHugeIntValue& dividend, const UnsignedHugeIntValue& divisor) {

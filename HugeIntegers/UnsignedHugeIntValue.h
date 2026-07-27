@@ -617,7 +617,7 @@ private:
      * @param small_factor An unsigned integer factor with a value less than the base of the UnsignedHugeIntValue words.
      * @return The result from multiplying the integers as an UnsignedHugeIntValue object.
      */
-    static UnsignedHugeIntValue multiply_single_word(const UnsignedHugeIntValue& large_factor, const unsigned long long small_factor);
+    static UnsignedHugeIntValue multiply_single_word(const UnsignedHugeIntValue& large_factor, HUGE_INT_WORD_TYPE small_factor);
 
     /**
      * @brief Divides an UnsignedHugeIntValue object by an unsigned integer that is small enough to fit within one word of UnsignedHugeIntValue.
