@@ -545,39 +545,12 @@ std::pair<UnsignedHugeIntValue, UnsignedHugeIntValue> UnsignedHugeIntValue::divi
 }
 
 UnsignedHugeIntValue& UnsignedHugeIntValue::operator+=(const UnsignedHugeIntValue& addend) {
-    // ToDo: Change this function to remove dependence on HugeIntWord class.
-//    HugeIntWord *thisWord = this->leastSigWord;
-//    HugeIntWord *addendWord = addend.get_least_significant_word();
-//
-//    while (addendWord != NULL) {
-//        if (thisWord != NULL) {
-//            thisWord->add_value(addendWord->get_value());
-//        }
-//        else {
-//            thisWord = this->add_word(addendWord->get_value());
-//            this->mostSigWord = thisWord;
-//        }
-//        thisWord = thisWord->get_next_more_sig_word();
-//        addendWord = addendWord->get_next_more_sig_word();
-//    }
-//    // Set the most significant word.
-//    HugeIntWord *nextWord = this->mostSigWord->get_next_more_sig_word();
-//    while(nextWord != NULL) {
-//        this->mostSigWord = nextWord;
-//        nextWord = nextWord->get_next_more_sig_word();
-//    }
+    this->add_value_at_word(this->word_values->begin(), addend);
     return *this;
 }
 
 UnsignedHugeIntValue& UnsignedHugeIntValue::operator+=(const unsigned long long addend) {
-    // ToDo: Change this function to remove dependence on HugeIntWord class.
-//    this->leastSigWord->add_value(addend);
-//    // Set the most significant word.
-//    HugeIntWord *nextWord = this->mostSigWord->get_next_more_sig_word();
-//    while(nextWord != NULL) {
-//        this->mostSigWord = nextWord;
-//        nextWord = nextWord->get_next_more_sig_word();
-//    }
+    this->add_value_at_word(this->word_values->begin(), addend);
     return *this;
 }
 
