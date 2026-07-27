@@ -20,13 +20,11 @@ UnsignedHugeIntValue::UnsignedHugeIntValue(const unsigned long long value) {
 
 UnsignedHugeIntValue::UnsignedHugeIntValue(const std::string integer_string) {
     this->set_value_from_string(integer_string);
-    this->word_values = new std::vector<HUGE_INT_WORD_TYPE>(1, 0);    // ToDo: Delete or change this line. /////////////////////////////////////////////////////////////////////
 }
 
 UnsignedHugeIntValue::UnsignedHugeIntValue(const char* integer_string) {
     std::string cppString(integer_string);
     this->set_value_from_string(cppString);
-    this->word_values = new std::vector<HUGE_INT_WORD_TYPE>(1, 0);    // ToDo: Delete or change this line. /////////////////////////////////////////////////////////////////////
 }
 
 UnsignedHugeIntValue::UnsignedHugeIntValue(const UnsignedHugeIntValue& orig) {
@@ -86,19 +84,15 @@ UnsignedHugeIntValue& UnsignedHugeIntValue::operator=(const unsigned long long v
 }
 
 UnsignedHugeIntValue& UnsignedHugeIntValue::operator=(const std::string value_string) {
-    // ToDo: Change this function to remove dependence on HugeIntWord class.
     delete this->word_values;
     this->set_value_from_string(value_string);
-    this->word_values = new std::vector<HUGE_INT_WORD_TYPE>(1, 0);    // ToDo: Delete or change this line. /////////////////////////////////////////////////////////////////////
     return *this;
 }
 
 UnsignedHugeIntValue& UnsignedHugeIntValue::operator=(const char* value_string) {
-    // ToDo: Change this function to remove dependence on HugeIntWord class.
     delete this->word_values;
     std::string cppStringValue(value_string);
     this->set_value_from_string(cppStringValue);
-    this->word_values = new std::vector<HUGE_INT_WORD_TYPE>(1, 0);    // ToDo: Delete or change this line. /////////////////////////////////////////////////////////////////////
     return *this;
 }
 
@@ -1711,11 +1705,13 @@ std::string UnsignedHugeIntValue::to_string() const {
 }
 
 void UnsignedHugeIntValue::set_value_from_string(std::string integer_string) {
-    // ToDo: Change this function to remove dependence on HugeIntWord class.
-    unsigned long long numDigits =  integer_string.length();
+    const unsigned long long numDigits =  integer_string.length();
     if (numDigits == 0) {
         throw std::invalid_argument("An attempt was made to convert an empty string into an UnsignedHugeInt.");
     }
+    this->word_values = new std::vector<HUGE_INT_WORD_TYPE>;
+    // Space for the integer is reserved based on the estimated number of bits needed.
+    this->word_values->reserve((unsigned long long)(3.321928096 * numDigits + 1) / HUGE_INT_NUMBER_OF_BITS_PER_WORD + 1);
 
     // Segments are used that fit within one word of UnsignedHugeInt.
     const HUGE_INT_WORD_TYPE segmentBaseValue = 1000000000;
@@ -1731,23 +1727,16 @@ void UnsignedHugeIntValue::set_value_from_string(std::string integer_string) {
     else {
         segmentString = integer_string.substr(0, segmentStartIndex);
         segmentValue = std::stol(segmentString);
-        if (segmentValue < 0) {
-            throw std::invalid_argument("An attempt was made to read a negative value as a string into an UnsignedHugeInt.");
-        }
     }
-    this->word_values = new std::vector<HUGE_INT_WORD_TYPE>(1, segmentValue);
-//    this->mostSigWord = this->leastSigWord = new HugeIntWord(segmentValue);
-//
-//    // The remaining digits of the string are read in segments.
-//    for (; segmentStartIndex < numDigits; segmentStartIndex += HUGE_INT_NUMBER_OF_BASE_10_DIGITS_PER_WORD) {
-//        segmentString = integer_string.substr(segmentStartIndex, HUGE_INT_NUMBER_OF_BASE_10_DIGITS_PER_WORD);
-//        segmentValue = std::stol(segmentString);
-//        if (segmentValue < 0) {
-//            throw std::invalid_argument("A string could not be converted to an UnsignedHugeInt.");
-//        }
-//        *this = UnsignedHugeIntValue::multiply_single_word(*this, segmentBaseValue);
-//        this->add_value_at_word(this->leastSigWord, segmentValue);
-//    }
+    this->word_values->push_back(segmentValue);
+
+    // The remaining digits of the string are read in segments.
+    for (; segmentStartIndex < numDigits; segmentStartIndex += segmentLength) {
+        segmentString = integer_string.substr(segmentStartIndex, segmentLength);
+        segmentValue = std::stol(segmentString);
+        this->multiply_single_word_transform(segmentBaseValue);
+        this->add_value_at_word(this->word_values->begin(), segmentValue);
+    }
     this->remove_extra_leading_words();
 }
 
