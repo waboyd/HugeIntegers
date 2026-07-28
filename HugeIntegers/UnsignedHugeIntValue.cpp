@@ -170,12 +170,12 @@ UnsignedHugeIntValue UnsignedHugeIntValue::sum_of(const UnsignedHugeIntValue& ad
         wordIndex = lesserNumWords;
         lesserNumWords = greaterNumWords;
         greaterNumWords = wordIndex;
-        lesserAddendIter = addendA.word_values->begin();
-        greaterAddendIter = addendB.word_values->begin();
+        lesserAddendIter = addendA.word_values->cbegin();
+        greaterAddendIter = addendB.word_values->cbegin();
     } else {
         // addendB does not have more words than addendA.
-        lesserAddendIter = addendB.word_values->begin();
-        greaterAddendIter = addendA.word_values->begin();
+        lesserAddendIter = addendB.word_values->cbegin();
+        greaterAddendIter = addendA.word_values->cbegin();
     }
 
     auto *sumWords = new std::vector<HUGE_INT_WORD_TYPE>(greaterNumWords + 1);
@@ -214,7 +214,7 @@ UnsignedHugeIntValue UnsignedHugeIntValue::sum_of(const UnsignedHugeIntValue& ad
     uint64_t wordSum;
     unsigned long long numAddendWords = addendA.word_values->size();
     unsigned long long wordIndex;
-    std::vector<HUGE_INT_WORD_TYPE>::const_iterator addendIter = addendA.word_values->begin();
+    std::vector<HUGE_INT_WORD_TYPE>::const_iterator addendIter = addendA.word_values->cbegin();
 
     auto *sumWords = new std::vector<HUGE_INT_WORD_TYPE>(numAddendWords + 1);
     std::vector<HUGE_INT_WORD_TYPE>::iterator sumIter = sumWords->begin();
@@ -387,7 +387,7 @@ UnsignedHugeIntValue UnsignedHugeIntValue::multiply_single_word(const UnsignedHu
 
     const unsigned long long numFactorWords = large_factor.num_words();
     auto *productWords = new std::vector<HUGE_INT_WORD_TYPE>(numFactorWords + 1);
-    std::vector<HUGE_INT_WORD_TYPE>::const_iterator factorIter = large_factor.word_values->begin();
+    std::vector<HUGE_INT_WORD_TYPE>::const_iterator factorIter = large_factor.word_values->cbegin();
     std::vector<HUGE_INT_WORD_TYPE>::iterator productIter = productWords->begin();
 
     uint64_t productWordValue = 0;
@@ -450,32 +450,46 @@ std::pair<UnsignedHugeIntValue, UnsignedHugeIntValue> UnsignedHugeIntValue::divi
     return UnsignedHugeIntValue::divide_many_word_divisor(dividend, divisor);
 }
 
-std::pair<UnsignedHugeIntValue, HUGE_INT_WORD_TYPE> UnsignedHugeIntValue::divide_single_word_divisor(const UnsignedHugeIntValue& dividend, const HUGE_INT_WORD_TYPE divisor) {
-    // ToDo: Change this function to remove dependence on HugeIntWord class.
+std::pair<UnsignedHugeIntValue, HUGE_INT_WORD_TYPE> UnsignedHugeIntValue::divide_single_word_divisor(const UnsignedHugeIntValue& dividend, HUGE_INT_WORD_TYPE divisor) {
     if (divisor == 0) {
         throw std::invalid_argument("An attempt was made to divide by zero.");
     }
-//    HugeIntWord *thisDividendWord = dividend.get_most_significant_word();
-//    uint64_t subRemainder = thisDividendWord->get_value();
-//
-//    // The most significant word of the quotient is found first.
-//    UnsignedHugeIntValue quotient(subRemainder / divisor);
-//    subRemainder %= divisor;
-//
-//    // The quotient word is found for each corresponding dividend word.
-//    thisDividendWord = thisDividendWord->get_next_lower_sig_word();
-//    while (thisDividendWord != NULL) {
-//        subRemainder *= HUGE_INT_WORD_BASE;
-//        subRemainder += thisDividendWord->get_value();
-//        quotient.insert_least_significant_word(subRemainder / divisor);
-//        subRemainder %= divisor;
-//        thisDividendWord = thisDividendWord->get_next_lower_sig_word();
-//    }
-//
-//    // Leading words that have 0 stored are removed.
-//    quotient.remove_extra_leading_words();
-//    return std::pair(std::move(quotient), (unsigned long)subRemainder);
-    return std::pair(UnsignedHugeIntValue(), 0);   // ToDo: Delete this line.  /////////////////////////////////////////////////////////////////////////////////
+    std::vector<HUGE_INT_WORD_TYPE> *quotientWords;
+    const unsigned long long numDividendWords = dividend.word_values->size();
+    uint64_t subRemainder;
+    if (numDividendWords == 1) {
+        subRemainder = dividend.word_values->at(0);
+        return std::pair(UnsignedHugeIntValue(subRemainder / divisor), (HUGE_INT_WORD_TYPE)(subRemainder % divisor));
+    }
+
+    std::vector<HUGE_INT_WORD_TYPE>::const_reverse_iterator dividendIter = dividend.word_values->crbegin();
+    std::vector<HUGE_INT_WORD_TYPE>::reverse_iterator quotientIter;
+    subRemainder = *dividendIter;
+
+    // The number of quotient words depends on whether the most significant word value of the dividend
+    // is as large as the divisor.
+    if (subRemainder >= divisor) {
+        quotientWords = new std::vector<HUGE_INT_WORD_TYPE>(numDividendWords);
+        quotientIter = quotientWords->rbegin();
+        *quotientIter = subRemainder / divisor;
+        subRemainder %= divisor;
+        ++quotientIter;
+    } else {
+        quotientWords = new std::vector<HUGE_INT_WORD_TYPE>(numDividendWords - 1);
+        quotientIter = quotientWords->rbegin();
+    }
+    ++dividendIter;
+
+    // The quotient word is found for each corresponding dividend word.
+    for (unsigned long long wordPrevIndex = numDividendWords - 1; wordPrevIndex > 0; --wordPrevIndex) {
+        subRemainder *= HUGE_INT_WORD_BASE;
+        subRemainder += *dividendIter;
+        *quotientIter = (HUGE_INT_WORD_TYPE)(subRemainder / divisor);
+        subRemainder %= divisor;
+        ++dividendIter;
+        ++quotientIter;
+    }
+    return std::pair(UnsignedHugeIntValue(quotientWords), (HUGE_INT_WORD_TYPE)subRemainder);
 }
 
 std::pair<UnsignedHugeIntValue, UnsignedHugeIntValue> UnsignedHugeIntValue::divide_many_word_divisor(const UnsignedHugeIntValue& dividend, const UnsignedHugeIntValue& divisor) {
@@ -1823,9 +1837,9 @@ HugeIntWord* UnsignedHugeIntValue::insert_least_significant_word(unsigned long l
 }
 
 void UnsignedHugeIntValue::add_value_at_word(std::vector<HUGE_INT_WORD_TYPE>::iterator location_to_add, const UnsignedHugeIntValue& value_to_add) {
-    std::vector<HUGE_INT_WORD_TYPE>::const_iterator addendWordIter = value_to_add.word_values->begin();
-    const std::vector<HUGE_INT_WORD_TYPE>::const_iterator thisEndWord = this->word_values->end();
-    const std::vector<HUGE_INT_WORD_TYPE>::const_iterator addendEndWord = value_to_add.word_values->end();
+    std::vector<HUGE_INT_WORD_TYPE>::const_iterator addendWordIter = value_to_add.word_values->cbegin();
+    const std::vector<HUGE_INT_WORD_TYPE>::iterator thisEndWord = this->word_values->end();
+    const std::vector<HUGE_INT_WORD_TYPE>::const_iterator addendEndWord = value_to_add.word_values->cend();
     uint64_t remainingValue = 0;
 
     // Corresponding words are added together.
@@ -1860,7 +1874,7 @@ void UnsignedHugeIntValue::add_value_at_word(std::vector<HUGE_INT_WORD_TYPE>::it
 }
 
 void UnsignedHugeIntValue::add_value_at_word(std::vector<HUGE_INT_WORD_TYPE>::iterator location_to_add, unsigned long long value_to_add) {
-    const std::vector<HUGE_INT_WORD_TYPE>::const_iterator thisEndWord = this->word_values->end();
+    const std::vector<HUGE_INT_WORD_TYPE>::iterator thisEndWord = this->word_values->end();
     if (value_to_add == 0)
         return;
 
