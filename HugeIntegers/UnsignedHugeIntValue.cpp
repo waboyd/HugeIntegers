@@ -11,10 +11,10 @@ UnsignedHugeIntValue::UnsignedHugeIntValue(const unsigned long long value) {
     }
     this->word_values = new std::vector<HUGE_INT_WORD_TYPE>(2);
     this->word_values->at(0) = value % HUGE_INT_WORD_BASE;
-    unsigned long long quotient = value / HUGE_INT_WORD_BASE;
-    this->word_values->at(1) = quotient % HUGE_INT_WORD_BASE;
-    for (quotient /= HUGE_INT_WORD_BASE; quotient > 0; quotient /= HUGE_INT_WORD_BASE) {
-        this->word_values->push_back(quotient % HUGE_INT_WORD_BASE);
+    unsigned long long carryValue = value / HUGE_INT_WORD_BASE;
+    this->word_values->at(1) = carryValue % HUGE_INT_WORD_BASE;
+    for (carryValue /= HUGE_INT_WORD_BASE; carryValue > 0; carryValue /= HUGE_INT_WORD_BASE) {
+        this->word_values->push_back(carryValue % HUGE_INT_WORD_BASE);
     }
 }
 
@@ -74,12 +74,18 @@ UnsignedHugeIntValue& UnsignedHugeIntValue::operator=(UnsignedHugeIntValue&& ori
 }
 
 UnsignedHugeIntValue& UnsignedHugeIntValue::operator=(const unsigned long long value) {
-    // ToDo: Change this function to remove dependence on HugeIntWord class.
     delete this->word_values;
-//    HugeIntWord *newWord = new HugeIntWord(0);
-//    this->leastSigWord = newWord;
-//    this->mostSigWord = newWord->add_value(value);
-    this->word_values = new std::vector<HUGE_INT_WORD_TYPE>(1, 0);    // ToDo: Delete or change this line. /////////////////////////////////////////////////////////////////////
+    if (value <= HUGE_INT_MAX_WORD_VALUE) {
+        this->word_values = new std::vector<HUGE_INT_WORD_TYPE>(1, value);
+        return *this;
+    }
+    this->word_values = new std::vector<HUGE_INT_WORD_TYPE>(2);
+    this->word_values->at(0) = value % HUGE_INT_WORD_BASE;
+    unsigned long long carryValue = value / HUGE_INT_WORD_BASE;
+    this->word_values->at(1) = carryValue % HUGE_INT_WORD_BASE;
+    for (carryValue /= HUGE_INT_WORD_BASE; carryValue > 0; carryValue /= HUGE_INT_WORD_BASE) {
+        this->word_values->push_back(carryValue % HUGE_INT_WORD_BASE);
+    }
     return *this;
 }
 
