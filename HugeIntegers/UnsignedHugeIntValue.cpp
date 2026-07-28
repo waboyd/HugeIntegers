@@ -1678,49 +1678,47 @@ HugeIntWord* UnsignedHugeIntValue::remove_most_significant_word() {
 }
 
 std::string UnsignedHugeIntValue::to_string() const {
-    // ToDo: Change this function to remove dependence on HugeIntWord class.
-//    if (this->mostSigWord == NULL)
-//        return "0";
-//    HUGE_INT_WORD_TYPE zero_long(0);
-//    UnsignedHugeIntValue zero_object(zero_long);
-//    if (this->compare(this, zero_long) == 0)
-//        return "0";
-    std::string fullNumberString;
-    unsigned long long allocationSize;
+    if (this->word_values == NULL) {
+        throw std::logic_error("An attempt was made to show the value of an undefined object.");
+    }
+    const unsigned long long numWords = this->word_values->size();
+    if ((numWords == 1) && (this->word_values->front() == 0)) {
+        return "0";
+    }
+
     // The maximum number of digits can be found from the number of bits used.
-//    allocationSize = 0.30103 * HUGE_INT_NUMBER_OF_BITS_PER_WORD * this->num_words() + 1;
-//    fullNumberString.resize(allocationSize, '0');
-//    // The base used for segments is determined by the maximum power of ten that can be stored in a word.
-//    HUGE_INT_WORD_TYPE segmentBase = 1;
-//    for (unsigned short exponent = 1; exponent <= HUGE_INT_NUMBER_OF_BASE_10_DIGITS_PER_WORD; ++exponent) {
-//        segmentBase *= 10;
-//    }
-//
-//    // Setting the digits of the result string in segments.
-//    unsigned long long segmentStart = allocationSize; // index of the start of the current segment in the result string.
-//    auto divisionResult = UnsignedHugeIntValue::divide_single_word_divisor(this, segmentBase);
-//    UnsignedHugeIntValue &quotient = divisionResult.first;
-//    HUGE_INT_WORD_TYPE &remainder = divisionResult.second;
-//
-//    while (this->compare(quotient, zero_object) > 0) {
-//        segmentStart -= HUGE_INT_NUMBER_OF_BASE_10_DIGITS_PER_WORD;
-//        std::string segmentString(std::to_string(remainder));
-//        unsigned short numLeadingZeros = HUGE_INT_NUMBER_OF_BASE_10_DIGITS_PER_WORD - segmentString.length();
-//        segmentString = std::string(numLeadingZeros, '0') + std::string(segmentString);
-//        fullNumberString.replace(segmentStart, HUGE_INT_NUMBER_OF_BASE_10_DIGITS_PER_WORD, segmentString);
-//
-//        divisionResult = UnsignedHugeIntValue::divide_single_word_divisor(quotient, segmentBase);
-//    }
-//
-//    // Setting the most significant digits of the string.
-//    std::string segmentString(std::to_string(remainder));
-//    unsigned short numLeadingDigits = segmentString.length();
-//    segmentStart -= numLeadingDigits;
-//    fullNumberString.replace(segmentStart, numLeadingDigits, segmentString);
-//
-//    // Remove extra digits at the beginning.
-//    fullNumberString.erase(0, segmentStart);
-//    fullNumberString.shrink_to_fit();
+    unsigned long long allocationSize = 0.30103 * HUGE_INT_NUMBER_OF_BITS_PER_WORD * numWords + 1;
+    std::string fullNumberString;
+    fullNumberString.resize(allocationSize, '0');
+
+    // A value base for segments is used that can be stored in one word.
+    const HUGE_INT_WORD_TYPE segmentBase = 1000000000;
+    constexpr unsigned int segmentLength = 9;
+    // The digits of the result string are set in segments.
+    unsigned long long segmentStart = allocationSize; // index of the start of the current segment in the result string.
+    auto divisionResult = UnsignedHugeIntValue::divide_single_word_divisor(*this, segmentBase);
+    UnsignedHugeIntValue &quotient = divisionResult.first;
+    HUGE_INT_WORD_TYPE &remainder = divisionResult.second;
+
+    // While the quotient is greater than 0, there will be more segments to add to the string.
+    while ((quotient.word_values->size() > 1) || (quotient.word_values->back() > 0)) {
+        segmentStart -= segmentLength;
+        std::string segmentString(std::to_string(remainder));
+        unsigned short numLeadingZeros = segmentLength - segmentString.length();
+        segmentString = std::string(numLeadingZeros, '0') + std::string(segmentString);
+        fullNumberString.replace(segmentStart, segmentLength, segmentString);
+        divisionResult = UnsignedHugeIntValue::divide_single_word_divisor(quotient, segmentBase);
+    }
+
+    // The most significant digits of the string are set last.
+    std::string segmentString(std::to_string(remainder));
+    unsigned short numLeadingDigits = segmentString.length();
+    segmentStart -= numLeadingDigits;
+    fullNumberString.replace(segmentStart, numLeadingDigits, segmentString);
+
+    // Extra digits at the beginning likely need to be removed.
+    fullNumberString.erase(0, segmentStart);
+    fullNumberString.shrink_to_fit();
     return fullNumberString;
 }
 
