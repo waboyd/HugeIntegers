@@ -103,25 +103,25 @@ UnsignedHugeIntValue& UnsignedHugeIntValue::operator=(const char* value_string) 
 }
 
 UnsignedHugeIntValue UnsignedHugeIntValue::number_of_digits() const {
-    // ToDo: Change this function to remove dependence on HugeIntWord class.
-//    if (this->mostSigWord == NULL)
-//        return UnsignedHugeIntValue(1);
+    // ToDo: Improve efficiency in the function using ++ and /= operators.
+    if ((this->word_values->size() == 1) && (this->word_values->front() == 0)) {
+        return UnsignedHugeIntValue(1);
+    }
     UnsignedHugeIntValue totalNumDigits(1);
     UnsignedHugeIntValue quotient(this);
 
-//    // The value can be repeatedly divided by a power of 10 to find the number of digits.
-//    HUGE_INT_WORD_TYPE divisor = 1;
-//    for (unsigned short exponent = 1; exponent <= HUGE_INT_NUMBER_OF_BASE_10_DIGITS_PER_WORD; ++exponent) {
-//        divisor *= 10;
-//    }
-//    while (this->compare(quotient, divisor) >= 0) {
-//        totalNumDigits += HUGE_INT_NUMBER_OF_BASE_10_DIGITS_PER_WORD;
-//        quotient /= UnsignedHugeIntValue(divisor);
-//    }
-//    while (this->compare(quotient, UnsignedHugeIntValue(10)) >= 0) {
-//        totalNumDigits += 1;
-//        quotient /= UnsignedHugeIntValue(10);
-//    }
+    // The value can be repeatedly divided by a power of 10 to find the number of digits.
+    constexpr HUGE_INT_WORD_TYPE divisor = 1000000000;
+    constexpr unsigned int digits_per_division = 9;
+    while ((quotient.word_values->size() > 1) || (quotient.word_values->back()) > divisor) {
+        totalNumDigits += digits_per_division;
+        quotient = UnsignedHugeIntValue::divide_single_word_divisor(quotient, divisor).first;
+    }
+
+    while (quotient.word_values->back() >= 10) {
+        totalNumDigits += 1;
+        quotient = UnsignedHugeIntValue::divide_single_word_divisor(quotient, 10).first;
+    }
     return totalNumDigits;
 }
 
