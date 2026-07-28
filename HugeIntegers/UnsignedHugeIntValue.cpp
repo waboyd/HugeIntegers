@@ -113,12 +113,12 @@ UnsignedHugeIntValue UnsignedHugeIntValue::number_of_digits() const {
     // The value can be repeatedly divided by a power of 10 to find the number of digits.
     constexpr HUGE_INT_WORD_TYPE divisor = 1000000000;
     constexpr unsigned int digits_per_division = 9;
-    while ((quotient.word_values->size() > 1) || (quotient.word_values->back()) > divisor) {
+    while ((quotient.word_values->size() > 1) || (quotient.word_values->front()) > divisor) {
         totalNumDigits += digits_per_division;
         quotient = UnsignedHugeIntValue::divide_single_word_divisor(quotient, divisor).first;
     }
 
-    while (quotient.word_values->back() >= 10) {
+    while (quotient.word_values->front() >= 10) {
         totalNumDigits += 1;
         quotient = UnsignedHugeIntValue::divide_single_word_divisor(quotient, 10).first;
     }
@@ -676,14 +676,19 @@ UnsignedHugeIntValue& UnsignedHugeIntValue::operator%=(const unsigned long long 
 }
 
 UnsignedHugeIntValue& UnsignedHugeIntValue::operator++() {
-    // ToDo: Change this function to remove dependence on HugeIntWord class.
-//    this->leastSigWord->add_value(1);
-//    // Set the most significant word.
-//    HugeIntWord *nextWord = this->mostSigWord->get_next_more_sig_word();
-//    while(nextWord != NULL) {
-//        this->mostSigWord = nextWord;
-//        nextWord = nextWord->get_next_more_sig_word();
-//    }
+    std::vector<HUGE_INT_WORD_TYPE>::iterator wordIter = this->word_values->begin();
+    const std::vector<HUGE_INT_WORD_TYPE>::iterator endWord = this->word_values->end();
+    while (wordIter != endWord) {
+        if (*wordIter < HUGE_INT_MAX_WORD_VALUE) {
+            ++(*wordIter);
+            return *this;
+        }
+        // If the word value is the maximum word value, the next word must be incremented.
+        *wordIter = 0;
+        ++wordIter;
+    }
+    // If all the words had the maximum word value, a word must be added.
+    this->word_values->push_back(1);
     return *this;
 }
 
@@ -1692,7 +1697,7 @@ std::string UnsignedHugeIntValue::to_string() const {
     HUGE_INT_WORD_TYPE &remainder = divisionResult.second;
 
     // While the quotient is greater than 0, there will be more segments to add to the string.
-    while ((quotient.word_values->size() > 1) || (quotient.word_values->back() > 0)) {
+    while ((quotient.word_values->size() > 1) || (quotient.word_values->front() > 0)) {
         segmentStart -= segmentLength;
         std::string segmentString(std::to_string(remainder));
         unsigned short numLeadingZeros = segmentLength - segmentString.length();
