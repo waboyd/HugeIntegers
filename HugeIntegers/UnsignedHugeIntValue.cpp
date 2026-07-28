@@ -130,34 +130,25 @@ UnsignedHugeIntValue::operator std::string() const {
 }
 
 short UnsignedHugeIntValue::compare(const UnsignedHugeIntValue& numberA, const UnsignedHugeIntValue& numberB) {
-    // ToDo: Change this function to remove dependence on HugeIntWord class.
-//    unsigned long long numWordsA = numberA.num_words();
-//    unsigned long long numWordsB = numberB.num_words();
-//    HugeIntWord *thisWordA, *thisWordB;
-    HUGE_INT_WORD_TYPE wordValueA, wordValueB;
+    unsigned long long numWordsA = numberA.num_words();
+    unsigned long long numWordsB = numberB.num_words();
+    if (numWordsA > numWordsB)
+        return 1;
+    else if (numWordsA < numWordsB)
+        return -1;
 
-//    thisWordA = numberA.get_most_significant_word();
-//    thisWordB = numberB.get_most_significant_word();
-//
-//    if (numWordsA > numWordsB && thisWordA->get_value() > 0)
-//        return 1;
-//    else if (numWordsA < numWordsB && thisWordB->get_value() > 0)
-//        return -1;
-//
-//    while (thisWordA != NULL && thisWordB != NULL) {
-//        wordValueA = thisWordA->get_value();
-//        wordValueB = thisWordB->get_value();
-//        if (wordValueA > wordValueB)
-//            return 1;
-//        else if (wordValueA < wordValueB)
-//            return -1;
-//        thisWordA = thisWordA->get_next_lower_sig_word();
-//        thisWordB = thisWordB->get_next_lower_sig_word();
-//    }
-//
-//    if (thisWordA != NULL || thisWordB != NULL) {
-//        throw std::logic_error("A problem occurred involving the number of words in an UnsignedHugeIntValue.");
-//    }
+    // The corresponding word values are compared in order, starting with the most significant words.
+    std::vector<HUGE_INT_WORD_TYPE>::const_reverse_iterator wordIterA = numberA.word_values->crbegin();
+    std::vector<HUGE_INT_WORD_TYPE>::const_reverse_iterator wordIterB = numberB.word_values->crbegin();
+    for (unsigned long long wordPrevIndex = numWordsA; wordPrevIndex > 0; --wordPrevIndex) {
+        if (*wordIterA > *wordIterB) {
+            return 1;
+        } else if (*wordIterA < *wordIterB) {
+            return -1;
+        }
+        ++wordIterA;
+        ++wordIterB;
+    }
 
     return 0;   // The numbers are equal.
 }
