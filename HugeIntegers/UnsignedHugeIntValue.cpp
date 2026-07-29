@@ -693,27 +693,21 @@ UnsignedHugeIntValue& UnsignedHugeIntValue::operator++() {
 }
 
 UnsignedHugeIntValue& UnsignedHugeIntValue::operator--() {
-    // ToDo: Change this function to remove dependence on HugeIntWord class.
-//    if ((this->num_words() <= 1) && (this->leastSigWord->get_value() < 1)) {
-//        throw std::range_error("An unsigned integer equal to 0 was decremented.");
-//    }
-//    HugeIntWord *minuendWord;
-//    uint64_t thisMinuendWordValue;
-//    minuendWord = this->get_least_significant_word();
-//
-//    // Subtract all the words of the subtrahend.
-//    while (minuendWord != NULL) {
-//        thisMinuendWordValue = minuendWord->get_value();
-//        if (thisMinuendWordValue < 1) {
-//            minuendWord->value = HUGE_INT_WORD_BASE - 1;
-//        }
-//        else {
-//            minuendWord->value = thisMinuendWordValue - 1;
-//            break;
-//        }
-//        minuendWord = minuendWord->get_next_more_sig_word();
-//    }
-//    this->remove_extra_leading_words();
+    std::vector<HUGE_INT_WORD_TYPE> *thisWordValues = this->word_values;
+    if ((thisWordValues->size() <= 1) && (thisWordValues->front() == 0)) {
+        throw std::range_error("An unsigned integer equal to 0 was decremented.");
+    }
+    std::vector<HUGE_INT_WORD_TYPE>::iterator wordIter = thisWordValues->begin();
+    while (*wordIter == 0) {
+        *wordIter = HUGE_INT_MAX_WORD_VALUE;
+        ++wordIter;
+    }
+    --(*wordIter);
+
+    // If a word was decremented to 0, check whether leading 0 words must be removed.
+    if (*wordIter == 0) {
+        this->remove_extra_leading_words();
+    }
     return *this;
 }
 
