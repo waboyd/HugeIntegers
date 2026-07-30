@@ -103,7 +103,6 @@ UnsignedHugeIntValue& UnsignedHugeIntValue::operator=(const char* value_string) 
 }
 
 UnsignedHugeIntValue UnsignedHugeIntValue::number_of_digits() const {
-    // ToDo: Improve efficiency in the function using ++ and /= operators.
     if ((this->word_values->size() == 1) && (this->word_values->front() == 0)) {
         return UnsignedHugeIntValue(1);
     }
@@ -115,12 +114,12 @@ UnsignedHugeIntValue UnsignedHugeIntValue::number_of_digits() const {
     constexpr unsigned int digits_per_division = 9;
     while ((quotient.word_values->size() > 1) || (quotient.word_values->front()) > divisor) {
         totalNumDigits += digits_per_division;
-        quotient = UnsignedHugeIntValue::divide_single_word_divisor(quotient, divisor).first;
+        quotient.divide_single_word_divisor_transform(divisor);
     }
 
     while (quotient.word_values->front() >= 10) {
-        totalNumDigits += 1;
-        quotient = UnsignedHugeIntValue::divide_single_word_divisor(quotient, 10).first;
+        ++totalNumDigits;
+        quotient.divide_single_word_divisor_transform(10);
     }
     return totalNumDigits;
 }
@@ -489,6 +488,44 @@ std::pair<UnsignedHugeIntValue, HUGE_INT_WORD_TYPE> UnsignedHugeIntValue::divide
     return std::pair(UnsignedHugeIntValue(quotientWords), (HUGE_INT_WORD_TYPE)subRemainder);
 }
 
+HUGE_INT_WORD_TYPE UnsignedHugeIntValue::divide_single_word_divisor_transform(HUGE_INT_WORD_TYPE divisor) {
+    if (divisor == 0) {
+        throw std::invalid_argument("An attempt was made to divide by zero.");
+    }
+    const unsigned long long numWords = this->word_values->size();
+    std::vector<HUGE_INT_WORD_TYPE>::reverse_iterator wordIter = this->word_values->rbegin();
+    uint64_t subRemainder = *wordIter;
+    if (numWords == 1) {
+        *wordIter = subRemainder / divisor;
+        return subRemainder % divisor;
+    }
+
+    // The number of quotient words depends on whether the most significant word value of the dividend
+    // is as large as the divisor.
+    bool isWordToRemove;
+    if (subRemainder >= divisor) {
+        isWordToRemove = false;
+        *wordIter = subRemainder / divisor;
+        subRemainder %= divisor;
+    } else {
+        isWordToRemove = true;
+    }
+    ++wordIter;
+
+    // The quotient word is found for each corresponding dividend word.
+    for (unsigned long long wordPrevIndex = numWords - 1; wordPrevIndex > 0; --wordPrevIndex) {
+        subRemainder *= HUGE_INT_WORD_BASE;
+        subRemainder += *wordIter;
+        *wordIter = (HUGE_INT_WORD_TYPE)(subRemainder / divisor);
+        subRemainder %= divisor;
+        ++wordIter;
+    }
+    if (isWordToRemove) {
+        this->word_values->pop_back();
+    }
+    return (HUGE_INT_WORD_TYPE)subRemainder;
+}
+
 std::pair<UnsignedHugeIntValue, UnsignedHugeIntValue> UnsignedHugeIntValue::divide_many_word_divisor(const UnsignedHugeIntValue& dividend, const UnsignedHugeIntValue& divisor) {
     // ToDo: Change this function to remove dependence on HugeIntWord class.
     std::pair<UnsignedHugeIntValue, UnsignedHugeIntValue> divisionResults;
@@ -656,22 +693,44 @@ UnsignedHugeIntValue& UnsignedHugeIntValue::operator*=(const unsigned long long 
 }
 
 UnsignedHugeIntValue& UnsignedHugeIntValue::operator/=(const UnsignedHugeIntValue& divisor) {
-    *this = std::move(UnsignedHugeIntValue::divide(*this, divisor).first);
+    if (divisor.num_words() == 1) {
+        this->divide_single_word_divisor_transform(divisor.word_values->front());
+        return *this;
+    }
+    *this = std::move(UnsignedHugeIntValue::divide_many_word_divisor(*this, divisor).first);
     return *this;
 }
 
 UnsignedHugeIntValue& UnsignedHugeIntValue::operator/=(const unsigned long long divisor) {
-    *this = std::move(UnsignedHugeIntValue::divide(*this, UnsignedHugeIntValue(divisor)).first);
+    if (divisor <= HUGE_INT_MAX_WORD_VALUE) {
+        this->divide_single_word_divisor_transform((HUGE_INT_WORD_TYPE)divisor);
+        return *this;
+    }
+    *this = std::move(UnsignedHugeIntValue::divide_many_word_divisor(*this, UnsignedHugeIntValue(divisor)).first);
     return *this;
 }
 
 UnsignedHugeIntValue& UnsignedHugeIntValue::operator%=(const UnsignedHugeIntValue& divisor) {
-    *this = std::move(UnsignedHugeIntValue::divide(*this, divisor).second);
+    if (divisor.num_words() == 1) {
+        HUGE_INT_WORD_TYPE remainder = this->divide_single_word_divisor_transform(divisor.word_values->front());
+        this->word_values->resize(1);
+        this->word_values->at(0) = remainder;
+        this->word_values->shrink_to_fit();
+        return *this;
+    }
+    *this = std::move(UnsignedHugeIntValue::divide_many_word_divisor(*this, divisor).second);
     return *this;
 }
 
 UnsignedHugeIntValue& UnsignedHugeIntValue::operator%=(const unsigned long long divisor) {
-    *this = std::move(UnsignedHugeIntValue::divide(*this, UnsignedHugeIntValue(divisor)).second);
+    if (divisor <= HUGE_INT_MAX_WORD_VALUE) {
+        HUGE_INT_WORD_TYPE remainder = this->divide_single_word_divisor_transform((HUGE_INT_WORD_TYPE)divisor);
+        this->word_values->resize(1);
+        this->word_values->at(0) = remainder;
+        this->word_values->shrink_to_fit();
+        return *this;
+    }
+    *this = std::move(UnsignedHugeIntValue::divide_many_word_divisor(*this, UnsignedHugeIntValue(divisor)).second);
     return *this;
 }
 
@@ -1697,7 +1756,7 @@ std::string UnsignedHugeIntValue::to_string() const {
         unsigned short numLeadingZeros = segmentLength - segmentString.length();
         segmentString = std::string(numLeadingZeros, '0') + std::string(segmentString);
         fullNumberString.replace(segmentStart, segmentLength, segmentString);
-        divisionResult = UnsignedHugeIntValue::divide_single_word_divisor(quotient, segmentBase);
+        remainder = quotient.divide_single_word_divisor_transform(segmentBase);
     }
 
     // The most significant digits of the string are set last.

@@ -642,6 +642,18 @@ private:
     static std::pair<UnsignedHugeIntValue, HUGE_INT_WORD_TYPE> divide_single_word_divisor(const UnsignedHugeIntValue& dividend, HUGE_INT_WORD_TYPE divisor);
 
     /**
+     * @brief Divides this UnsignedHugeIntValue object by an unsigned integer that is small enough to fit within one word of UnsignedHugeIntValue.
+     * This method expects a divisor with a value less than the word base value, but it does not check the size of the divisor.
+     * If the divisor is greater than the maximum word size, incorrect values may be produced. Division using this method is
+     * somewhat simpler and faster than division by an UnsignedHugeIntValue, so this method should be used for division whenever
+     * the divisor is small enough.
+     * The value represented by this object will be changed to the whole number quotient of its starting value and the provided argument.
+     * @param divisor The divisor of the division operation, which must be less than the word base value.
+     * @return The remainder of the division operation.
+     */
+    HUGE_INT_WORD_TYPE divide_single_word_divisor_transform(HUGE_INT_WORD_TYPE divisor);
+
+    /**
      * @brief Divides UnsignedHugeIntValue objects, where the divisor is not small enough to fit within one word of UnsignedHugeIntValue.
      * This method expects a divisor with a value greater than the maximum word value, but it does not check the size of the divisor.
      * If the divisor is less than the maximum word base value, incorrect values may be produced.
