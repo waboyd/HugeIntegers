@@ -608,49 +608,47 @@ UnsignedHugeIntValue& UnsignedHugeIntValue::operator+=(const unsigned long long 
 }
 
 UnsignedHugeIntValue& UnsignedHugeIntValue::operator-=(const UnsignedHugeIntValue& subtrahend) {
-    // ToDo: Change this function to remove dependence on HugeIntWord class.
     if (UnsignedHugeIntValue::compare(*this, subtrahend) < 0) {
         throw std::range_error("The subtrahend of an unsigned compound subtraction operation was greater than the minuend.");
     }
 
-//    HugeIntWord *minuendWord, *subtrahendWord;
-//    uint64_t thisWordDifference, thisMinuendWordValue, thisSubtrahendWordValue, carryValue(0);
-//
-//    minuendWord = this->get_least_significant_word();
-//    subtrahendWord = subtrahend.get_least_significant_word();
-//
-//    // Subtract all the words of the subtrahend.
-//    while (subtrahendWord != NULL) {
-//        thisMinuendWordValue = minuendWord->get_value();
-//        thisSubtrahendWordValue = subtrahendWord->get_value() + carryValue;
-//        if (thisMinuendWordValue < thisSubtrahendWordValue) {
-//            carryValue = 1;
-//            thisWordDifference = (HUGE_INT_WORD_BASE + thisMinuendWordValue) - thisSubtrahendWordValue;
-//        }
-//        else {
-//            carryValue = 0;
-//            thisWordDifference = thisMinuendWordValue - thisSubtrahendWordValue;
-//        }
-//        minuendWord->value = thisWordDifference;
-//        minuendWord = minuendWord->get_next_more_sig_word();
-//        subtrahendWord = subtrahendWord->get_next_more_sig_word();
-//    }
-//
-//    // Continue carry operations from the remaining words of the menuend.
-//    while (carryValue > 0 && minuendWord != NULL) {
-//        thisMinuendWordValue = minuendWord->get_value();
-//        if (thisMinuendWordValue < carryValue) {
-//            thisWordDifference = (HUGE_INT_WORD_BASE + thisMinuendWordValue) - carryValue;
-//            carryValue = 1;
-//        }
-//        else {
-//            thisWordDifference = thisMinuendWordValue - carryValue;
-//            carryValue = 0;
-//        }
-//        minuendWord->value = thisWordDifference;
-//        minuendWord = minuendWord->get_next_more_sig_word();
-//    }
-//    this->remove_extra_leading_words();
+    uint64_t minuendWordValue, subtrahendWordValue, carryValue = 0;
+    const unsigned long long numSubtrahendWords = subtrahend.num_words();
+    std::vector<HUGE_INT_WORD_TYPE>::iterator thisWordIter = this->word_values->begin();
+    std::vector<HUGE_INT_WORD_TYPE>::const_iterator subtrahendWordIter = subtrahend.word_values->cbegin();
+
+    // Subtract all the words of the subtrahend.
+    unsigned long long wordIndex;
+    for (wordIndex = 0; wordIndex < numSubtrahendWords; ++wordIndex) {
+        minuendWordValue = *thisWordIter;
+        subtrahendWordValue = *subtrahendWordIter + carryValue;
+        if (minuendWordValue < subtrahendWordValue) {
+            // Some of the value must be carried over from the next place value.
+            *thisWordIter = (HUGE_INT_WORD_TYPE)(HUGE_INT_WORD_BASE + minuendWordValue - subtrahendWordValue);
+            carryValue = 1;
+        } else {
+            *thisWordIter = (HUGE_INT_WORD_TYPE)(minuendWordValue - subtrahendWordValue);
+            carryValue = 0;
+        }
+        ++thisWordIter;
+        ++subtrahendWordIter;
+    }
+
+    // Continue carry operations until no values need to be carried over.
+    for (; carryValue > 0; ++wordIndex) {
+        minuendWordValue = *thisWordIter;
+        if (minuendWordValue < carryValue) {
+            // This can only happen if the carry value is 1 and the minuend word value is 0.
+            *thisWordIter = HUGE_INT_MAX_WORD_VALUE;
+            carryValue = 1;
+        } else {
+            *thisWordIter = (HUGE_INT_WORD_TYPE)(minuendWordValue - carryValue);
+            carryValue = 0;
+        }
+        ++thisWordIter;
+    }
+
+    this->remove_extra_leading_words();
     return *this;
 }
 
