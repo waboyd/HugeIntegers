@@ -591,6 +591,12 @@ private:
      */
     void add_value_at_word(std::vector<HUGE_INT_WORD_TYPE>::iterator location_to_add, unsigned long long value_to_add);
 
+    /**
+     * @brief Removes the highest indexed elements of the vector if they have a value of 0.
+     * @param word_values Vector of word values that is to be trimmed of extra leading 0 values.
+     */
+    static void remove_extra_leading_words_from(std::vector<HUGE_INT_WORD_TYPE>* word_values);
+
     // Change or remove this function to remove dependence on HugeIntWord class.
     /**
      * @brief Creates a new UnsignedHugeIntValue object using the argument and its linked more significant words.
