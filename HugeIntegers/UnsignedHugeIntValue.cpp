@@ -314,41 +314,49 @@ UnsignedHugeIntValue UnsignedHugeIntValue::subtract(const UnsignedHugeIntValue& 
 }
 
 UnsignedHugeIntValue UnsignedHugeIntValue::multiply(const UnsignedHugeIntValue& factorA, const UnsignedHugeIntValue& factorB) {
-    // ToDo: Change this function to remove dependence on HugeIntWord class.
     // ToDo: Possibly apply multithreading to this method.
-    // Find the product of the least significant word of each factor.
-//    HugeIntWord *startWordA = factorA.get_least_significant_word(); // Starting words when finding a partial product.
-//    HugeIntWord *startWordB = factorB.get_least_significant_word();
-//    if ((startWordA == NULL) || (startWordB == NULL))
-//        return UnsignedHugeIntValue((unsigned long long)0);
-//    UnsignedHugeIntValue totalProduct((uint64_t)startWordA->get_value() * startWordB->get_value());
-//    HugeIntWord *totalCalcWord = totalProduct.get_least_significant_word();
-//    UnsignedHugeIntValue partialProduct;
+    const unsigned long long numWordsA = factorA.num_words();
+    if (numWordsA == 1) {
+        return UnsignedHugeIntValue::multiply_single_word(factorB, factorA.word_values->front());
+    }
+    const unsigned long long numWordsB = factorB.num_words();
+    if (numWordsB == 1) {
+        return UnsignedHugeIntValue::multiply_single_word(factorA, factorB.word_values->front());
+    }
 
-    // Find partial products while changing startWordA.
-//    startWordA = startWordA->get_next_more_sig_word();
-//    while (startWordA != NULL) {
-//        totalCalcWord = totalCalcWord->get_next_more_sig_word();
-//        partialProduct = UnsignedHugeIntValue::find_multiplication_subtotal(startWordA, startWordB);
-//        totalCalcWord = totalProduct.add_value_at_word(totalCalcWord, partialProduct);
-//        startWordA = startWordA->get_next_more_sig_word();
-//    }
-//    startWordA = factorA.get_most_significant_word();
+    auto *productWords = new std::vector<HUGE_INT_WORD_TYPE>(numWordsA + numWordsB, 0);
+    UnsignedHugeIntValue resultProduct(productWords);
 
-    // Find partial products while changing startWordB.
-//    startWordB= startWordB->get_next_more_sig_word();
-//    while (startWordB != NULL) {
-//        totalCalcWord = totalCalcWord->get_next_more_sig_word();
-//        partialProduct = UnsignedHugeIntValue::find_multiplication_subtotal(startWordA, startWordB);
-//        totalCalcWord = totalProduct.add_value_at_word(totalCalcWord, partialProduct);
-//        startWordB = startWordB->get_next_more_sig_word();
-//    }
+    // The subtotals are found by multiplying all pairs of words of the factors whose indexes
+    // have the same sum as the product word index.
+    std::vector<HUGE_INT_WORD_TYPE>::const_reverse_iterator factorAIter = factorA.word_values->crbegin();
+    std::vector<HUGE_INT_WORD_TYPE>::const_iterator factorBIter = factorB.word_values->cbegin();
+    std::vector<HUGE_INT_WORD_TYPE>::iterator productIter = productWords->begin() + (numWordsA - 1);
+    unsigned long long numSubtotalProducts = numWordsB; // Number of pairs of words that multiplied to get the subtotal.
+    for (unsigned long long factorALength = numWordsA; factorALength > 0; --factorALength) {
+        if (factorALength < numSubtotalProducts) {
+            numSubtotalProducts = factorALength;
+        }
+        resultProduct.add_value_at_word(productIter, UnsignedHugeIntValue::find_multiplication_subtotal(factorAIter, factorBIter, numSubtotalProducts));
+        ++factorAIter;
+        --productIter;
+    }
+    factorAIter = factorA.word_values->crbegin();
+    ++factorBIter;
+    productIter = productWords->begin() + numWordsA;
+    numSubtotalProducts = numWordsA;
+    for (unsigned long long factorBLength = numWordsB - 1; factorBLength > 0; --factorBLength) {
+        if (factorBLength < numSubtotalProducts) {
+            numSubtotalProducts = factorBLength;
+        }
+        resultProduct.add_value_at_word(productIter, UnsignedHugeIntValue::find_multiplication_subtotal(factorAIter, factorBIter, numSubtotalProducts));
+        ++factorBIter;
+        ++productIter;
+    }
 
     // Remove leading 0 words.
-//    totalProduct.remove_extra_leading_words();
-
-//    return totalProduct;
-    return UnsignedHugeIntValue(); // ToDo: Delete this line.    ////////////////////////////////////////////////////////////
+    UnsignedHugeIntValue::remove_extra_leading_words_from(productWords);
+    return resultProduct;
 }
 
 UnsignedHugeIntValue UnsignedHugeIntValue::multiply_by_int(const unsigned long long factor) const {
