@@ -1953,26 +1953,31 @@ UnsignedHugeIntValue UnsignedHugeIntValue::integer_with_least_significant_word(c
     return UnsignedHugeIntValue(); // ToDo: Delete this line. //////////////////////////////////////////////////////////////////////////////////////////////////
 }
 
-UnsignedHugeIntValue UnsignedHugeIntValue::find_multiplication_subtotal(const HugeIntWord* greater_factor_word, const HugeIntWord* lesser_factor_word) {
-    // ToDo: Change this function to remove dependence on HugeIntWord class.
-    UnsignedHugeIntValue resultSubtotal((unsigned long long)0);
-//    HugeIntWord *resultLeastSigWord = resultSubtotal.get_least_significant_word();
-//    const HugeIntWord *thisWordA = greater_factor_word, *thisWordB = lesser_factor_word; // thisWordA is taken in descending place values.
-//    HugeIntWord *newMostSigWord, *nextWord;
-//    while(thisWordA != NULL && thisWordB != NULL) {
-//        resultLeastSigWord->add_value((uint64_t)thisWordA->get_value() * thisWordB->get_value());
-//        thisWordA = thisWordA->get_next_lower_sig_word();
-//        thisWordB = thisWordB->get_next_more_sig_word();
-//    }
-//    // Set the most significant word of the subtotal.
-//    newMostSigWord = resultSubtotal.get_most_significant_word();
-//    nextWord = newMostSigWord->get_next_more_sig_word();
-//    while (nextWord != NULL) {
-//        newMostSigWord = nextWord;
-//        nextWord = nextWord->get_next_more_sig_word();
-//    }
-//    resultSubtotal.mostSigWord = newMostSigWord;
-    return resultSubtotal;
+UnsignedHugeIntValue UnsignedHugeIntValue::find_multiplication_subtotal(
+        std::vector<HUGE_INT_WORD_TYPE>::const_reverse_iterator greater_factor_iterator,
+        std::vector<HUGE_INT_WORD_TYPE>::const_iterator lesser_factor_iterator,
+        unsigned long long number_of_multiplications) {
+    // 4 words should be enough to store the sum of 2^64 word products.
+    auto *resultWords = new std::vector<HUGE_INT_WORD_TYPE>(4, 0);
+    std::vector<HUGE_INT_WORD_TYPE>::iterator resultIter;
+    const std::vector<HUGE_INT_WORD_TYPE>::iterator resultIterBegin = resultWords->begin();
+    uint64_t wordProduct;
+
+    // Each product of corresponding words is added to the resulting subtotal.
+    for (unsigned long long multCount = 0; multCount < number_of_multiplications; ++multCount) {
+        wordProduct = (uint64_t)(*greater_factor_iterator) * *lesser_factor_iterator;
+        resultIter = resultIterBegin;
+        while(wordProduct > 0) {
+            wordProduct += *resultIter;
+            *resultIter = (HUGE_INT_WORD_TYPE)(wordProduct % HUGE_INT_WORD_BASE);
+            wordProduct /= HUGE_INT_WORD_BASE;
+            ++resultIter;
+        }
+        ++greater_factor_iterator;
+        ++lesser_factor_iterator;
+    }
+    UnsignedHugeIntValue::remove_extra_leading_words_from(resultWords);
+    return UnsignedHugeIntValue(resultWords);
 }
 
 std::ostream& operator<<(std::ostream& out_stream, const UnsignedHugeIntValue& huge_int_object) {

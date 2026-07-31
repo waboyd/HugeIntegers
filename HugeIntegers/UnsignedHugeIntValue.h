@@ -609,11 +609,14 @@ private:
     /**
      * @brief For a multiplication operation, the subtotal from multiplying words toward one word of the product is found.
      * This method is called by the multiply() method to find the value at one word of the product.
-     * @param greater_factor_word Most significant word of a scan for the first factor.
-     * @param lesser_factor_word Least significant word of a scan for the second factor.
+     * @param greater_factor_iterator Iterator to the most significant word of a scan for the first factor.
+     * @param lesser_factor_iterator Iterator to the least significant word of a scan for the second factor.
+     * @param number_of_multiplications Number of pairs of words that will be multiplied to find this subtotal.
      * @return The subtotal for one word of the product of the two factors.
      */
-    static UnsignedHugeIntValue find_multiplication_subtotal(const HugeIntWord* greater_factor_word, const HugeIntWord* lesser_factor_word);
+    static UnsignedHugeIntValue find_multiplication_subtotal(std::vector<HUGE_INT_WORD_TYPE>::const_reverse_iterator greater_factor_iterator,
+                                                             std::vector<HUGE_INT_WORD_TYPE>::const_iterator lesser_factor_iterator,
+                                                             unsigned long long number_of_multiplications);
 
     /**
      * @brief Multiplies an UnsignedHugeIntValue object by an unsigned integer that is small enough to fit within one word of UnsignedHugeIntValue.

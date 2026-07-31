@@ -7,6 +7,26 @@
 			<Cursor1 position="348" topLine="0" />
 		</Cursor>
 	</File>
+	<File name="../HugeIntegers/UnsignedHugeIntValue.cpp" open="1" top="1" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="89949" topLine="1953" />
+		</Cursor>
+	</File>
+	<File name="../HugeIntegers/UnsignedHugeInt.h" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="34038" topLine="687" />
+		</Cursor>
+	</File>
+	<File name="../HugeIntegers/hugeIntBinTests.cpp" open="1" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1517" topLine="11" />
+		</Cursor>
+	</File>
+	<File name="../HugeIntegers/UnsignedHugeIntValue.h" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="29786" topLine="595" />
+		</Cursor>
+	</File>
 	<File name="../HugeIntegers/HugeIntWord.cpp" open="1" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="1060" topLine="36" />
@@ -17,29 +37,9 @@
 			<Cursor1 position="15561" topLine="402" />
 		</Cursor>
 	</File>
-	<File name="../HugeIntegers/hugeIntBinTests.cpp" open="1" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="19132" topLine="427" />
-		</Cursor>
-	</File>
-	<File name="../HugeIntegers/UnsignedHugeInt.h" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="34038" topLine="687" />
-		</Cursor>
-	</File>
-	<File name="../HugeIntegers/UnsignedHugeIntValue.cpp" open="1" top="1" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="8866" topLine="203" />
-		</Cursor>
-	</File>
 	<File name="../HugeIntegers/hugeIntTests.cpp" open="1" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="41021" topLine="832" />
-		</Cursor>
-	</File>
-	<File name="../HugeIntegers/UnsignedHugeIntValue.h" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="8856" topLine="178" />
 		</Cursor>
 	</File>
 </CodeBlocks_layout_file>
