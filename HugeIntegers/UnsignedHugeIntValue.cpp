@@ -429,12 +429,11 @@ UnsignedHugeIntValue& UnsignedHugeIntValue::multiply_single_word_transform(HUGE_
 }
 
 std::pair<UnsignedHugeIntValue, UnsignedHugeIntValue> UnsignedHugeIntValue::divide(const UnsignedHugeIntValue& dividend, const UnsignedHugeIntValue& divisor) {
-    // ToDo: Change this function to remove dependence on HugeIntWord class.
     std::pair<UnsignedHugeIntValue, UnsignedHugeIntValue> divisionResults;
-//    if (divisor.num_words() == 1) {
-//        auto quickDivisionResults = UnsignedHugeIntValue::divide_single_word_divisor(dividend, divisor.get_least_significant_word()->get_value());
-//        return std::pair(std::move(quickDivisionResults.first), UnsignedHugeIntValue(quickDivisionResults.second));
-//    }
+    if (divisor.num_words() == 1) {
+        auto quickDivisionResults = UnsignedHugeIntValue::divide_single_word_divisor(dividend, divisor.word_values->front());
+        return std::pair(std::move(quickDivisionResults.first), UnsignedHugeIntValue(quickDivisionResults.second));
+    }
     return UnsignedHugeIntValue::divide_many_word_divisor(dividend, divisor);
 }
 
@@ -519,90 +518,81 @@ HUGE_INT_WORD_TYPE UnsignedHugeIntValue::divide_single_word_divisor_transform(HU
 }
 
 std::pair<UnsignedHugeIntValue, UnsignedHugeIntValue> UnsignedHugeIntValue::divide_many_word_divisor(const UnsignedHugeIntValue& dividend, const UnsignedHugeIntValue& divisor) {
-    // ToDo: Change this function to remove dependence on HugeIntWord class.
-    std::pair<UnsignedHugeIntValue, UnsignedHugeIntValue> divisionResults;
-    unsigned long long dividendNumWords = dividend.num_words();
-    unsigned long long divisorNumWords = divisor.num_words();
-    unsigned long long remainderNumWords;
-//    UnsignedHugeIntValue quotient((unsigned long long)0);
-//    HugeIntWord *quotientCalcWord = quotient.get_least_significant_word();
-//    HugeIntWord *remainderEstimateWord, *dividendNextWord, *divisorEstimateWord;
-//    double dividendLowerEstimate, divisorUpperEstimate;
-//    uint64_t quotientWordEstimate;
-//
-//    if (compare(dividend, divisor) < 0) {
-//        return std::pair(quotient, UnsignedHugeIntValue(dividend));
-//    }
-//    // Add words to the quotient.
-//    dividendNextWord = dividend.get_least_significant_word();
-//    unsigned long long quotientNumWords = dividendNumWords - divisorNumWords + 1;
-//    for (unsigned long long wordNumber = 1; wordNumber < quotientNumWords; ++wordNumber) {
-//        quotientCalcWord = quotient.add_word((unsigned long long)0);
-//        dividendNextWord = dividendNextWord->get_next_more_sig_word();
-//    }
-//    UnsignedHugeIntValue subRemainder = integer_with_least_significant_word(dividendNextWord);
-//
-//    // Set the most significant word of the quotient.
-//    // Give a lower estimate of the quotient word.
-//    divisorEstimateWord = divisor.get_most_significant_word();
-//    remainderEstimateWord = subRemainder.get_most_significant_word();
-//    divisorUpperEstimate = divisorEstimateWord->get_value() +
-//        (((double)divisorEstimateWord->get_next_lower_sig_word()->get_value() + 1) / HUGE_INT_WORD_BASE);
-//    dividendLowerEstimate = remainderEstimateWord->get_value() +
-//        (((double)remainderEstimateWord->get_next_lower_sig_word()->get_value()) / HUGE_INT_WORD_BASE);
-//    quotientWordEstimate = (uint64_t)(dividendLowerEstimate / divisorUpperEstimate);
-//
-//    // Multiply the quotient word by the divisor, and subtract the product from the remainder.
-//    subRemainder = UnsignedHugeIntValue::subtract(subRemainder, UnsignedHugeIntValue::multiply_single_word(divisor, quotientWordEstimate));
-//    // Increase the quotient word until it is the correct value.
-//    while (UnsignedHugeIntValue::compare(subRemainder, divisor) >= 0) {
-//        ++quotientWordEstimate;
-//        subRemainder = subtract(subRemainder, divisor);
-//    }
-//    // Set the quotient word.
-//    quotientCalcWord->add_value(quotientWordEstimate);
-//    // Include the next word in the remainder.
-//    quotientCalcWord = quotientCalcWord->get_next_lower_sig_word();
-//    dividendNextWord = dividendNextWord->get_next_lower_sig_word();
-//
-//    // Loop through the dividend's words.
-//    while (dividendNextWord != NULL) {
-//        subRemainder.insert_least_significant_word(dividendNextWord->get_value());
-//
-//        // Give a lower estimate of the quotient word.
-//        remainderEstimateWord = subRemainder.get_most_significant_word();
-//        remainderNumWords = subRemainder.num_words();
-//        if (remainderNumWords > divisorNumWords) {
-//            dividendLowerEstimate = (HUGE_INT_WORD_BASE * remainderEstimateWord->get_value()) +
-//                remainderEstimateWord->get_next_lower_sig_word()->get_value();
-//        }
-//        else if (remainderNumWords < divisorNumWords) {
-//            dividendLowerEstimate = 0;
-//        }
-//        else if (remainderEstimateWord->get_next_lower_sig_word() != NULL)
-//            dividendLowerEstimate = remainderEstimateWord->get_value() +
-//                (((double)remainderEstimateWord->get_next_lower_sig_word()->get_value()) / HUGE_INT_WORD_BASE);
-//        else
-//            dividendLowerEstimate = remainderEstimateWord->get_value();
-//        quotientWordEstimate = (HUGE_INT_WORD_TYPE)(dividendLowerEstimate / divisorUpperEstimate);
-//
-//        // Multiply the quotient word by the divisor, and subtract the product from the remainder.
-//        subRemainder = UnsignedHugeIntValue::subtract(subRemainder, UnsignedHugeIntValue::multiply_single_word(divisor, quotientWordEstimate));
-//        // Increase the quotient word until it is the correct value.
-//        while (UnsignedHugeIntValue::compare(subRemainder, divisor) >= 0) {
-//            ++quotientWordEstimate;
-//            subRemainder = subtract(subRemainder, divisor);
-//        }
-//        // Set the quotient word.
-//        quotientCalcWord->add_value(quotientWordEstimate);
-//        // Include the next word in the remainder.
-//        quotientCalcWord = quotientCalcWord->get_next_lower_sig_word();
-//        dividendNextWord = dividendNextWord->get_next_lower_sig_word();
-//    }
-//    // Remove leading zeros.
-//    quotient.remove_extra_leading_words();
-//    return std::pair(std::move(quotient), std::move(subRemainder));
-    return divisionResults; // ToDo: Delete this line.  //////////////////////////////////////////////////////////////////////////////////////////
+    if (compare(dividend, divisor) < 0) {
+        return std::pair(UnsignedHugeIntValue(), UnsignedHugeIntValue(dividend));
+    }
+    std::vector<HUGE_INT_WORD_TYPE> *divisorWords = divisor.word_values;
+    unsigned long long numDividendWords = dividend.num_words();
+    unsigned long long numDivisorWords = divisorWords->size();
+
+    auto *quotientWords = new std::vector<HUGE_INT_WORD_TYPE>(numDividendWords - numDivisorWords + 1);
+    std::vector<HUGE_INT_WORD_TYPE>::const_reverse_iterator divisorIter = divisorWords->crbegin();
+    std::vector<HUGE_INT_WORD_TYPE>::reverse_iterator quotientIter = quotientWords->rbegin();
+    // The remainder is interpreted and altered as portions of the dividend. This avoids insertions into the vector.
+    auto *remainderWords = new std::vector<HUGE_INT_WORD_TYPE>(*dividend.word_values);
+    std::vector<HUGE_INT_WORD_TYPE>::reverse_iterator remainderLeftIter = remainderWords->rbegin();
+    std::vector<HUGE_INT_WORD_TYPE>::iterator remainderRightIter = remainderWords->begin() + (numDividendWords - numDivisorWords);
+    // The integers are too large to divide in one step, so lower estimates for the quotient are
+    // found and increased until the quotient is exactly correct.
+    double dividendLowerEstimate, divisorUpperEstimate;
+    HUGE_INT_WORD_TYPE quotientWordEstimate;
+
+    // The most significant word of the quotient is found separately.
+    // A lower estimate of the quotient word is found by dividing a lower estimate of the
+    // dividend by an upper estimate of the divisor.
+    divisorUpperEstimate = *divisorIter + (((double)(*(divisorIter + 1)) + 1) / HUGE_INT_WORD_BASE);
+    dividendLowerEstimate = *remainderLeftIter + ((double)(*(remainderLeftIter + 1)) / HUGE_INT_WORD_BASE);
+    quotientWordEstimate = (HUGE_INT_WORD_TYPE)(dividendLowerEstimate / divisorUpperEstimate);
+    // The product of the divisor and the quotient word is subtracted from the remainder segment.
+    UnsignedHugeIntValue subProduct = UnsignedHugeIntValue::multiply_single_word(divisor, quotientWordEstimate);
+    UnsignedHugeIntValue::subtract_from_remainder(remainderRightIter, subProduct);
+    // The quotient word is incremented until it is the exact correct value.
+    while (UnsignedHugeIntValue::is_remainder_too_large(remainderLeftIter, divisorWords)) {
+        ++quotientWordEstimate;
+        UnsignedHugeIntValue::subtract_from_remainder(remainderRightIter, divisor);
+    }
+    // The value found for the quotient word is set in the results.
+    if (quotientWordEstimate > 0) {
+        quotientIter = quotientWords->rbegin();
+        *quotientIter = quotientWordEstimate;
+        ++quotientIter;
+    } else {
+        quotientWords->pop_back();
+        quotientIter = quotientWords->rbegin();
+    }
+
+    // The remaining quotient word values are found.
+    for (unsigned long long numWordsRemaining = numDividendWords - numDivisorWords; numWordsRemaining > 0; --numWordsRemaining) {
+        // The next dividend word is appended to the remainder segment.
+        --remainderRightIter;
+        // A lower estimate of the quotient word is found by dividing a lower estimate of the
+        // dividend by an upper estimate of the divisor.
+        dividendLowerEstimate = (HUGE_INT_WORD_BASE * (double)(*remainderLeftIter))
+                                + *(remainderLeftIter + 1)
+                                + ((double)(*(remainderLeftIter + 2)) / HUGE_INT_WORD_BASE);
+        quotientWordEstimate = (HUGE_INT_WORD_TYPE)(dividendLowerEstimate / divisorUpperEstimate);
+        // The product of the divisor and the quotient word is subtracted from the remainder segment.
+        subProduct = UnsignedHugeIntValue::multiply_single_word(divisor, quotientWordEstimate);
+        UnsignedHugeIntValue::subtract_from_remainder(remainderRightIter, subProduct);
+
+        // The correct quotient value should cause the leftmost word of the remainder to be 0.
+        while (*remainderLeftIter > 0) {
+            ++quotientWordEstimate;
+            UnsignedHugeIntValue::subtract_from_remainder(remainderRightIter, divisor);
+        }
+        ++remainderLeftIter;
+        // The quotient word is incremented until the remainder is less than the divisor.
+        while (UnsignedHugeIntValue::is_remainder_too_large(remainderLeftIter, divisorWords)) {
+            ++quotientWordEstimate;
+            UnsignedHugeIntValue::subtract_from_remainder(remainderRightIter, divisor);
+        }
+        // The value found for the quotient word is set in the results.
+        *quotientIter = quotientWordEstimate;
+        ++quotientIter;
+    }
+    // The leftmost words with a value of 0 must be removed from the remainder.
+    UnsignedHugeIntValue::remove_extra_leading_words_from(remainderWords);
+    return std::pair(UnsignedHugeIntValue(quotientWords), UnsignedHugeIntValue(remainderWords));
 }
 
 UnsignedHugeIntValue& UnsignedHugeIntValue::operator+=(const UnsignedHugeIntValue& addend) {
@@ -1986,6 +1976,41 @@ UnsignedHugeIntValue UnsignedHugeIntValue::find_multiplication_subtotal(
     }
     UnsignedHugeIntValue::remove_extra_leading_words_from(resultWords);
     return UnsignedHugeIntValue(resultWords);
+}
+
+bool UnsignedHugeIntValue::is_remainder_too_large(std::vector<HUGE_INT_WORD_TYPE>::reverse_iterator remainder_iterator,
+                                               const std::vector<HUGE_INT_WORD_TYPE>* divisor_words) {
+    std::vector<HUGE_INT_WORD_TYPE>::const_reverse_iterator divisorIter = divisor_words->crbegin();
+    for (unsigned long long numWordsRemaining = divisor_words->size(); numWordsRemaining > 0; --numWordsRemaining) {
+        if (*remainder_iterator > *divisorIter) {
+            return true;
+        }
+        if (*remainder_iterator < *divisorIter) {
+            return false;
+        }
+        ++remainder_iterator;
+        ++divisorIter;
+    }
+    return true;
+}
+
+void UnsignedHugeIntValue::subtract_from_remainder(std::vector<HUGE_INT_WORD_TYPE>::iterator remainder_iterator,
+                                                 const UnsignedHugeIntValue& subtrahend) {
+    std::vector<HUGE_INT_WORD_TYPE>::const_iterator subtrahendIter = subtrahend.word_values->cbegin();
+    uint64_t remainderWord, subtrahendWord, carryValue = 0;
+    for (unsigned long long numWordsRemaining = subtrahend.word_values->size(); numWordsRemaining > 0; --numWordsRemaining) {
+        remainderWord = *remainder_iterator;
+        subtrahendWord = *subtrahendIter + carryValue;
+        if (remainderWord < subtrahendWord) {
+            *remainder_iterator = HUGE_INT_WORD_BASE + remainderWord - subtrahendWord;
+            carryValue = 1;
+        } else {
+            *remainder_iterator = remainderWord - subtrahendWord;
+            carryValue = 0;
+        }
+        ++remainder_iterator;
+        ++subtrahendIter;
+    }
 }
 
 std::ostream& operator<<(std::ostream& out_stream, const UnsignedHugeIntValue& huge_int_object) {

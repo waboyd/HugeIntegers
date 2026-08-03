@@ -671,6 +671,27 @@ private:
      * @return The whole number quotient (first) and remainder (second) results of the division operation.
      */
     static std::pair<UnsignedHugeIntValue, UnsignedHugeIntValue> divide_many_word_divisor(const UnsignedHugeIntValue& dividend, const UnsignedHugeIntValue& divisor);
+
+    /**
+     * @brief Returns true only if the remainder segment is greater than or equal to the divisor.
+     * This is a helper function for divide_many_word_divisor().
+     * It is assumed that the remainder segment has the same number of words as the divisor.
+     * @param remainder_iterator Points to the most significant word of the remainder to check.
+     * @param divisor_words The words of the divisor.
+     * @return false if the divisor is less than the remainder, otherwise returns true.
+     */
+    static bool is_remainder_too_large(std::vector<HUGE_INT_WORD_TYPE>::reverse_iterator remainder_iterator,
+                                    const std::vector<HUGE_INT_WORD_TYPE>* divisor_words);
+
+    /**
+     * @brief Subtracts from the cooresponding remainder word values.
+     * This is a helper function for divide_many_word_divisor().
+     * It is assumed that the subtrahend is less than the remainder segment, and this is not checked.
+     * @param remainder_iterator Points to the least significant word of the remainder segment to subtract from.
+     * @param subtrahend The value that will be subtracted from the remainder segment.
+     */
+    static void subtract_from_remainder(std::vector<HUGE_INT_WORD_TYPE>::iterator remainder_iterator,
+                                      const UnsignedHugeIntValue& subtrahend);
 };
 
 // Operators involving UnsignedHugeIntValue, but not considered part of UnsignedHugeIntValue by the compiler.
