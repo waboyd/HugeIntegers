@@ -1494,40 +1494,46 @@ void UnsignedHugeIntValue::read_from_text_file(std::string file_path) {
 }
 
 void UnsignedHugeIntValue::read_from_text_file(FILE* integer_file) {
-    // ToDo: Change this function to remove dependence on HugeIntWord class.
     if (integer_file == NULL)
         throw std::invalid_argument("A null file pointer was given as an argument.");
     this->delete_all_words();
-    char readBuffer[HUGE_INT_NUMBER_OF_BASE_10_DIGITS_PER_WORD+ 1];
+    const unsigned int digitsPerSegment = 9;
+    char readBuffer[digitsPerSegment + 1];
     char nextChar;
     HUGE_INT_WORD_TYPE segmentValue;
     HUGE_INT_WORD_TYPE multiplier;
     unsigned short placeIndex;
-//    this->mostSigWord = this->leastSigWord = new HugeIntWord(0);
-//    do {
-//        placeIndex = 0;
-//        multiplier = 1;
-//        // A segment of digits is read at a time and converted to a long integer.
-//        while (placeIndex < HUGE_INT_NUMBER_OF_BASE_10_DIGITS_PER_WORD) {
-//            nextChar = fgetc(integer_file);
-//            // When the end of the file is reached, no more digits are put in the buffer, and
-//            // the multiplier keeps its value.
-//            if (nextChar == EOF)
-//                break;
-//            // Characters that are not digits will be skipped.
-//            if (isdigit(nextChar)) {
-//                readBuffer[placeIndex] = nextChar;
-//                ++placeIndex;
-//                multiplier *= 10;
-//            }
-//        }
-//        readBuffer[placeIndex] = '\0'; // End of the number segment.
-//        // Converts the string to a long integer.
-//        segmentValue = strtoul(readBuffer, NULL, 10);
-//        *this = UnsignedHugeIntValue::multiply_single_word(*this, multiplier);
-//        this->add_value_at_word(this->leastSigWord, segmentValue);
-//    } while (nextChar != EOF);
-    this->word_values = new std::vector<HUGE_INT_WORD_TYPE>(1, 0);    // ToDo: Delete or change this line. /////////////////////////////////////////////////////////////////////
+    this->word_values = new std::vector<HUGE_INT_WORD_TYPE>(1, 0);
+    auto *thisWordValues = this->word_values;
+    // Find the size of the file for the vector memory reservation.
+    fseek(integer_file, 0, SEEK_END);
+    unsigned long long fileSize = ftell(integer_file);
+    fseek(integer_file, 0, SEEK_SET);
+    thisWordValues->reserve((3.321928096 * fileSize + 1) / HUGE_INT_NUMBER_OF_BITS_PER_WORD + 1);
+    do {
+        placeIndex = 0;
+        multiplier = 1;
+        // A segment of digits is read at a time and converted to a long integer.
+        while (placeIndex < digitsPerSegment) {
+            nextChar = fgetc(integer_file);
+            // When the end of the file is reached, no more digits are put in the buffer, and
+            // the multiplier keeps its value.
+            if (nextChar == EOF)
+                break;
+            // Characters that are not digits will be skipped.
+            if (isdigit(nextChar)) {
+                readBuffer[placeIndex] = nextChar;
+                ++placeIndex;
+                multiplier *= 10;
+            }
+        }
+        readBuffer[placeIndex] = '\0'; // End of the number segment.
+        // Converts the string to a long integer.
+        segmentValue = strtoul(readBuffer, NULL, 10);
+        this->multiply_single_word_transform(multiplier);
+        this->add_value_at_word(thisWordValues->begin(), segmentValue);
+    } while (nextChar != EOF);
+    thisWordValues->shrink_to_fit();
 }
 
 void UnsignedHugeIntValue::write_to_text_file(std::string file_path) const {
