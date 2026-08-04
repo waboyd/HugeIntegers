@@ -1547,53 +1547,48 @@ void UnsignedHugeIntValue::write_to_text_file(std::string file_path) const {
 }
 
 void UnsignedHugeIntValue::write_to_text_file(FILE* integer_file) const {
-    // ToDo: Change this function to remove dependence on HugeIntWord class.
     if (integer_file == NULL)
         throw std::invalid_argument("A null file pointer was given as an argument.");
     if (this->num_words() <= 0) {
         throw std::logic_error("An attempt was made to write an undefined value to a file.");
     }
     std::string bufferString;
-//    if (this->num_words() == 1) {
-//        bufferString = std::to_string(this->leastSigWord->get_value());
-//        fputs(bufferString.c_str(), integer_file);
-//        return;
-//    }
-//
-//    // The number of digits must be found to determine the size of the output file.
-//    unsigned long long numDigits(HUGE_INT_NUMBER_OF_BASE_10_DIGITS_PER_WORD);
-//    HUGE_INT_WORD_TYPE segmentBase = 1;
-//    for (unsigned short exponent = 1; exponent <= HUGE_INT_NUMBER_OF_BASE_10_DIGITS_PER_WORD; ++exponent){
-//        segmentBase *= 10;
-//    }
-//    auto divisionResult = UnsignedHugeIntValue::divide_single_word_divisor(this, segmentBase);
-//    UnsignedHugeIntValue &quotient = divisionResult.first;
-//    HUGE_INT_WORD_TYPE &remainder = divisionResult.second;
-//    while (quotient.num_words() > 1) {
-//        divisionResult = UnsignedHugeIntValue::divide_single_word_divisor(quotient, segmentBase);
-//        numDigits += HUGE_INT_NUMBER_OF_BASE_10_DIGITS_PER_WORD;
-//    }
-//    bufferString = std::to_string(quotient.leastSigWord->get_value());
-//    numDigits += bufferString.length();
-//
-//    // The first sets of digits were already found, so they are sent to the output file.
-//    fputs(bufferString.c_str(), integer_file);
-//    bufferString = std::to_string(remainder);
-//    bufferString = std::string(HUGE_INT_NUMBER_OF_BASE_10_DIGITS_PER_WORD - bufferString.length(), '0') + bufferString;
-//    fputs(bufferString.c_str(), integer_file);
-//
-//    // The other output digits are found in segments, in order of least significant segment of digits.
-//    divisionResult = UnsignedHugeIntValue::divide_single_word_divisor(this, segmentBase);
-//    unsigned long long segmentIndex;
-//    for (segmentIndex = numDigits - HUGE_INT_NUMBER_OF_BASE_10_DIGITS_PER_WORD;
-//            segmentIndex > HUGE_INT_NUMBER_OF_BASE_10_DIGITS_PER_WORD;
-//            segmentIndex -= HUGE_INT_NUMBER_OF_BASE_10_DIGITS_PER_WORD) {
-//        bufferString = std::to_string(remainder);
-//        bufferString = std::string(HUGE_INT_NUMBER_OF_BASE_10_DIGITS_PER_WORD - bufferString.length(), '0') + bufferString;
-//        fseek(integer_file, segmentIndex, SEEK_SET);
-//        fputs(bufferString.c_str(), integer_file);
-//        divisionResult = UnsignedHugeIntValue::divide_single_word_divisor(quotient, segmentBase);
-//    }
+    if (this->num_words() == 1) {
+        bufferString = std::to_string(this->word_values->front());
+        fputs(bufferString.c_str(), integer_file);
+        return;
+    }
+
+    // The number of digits must be found to determine the size of the output file.
+    constexpr unsigned int digitsPerSegment = 9;
+    constexpr HUGE_INT_WORD_TYPE segmentBase = 1000000000;
+    unsigned long long numDigits(digitsPerSegment);
+    auto divisionResult = UnsignedHugeIntValue::divide_single_word_divisor(this, segmentBase);
+    UnsignedHugeIntValue &quotient = divisionResult.first;
+    HUGE_INT_WORD_TYPE &remainder = divisionResult.second;
+    while (quotient.num_words() > 1) {
+        remainder = quotient.divide_single_word_divisor_transform(segmentBase);
+        numDigits += digitsPerSegment;
+    }
+    bufferString = std::to_string(quotient.word_values->front());
+    numDigits += bufferString.length();
+
+    // The first sets of digits were already found, so they are sent to the output file.
+    fputs(bufferString.c_str(), integer_file);
+    bufferString = std::to_string(remainder);
+    bufferString = std::string(digitsPerSegment - bufferString.length(), '0') + bufferString;
+    fputs(bufferString.c_str(), integer_file);
+
+    // The other output digits are found in segments, in order of least significant segment of digits.
+    divisionResult = UnsignedHugeIntValue::divide_single_word_divisor(this, segmentBase);
+    unsigned long long segmentIndex;
+    for (segmentIndex = numDigits - digitsPerSegment; segmentIndex > digitsPerSegment; segmentIndex -= digitsPerSegment) {
+        bufferString = std::to_string(remainder);
+        bufferString = std::string(digitsPerSegment - bufferString.length(), '0') + bufferString;
+        fseek(integer_file, segmentIndex, SEEK_SET);
+        fputs(bufferString.c_str(), integer_file);
+        remainder = quotient.divide_single_word_divisor_transform(segmentBase);
+    }
 }
 
 void UnsignedHugeIntValue::read_from_binary_file(std::string file_path) {
