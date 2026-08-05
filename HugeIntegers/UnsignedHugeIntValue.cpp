@@ -751,115 +751,105 @@ UnsignedHugeIntValue& UnsignedHugeIntValue::operator--() {
 }
 
 UnsignedHugeIntValue UnsignedHugeIntValue::operator&(const UnsignedHugeIntValue& operand) const {
-    // ToDo: Change this function to remove dependence on HugeIntWord class.
-//    HugeIntWord *greaterOperandWord, *lesserOperandWord;
-//    HugeIntWord *resultMostSigWord;
-//
-//    if (operand.num_words() > this->num_words()) {
-//        greaterOperandWord = operand.get_least_significant_word();
-//        lesserOperandWord = this->get_least_significant_word();
-//    }
-//    else {
-//        greaterOperandWord = this->get_least_significant_word();
-//        lesserOperandWord = operand.get_least_significant_word();
-//    }
-//    UnsignedHugeIntValue result(greaterOperandWord->get_value() & lesserOperandWord->get_value());
-//    resultMostSigWord = result.get_least_significant_word();
-//    lesserOperandWord = lesserOperandWord->get_next_more_sig_word();
-//    greaterOperandWord = greaterOperandWord->get_next_more_sig_word();
-//
-//    while (lesserOperandWord != NULL) {
-//        resultMostSigWord = result.add_word(greaterOperandWord->get_value() & lesserOperandWord->get_value());
-//        greaterOperandWord = greaterOperandWord->get_next_more_sig_word();
-//        lesserOperandWord = lesserOperandWord->get_next_more_sig_word();
-//    }
-//    result.mostSigWord = resultMostSigWord;
-//    result.remove_extra_leading_words();
-//    return result;
-    return UnsignedHugeIntValue();  // ToDo: Delete this line.  //////////////////////////////////////////////////////////////////////////////////
+    // For a bitwise AND operation, the operation only needs to be performed
+    // while both operands have nonzero values.
+    unsigned long long lesserNumWords, wordIndex;
+    std::vector<HUGE_INT_WORD_TYPE>::const_iterator thisIter = this->word_values->cbegin();
+    std::vector<HUGE_INT_WORD_TYPE>::const_iterator argIter = operand.word_values->cbegin();
+    lesserNumWords = operand.num_words();
+    wordIndex = this->num_words();
+    if (wordIndex < lesserNumWords) {
+        lesserNumWords = wordIndex;
+    }
+
+    // The words of the resulting value are found by doing AND operations to
+    // the corresponding operand values.
+    auto *resultWords = new std::vector<HUGE_INT_WORD_TYPE>(lesserNumWords);
+    std::vector<HUGE_INT_WORD_TYPE>::iterator resultIter = resultWords->begin();
+    for (wordIndex = 0; wordIndex < lesserNumWords; ++wordIndex) {
+        *resultIter = *thisIter & *argIter;
+        ++thisIter;
+        ++argIter;
+        ++resultIter;
+    }
+    UnsignedHugeIntValue::remove_extra_leading_words_from(resultWords);
+    return UnsignedHugeIntValue(resultWords);
 }
 
-UnsignedHugeIntValue UnsignedHugeIntValue::operator&(const unsigned long long operand) const {
-    // ToDo: Change this function to remove dependence on HugeIntWord class.
-//    HugeIntWord *operandWord = this->get_least_significant_word();
-//    uint64_t operandCarry = operand / HUGE_INT_WORD_BASE;
-//    UnsignedHugeIntValue result(operandWord->get_value() & (operand % HUGE_INT_WORD_BASE));
-//    HugeIntWord *resultMostSigWord = result.get_least_significant_word();
-//    operandWord = operandWord->get_next_more_sig_word();
-//    while (operandWord != NULL && operandCarry > 0) {
-//        resultMostSigWord = result.add_word(operandWord->get_value() & (operandCarry % HUGE_INT_WORD_BASE));
-//        operandCarry /= HUGE_INT_WORD_BASE;
-//        operandWord = operandWord->get_next_more_sig_word();
-//    }
-//    result.mostSigWord = resultMostSigWord;
-//    result.remove_extra_leading_words();
-//    return result;
-    return UnsignedHugeIntValue();  // ToDo: Delete this line.  //////////////////////////////////////////////////////////////////////////////////
+UnsignedHugeIntValue UnsignedHugeIntValue::operator&(unsigned long long operand) const {
+    const unsigned long long thisNumWords = this->word_values->size();
+    std::vector<HUGE_INT_WORD_TYPE>::const_iterator thisIter = this->word_values->cbegin();
+
+    if ((operand <= HUGE_INT_MAX_WORD_VALUE) || (thisNumWords == 1)) {
+        return UnsignedHugeIntValue(new std::vector<HUGE_INT_WORD_TYPE>(1,
+                (HUGE_INT_WORD_TYPE)(*thisIter & operand)));
+    }
+
+    // The operand and result should normally not need more than 2 words.
+    auto *resultWords = new std::vector<HUGE_INT_WORD_TYPE>(2);
+    std::vector<HUGE_INT_WORD_TYPE>::iterator resultIter = resultWords->begin();
+    // First (rightmost) result word.
+    *resultIter = (HUGE_INT_WORD_TYPE)(*thisIter & (operand % HUGE_INT_WORD_BASE));
+    operand /= HUGE_INT_WORD_BASE;
+    ++thisIter;
+    ++resultIter;
+    // Second result word.
+    *resultIter = (HUGE_INT_WORD_TYPE)(*thisIter & (operand % HUGE_INT_WORD_BASE));
+    operand /= HUGE_INT_WORD_BASE;
+
+    // Find additional word result word values, if there are any.
+    for (unsigned long long wordIndex = 2; (operand > 0) && (wordIndex < thisNumWords); ++wordIndex) {
+        ++thisIter;
+        resultWords->push_back((HUGE_INT_WORD_TYPE)(*thisIter & (operand % HUGE_INT_WORD_BASE)));
+        operand /= HUGE_INT_WORD_BASE;
+    }
+    UnsignedHugeIntValue::remove_extra_leading_words_from(resultWords);
+    return UnsignedHugeIntValue(resultWords);
 }
 
 UnsignedHugeIntValue& UnsignedHugeIntValue::operator&=(const UnsignedHugeIntValue& operand) {
-    // ToDo: Change this function to remove dependence on HugeIntWord class.
-//    HugeIntWord *greaterOperandWord, *lesserOperandWord;
-//    HugeIntWord *resultMostSigWord;
-//
-//    if (operand.num_words() > this->num_words()) {
-//        greaterOperandWord = operand.get_least_significant_word();
-//        lesserOperandWord = this->get_least_significant_word();
-//    }
-//    else {
-//        greaterOperandWord = this->get_least_significant_word();
-//        lesserOperandWord = operand.get_least_significant_word();
-//    }
-//    resultMostSigWord = this->get_least_significant_word();
-//    resultMostSigWord->value = greaterOperandWord->get_value() & lesserOperandWord->get_value();
-//    lesserOperandWord = lesserOperandWord->get_next_more_sig_word();
-//    greaterOperandWord = greaterOperandWord->get_next_more_sig_word();
-//
-//    while (lesserOperandWord != NULL) {
-//        resultMostSigWord = resultMostSigWord->get_next_more_sig_word();
-//        resultMostSigWord->value = greaterOperandWord->get_value() & lesserOperandWord->get_value();
-//        greaterOperandWord = greaterOperandWord->get_next_more_sig_word();
-//        lesserOperandWord = lesserOperandWord->get_next_more_sig_word();
-//    }
-//
-//    // Excess words in the result must be deleted.
-//    HugeIntWord *wordToDelete = resultMostSigWord->get_next_more_sig_word();
-//    HugeIntWord *nextMoreSigWord;
-//    while (wordToDelete != NULL) {
-//        nextMoreSigWord = wordToDelete->get_next_more_sig_word();
-//        delete(wordToDelete);
-//        wordToDelete = nextMoreSigWord;
-//    }
-//    resultMostSigWord->moreSigWord = NULL;
-//    this->mostSigWord = resultMostSigWord;
-//    this->remove_extra_leading_words();
+    unsigned long long lesserNumWords, wordIndex;
+    std::vector<HUGE_INT_WORD_TYPE>::iterator thisIter = this->word_values->begin();
+    std::vector<HUGE_INT_WORD_TYPE>::const_iterator argIter = operand.word_values->cbegin();
+    lesserNumWords = operand.num_words();
+    wordIndex = this->num_words();
+    if (wordIndex < lesserNumWords) {
+        lesserNumWords = wordIndex;
+    }
+
+    // The words of the resulting value are found by doing AND operations to
+    // the corresponding operand values.
+    for (wordIndex = 0; wordIndex < lesserNumWords; ++wordIndex) {
+        *thisIter &= *argIter;
+        ++thisIter;
+        ++argIter;
+    }
+
+    // Excess words in the result must be deleted.
+    this->word_values->resize(lesserNumWords);
+    this->remove_extra_leading_words();
     return *this;
 }
 
-UnsignedHugeIntValue& UnsignedHugeIntValue::operator&=(const unsigned long long operand) {
-    // ToDo: Change this function to remove dependence on HugeIntWord class.
-//    HugeIntWord *operandWord = this->get_least_significant_word();
-//    uint64_t operandCarry = operand / HUGE_INT_WORD_BASE;
-//    HugeIntWord *resultMostSigWord = this->get_least_significant_word();
-//    resultMostSigWord->value &= (operand % HUGE_INT_WORD_BASE);
-//    operandWord = operandWord->get_next_more_sig_word();
-//    while (operandWord != NULL && operandCarry > 0) {
-//        resultMostSigWord = operandWord;
-//        resultMostSigWord->value &= (operandCarry % HUGE_INT_WORD_BASE);
-//        operandCarry /= HUGE_INT_WORD_BASE;
-//        operandWord = operandWord->get_next_more_sig_word();
-//    }
-//
-//    // Excess words in the result must be deleted.
-//    HugeIntWord *nextMoreSigWord;
-//    while (operandWord != NULL) {
-//        nextMoreSigWord = operandWord->get_next_more_sig_word();
-//        delete(operandWord);
-//        operandWord = nextMoreSigWord;
-//    }
-//    resultMostSigWord->moreSigWord = NULL;
-//    this->mostSigWord = resultMostSigWord;
-//    this->remove_extra_leading_words();
+UnsignedHugeIntValue& UnsignedHugeIntValue::operator&=(unsigned long long operand) {
+    const unsigned long long thisNumWords = this->word_values->size();
+    std::vector<HUGE_INT_WORD_TYPE>::iterator thisIter = this->word_values->begin();
+
+    // First (rightmost) result word.
+    *thisIter &= (operand % HUGE_INT_WORD_BASE);
+    operand /= HUGE_INT_WORD_BASE;
+
+    // Find additional word result word values, if there are any.
+    unsigned long long wordIndex;
+    for (wordIndex = 1; (operand > 0) && (wordIndex < thisNumWords); ++wordIndex) {
+        ++thisIter;
+        *thisIter &= (operand % HUGE_INT_WORD_BASE);
+        operand /= HUGE_INT_WORD_BASE;
+    }
+
+    // Excess words in the result must be deleted.
+    this->word_values->resize(wordIndex);
+    this->remove_extra_leading_words();
     return *this;
 }
 
@@ -867,6 +857,10 @@ UnsignedHugeIntValue UnsignedHugeIntValue::operator|(const UnsignedHugeIntValue&
     // ToDo: Change this function to remove dependence on HugeIntWord class.
 //    HugeIntWord *greaterOperandWord, *lesserOperandWord;
 //    HugeIntWord *resultMostSigWord;
+    unsigned long long lesserNumWords, greaterNumWords, wordIndex;
+    std::vector<HUGE_INT_WORD_TYPE>::const_iterator lesserOperandIter, greaterOperandIter;
+    lesserNumWords = operand.num_words();
+    greaterNumWords = this->num_words();
 //
 //    if (operand.num_words() > this->num_words()) {
 //        greaterOperandWord = operand.get_least_significant_word();
@@ -876,6 +870,18 @@ UnsignedHugeIntValue UnsignedHugeIntValue::operator|(const UnsignedHugeIntValue&
 //        greaterOperandWord = this->get_least_significant_word();
 //        lesserOperandWord = operand.get_least_significant_word();
 //    }
+    if (lesserNumWords > greaterNumWords) {
+        // The operand argument has more words than this object.
+        wordIndex = lesserNumWords;
+        lesserNumWords = greaterNumWords;
+        greaterNumWords = wordIndex;
+        lesserOperandIter = this->word_values->begin();
+        greaterOperandIter = operand.word_values->begin();
+    } else {
+        // The operand argument does not have more words than this object.
+        lesserOperandIter = operand.word_values->begin();
+        greaterOperandIter = this->word_values->begin();
+    }
 //
 //    // Setting up the least significant word of the result.
 //    UnsignedHugeIntValue result(greaterOperandWord->get_value() | lesserOperandWord->get_value());
