@@ -1079,48 +1079,50 @@ UnsignedHugeIntValue& UnsignedHugeIntValue::operator^=(unsigned long long operan
     return *this;
 }
 
-UnsignedHugeIntValue UnsignedHugeIntValue::bitwise_not(const unsigned long long number_of_bits) const {
-    // ToDo: Change this function to remove dependence on HugeIntWord class.
+UnsignedHugeIntValue UnsignedHugeIntValue::bitwise_not(unsigned long long number_of_bits) const {
     if (number_of_bits == 0) {
         return UnsignedHugeIntValue();
     }
     const unsigned long long numFullWords = number_of_bits / HUGE_INT_NUMBER_OF_BITS_PER_WORD;
     const int numExtraBits = number_of_bits % HUGE_INT_NUMBER_OF_BITS_PER_WORD;
-//    HugeIntWord *origWord = this->get_least_significant_word(); // Word of the original value.
-    unsigned long long currentWordNumber;
+    auto *resultWords = new std::vector<HUGE_INT_WORD_TYPE>(numFullWords + 1);
+    std::vector<HUGE_INT_WORD_TYPE>::iterator resultIter = resultWords->begin();
+    const unsigned long long numOrigWords = this->num_words();
+    std::vector<HUGE_INT_WORD_TYPE>::const_iterator thisIter = this->word_values->cbegin();
+    unsigned long long wordIndex, firstIndexLimit;
 
-    // The least significant word of the result is set first.
-//    if (numFullWords == 0) {
-//        // Mask bits left of the specified number of bits.
-//        return UnsignedHugeIntValue((~origWord->get_value()) &
-//                                    (HUGE_INT_MAX_WORD_VALUE >> (HUGE_INT_NUMBER_OF_BITS_PER_WORD - numExtraBits)));
-//    }
-//    UnsignedHugeIntValue resultValue(~origWord->get_value());
-//    origWord = origWord->get_next_more_sig_word();
-//
-//    // The not operation is applied to full words of the original value.
-//    for (currentWordNumber = 1; (currentWordNumber < numFullWords) && (origWord != NULL); ++currentWordNumber) {
-//        resultValue.add_word(~origWord->get_value());
-//        origWord = origWord->get_next_more_sig_word();
-//    }
-//
-//    // If there are no more words in the original value, all remaining result bits should be ones.
-//    for (; currentWordNumber < numFullWords; ++currentWordNumber) {
-//        resultValue.add_word(HUGE_INT_MAX_WORD_VALUE);
-//    }
-//
-//    // The most significant word of the result is set last.
-//    if (numExtraBits == 0) {
-//        return resultValue;
-//    }
-//    if (origWord == NULL) {
-//        resultValue.add_word(HUGE_INT_MAX_WORD_VALUE >> (HUGE_INT_NUMBER_OF_BITS_PER_WORD - numExtraBits));
-//        return resultValue;
-//    }
-//    resultValue.add_word((~origWord->get_value()) &
-//                          (HUGE_INT_MAX_WORD_VALUE >> (HUGE_INT_NUMBER_OF_BITS_PER_WORD - numExtraBits)));
-//    return resultValue;
-    return UnsignedHugeIntValue();  // ToDo: Delete this line.  //////////////////////////////////////////////////////////////////////////////////
+    // NOT operations are first performed on full words of the original value.
+    if (numOrigWords < numFullWords) {
+        firstIndexLimit = numOrigWords;
+    } else {
+        firstIndexLimit = numFullWords;
+    }
+    for (wordIndex = 0; wordIndex < firstIndexLimit; ++wordIndex) {
+        *resultIter = ~(*thisIter);
+        ++thisIter;
+        ++resultIter;
+    }
+    // If the original value runs out of words, the result will have all 1's
+    // as the remaining bits.
+    for (; wordIndex < numFullWords; ++wordIndex) {
+        *resultIter = (HUGE_INT_WORD_TYPE)HUGE_INT_MAX_WORD_VALUE;
+        ++resultIter;
+    }
+    // If there are no more bits to set, the output can be returned.
+    if (numExtraBits == 0) {
+        resultWords->pop_back();
+        UnsignedHugeIntValue::remove_extra_leading_words_from(resultWords);
+        return UnsignedHugeIntValue(resultWords);
+    }
+    // If there are more bits to set, the leftmost result word must be set.
+    if (numOrigWords > numFullWords) {
+        *resultIter =
+            ~(*thisIter) & (HUGE_INT_MAX_WORD_VALUE >> (HUGE_INT_NUMBER_OF_BITS_PER_WORD - numExtraBits));
+    } else {
+        *resultIter = HUGE_INT_MAX_WORD_VALUE >> (HUGE_INT_NUMBER_OF_BITS_PER_WORD - numExtraBits);
+    }
+    UnsignedHugeIntValue::remove_extra_leading_words_from(resultWords);
+    return UnsignedHugeIntValue(resultWords);
 }
 
 UnsignedHugeIntValue UnsignedHugeIntValue::operator<<(const unsigned long long number_of_bits) const {

@@ -428,7 +428,7 @@ public:
      * @param number_of_bits The number of bits of the value that are considered.
      * @return The result of the bitwise NOT operation.
      */
-    UnsignedHugeIntValue bitwise_not(const unsigned long long number_of_bits) const;
+    UnsignedHugeIntValue bitwise_not(unsigned long long number_of_bits) const;
 
     /**
      * @brief Returns the result of a bitwise left shift operation.
