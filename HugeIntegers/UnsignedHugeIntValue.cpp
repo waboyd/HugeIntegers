@@ -906,7 +906,7 @@ UnsignedHugeIntValue UnsignedHugeIntValue::operator|(unsigned long long operand)
         ++resultIter;
     }
     // If the operand needs more words than this object, those words must be
-    // added to the result.
+    // appended to the result.
     while (operand > 0) {
         resultWords->push_back((HUGE_INT_WORD_TYPE)(operand % HUGE_INT_WORD_BASE));
         operand /= HUGE_INT_WORD_BASE;
@@ -933,7 +933,7 @@ UnsignedHugeIntValue& UnsignedHugeIntValue::operator|=(const UnsignedHugeIntValu
         ++thisIter;
         ++argIter;
     }
-    // If the operand argument has more words, those words must be added
+    // If the operand argument has more words, those words must be appended
     // to the result.
     if (operandNumWords > thisNumWords) {
         this->word_values->insert(thisIter, argIter, operand.word_values->end());
@@ -963,123 +963,119 @@ UnsignedHugeIntValue& UnsignedHugeIntValue::operator|=(unsigned long long operan
 }
 
 UnsignedHugeIntValue UnsignedHugeIntValue::operator^(const UnsignedHugeIntValue& operand) const {
-    // ToDo: Change this function to remove dependence on HugeIntWord class.
-//    HugeIntWord *greaterOperandWord, *lesserOperandWord;
-//    HugeIntWord *resultMostSigWord;
-//
-//    if (operand.num_words() > this->num_words()) {
-//        greaterOperandWord = operand.get_least_significant_word();
-//        lesserOperandWord = this->get_least_significant_word();
-//    }
-//    else {
-//        greaterOperandWord = this->get_least_significant_word();
-//        lesserOperandWord = operand.get_least_significant_word();
-//    }
-//
-//    // Setting up the least significant word of the result.
-//    UnsignedHugeIntValue result(greaterOperandWord->get_value() ^ lesserOperandWord->get_value());
-//    resultMostSigWord = result.get_least_significant_word();
-//    lesserOperandWord = lesserOperandWord->get_next_more_sig_word();
-//    greaterOperandWord = greaterOperandWord->get_next_more_sig_word();
-//
-//    // Performing XOR operations between matching words.
-//    while (lesserOperandWord != NULL) {
-//        resultMostSigWord = result.add_word(greaterOperandWord->get_value() ^ lesserOperandWord->get_value());
-//        greaterOperandWord = greaterOperandWord->get_next_more_sig_word();
-//        lesserOperandWord = lesserOperandWord->get_next_more_sig_word();
-//    }
-//
-//    // Attaching the most significant words of the greater operand to the result.
-//    while (greaterOperandWord != NULL) {
-//        resultMostSigWord = result.add_word(greaterOperandWord->get_value());
-//        greaterOperandWord = greaterOperandWord->get_next_more_sig_word();
-//    }
-//
-//    result.mostSigWord = resultMostSigWord;
-//    result.remove_extra_leading_words();
-//    return result;
-    return UnsignedHugeIntValue();  // ToDo: Delete this line.  //////////////////////////////////////////////////////////////////////////////////
+    // The operands are differentiated based on their numbers of words.
+    unsigned long long lesserNumWords, greaterNumWords, wordIndex;
+    std::vector<HUGE_INT_WORD_TYPE>::const_iterator lesserOperandIter, greaterOperandIter;
+    lesserNumWords = operand.num_words();
+    greaterNumWords = this->num_words();
+    if (lesserNumWords > greaterNumWords) {
+        // The operand argument has more words than this object.
+        wordIndex = lesserNumWords;
+        lesserNumWords = greaterNumWords;
+        greaterNumWords = wordIndex;
+        lesserOperandIter = this->word_values->begin();
+        greaterOperandIter = operand.word_values->begin();
+    } else {
+        // The operand argument does not have more words than this object.
+        lesserOperandIter = operand.word_values->begin();
+        greaterOperandIter = this->word_values->begin();
+    }
+
+    // The result could have the same number of bits as the greater operand.
+    auto *resultWords = new std::vector<HUGE_INT_WORD_TYPE>(greaterNumWords);
+    std::vector<HUGE_INT_WORD_TYPE>::iterator resultIter = resultWords->begin();
+
+    // The words of the resulting value are found by doing XOR operations to
+    // the corresponding operand values.
+    for (wordIndex = 0; wordIndex < lesserNumWords; ++wordIndex) {
+        *resultIter = *lesserOperandIter ^ *greaterOperandIter;
+        ++lesserOperandIter;
+        ++greaterOperandIter;
+        ++resultIter;
+    }
+    // When one operand runs out of words, copy the word values from the other operand.
+    for (; wordIndex < greaterNumWords; ++wordIndex) {
+        *resultIter = *greaterOperandIter;
+        ++greaterOperandIter;
+        ++resultIter;
+    }
+    // It is possible for the result to have extra leading 0 bits.
+    UnsignedHugeIntValue::remove_extra_leading_words_from(resultWords);
+    return UnsignedHugeIntValue(resultWords);
 }
 
-UnsignedHugeIntValue UnsignedHugeIntValue::operator^(const unsigned long long operand) const {
-    // ToDo: Change this function to remove dependence on HugeIntWord class.
-//    HugeIntWord *operandWord = this->get_least_significant_word();
-//    uint64_t operandCarry = operand / HUGE_INT_WORD_BASE;
-//    UnsignedHugeIntValue result(operandWord->get_value() ^ (operand % HUGE_INT_WORD_BASE));
-//    HugeIntWord *resultMostSigWord = result.get_least_significant_word();
-//    operandWord = operandWord->get_next_more_sig_word();
-//    while (operandWord != NULL) {
-//        resultMostSigWord = result.add_word(operandWord->get_value() ^ (operandCarry % HUGE_INT_WORD_BASE));
-//        operandCarry /= HUGE_INT_WORD_BASE;
-//        operandWord = operandWord->get_next_more_sig_word();
-//    }
-//    while (operandCarry > 0) {
-//        resultMostSigWord = result.add_word(operandCarry % HUGE_INT_WORD_BASE);
-//        operandCarry /= HUGE_INT_WORD_BASE;
-//    }
-//    result.mostSigWord = resultMostSigWord;
-//    result.remove_extra_leading_words();
-//    return result;
-    return UnsignedHugeIntValue();  // ToDo: Delete this line.  //////////////////////////////////////////////////////////////////////////////////
+UnsignedHugeIntValue UnsignedHugeIntValue::operator^(unsigned long long operand) const {
+    const unsigned long long thisNumWords = this->word_values->size();
+    // First, the result words are copied from this object's words.
+    auto *resultWords = new std::vector<HUGE_INT_WORD_TYPE>(*this->word_values);
+    std::vector<HUGE_INT_WORD_TYPE>::iterator resultIter = resultWords->begin();
+
+    // The result values are adjusted using XOR operations with the argument.
+    for (unsigned long long wordIndex = 0; (operand > 0) && (wordIndex < thisNumWords); ++wordIndex) {
+        *resultIter ^= (operand % HUGE_INT_WORD_BASE);
+        operand /= HUGE_INT_WORD_BASE;
+        ++resultIter;
+    }
+    // If the operand needs more words than this object, those words must be
+    // appended to the result.
+    while (operand > 0) {
+        resultWords->push_back((HUGE_INT_WORD_TYPE)(operand % HUGE_INT_WORD_BASE));
+        operand /= HUGE_INT_WORD_BASE;
+    }
+    // It is possible for the result to have extra leading 0 bits.
+    UnsignedHugeIntValue::remove_extra_leading_words_from(resultWords);
+    return UnsignedHugeIntValue(resultWords);
 }
 
 UnsignedHugeIntValue& UnsignedHugeIntValue::operator^=(const UnsignedHugeIntValue& operand) {
-    // ToDo: Change this function to remove dependence on HugeIntWord class.
-//    HugeIntWord *thisWord = this->get_least_significant_word();
-//    HugeIntWord *operandWord = operand.get_least_significant_word();
-//
-//    // Performing XOR operations between matching words.
-//    while (thisWord != NULL && operandWord != NULL) {
-//        thisWord->value ^= operandWord->get_value();
-//        thisWord = thisWord->get_next_more_sig_word();
-//        operandWord = operandWord->get_next_more_sig_word();
-//    }
-//
-//    // If the operand argument does not have more words than the original value,
-//    // no words need to be added.
-//    if (operandWord == NULL) {
-//        this->remove_extra_leading_words();
-//        return *this;
-//    }
-//
-//    // If the operand argument has more words, those words must be added to the result.
-//    HugeIntWord *resultMostSigWord;
-//    do {
-//        resultMostSigWord = this->add_word(operandWord->get_value());
-//        operandWord = operandWord->get_next_more_sig_word();
-//    } while (operandWord != NULL);
-//
-//    this->mostSigWord = resultMostSigWord;
-//    this->remove_extra_leading_words();
+    const unsigned long long thisNumWords = this->num_words();
+    unsigned long long operandNumWords, lesserNumWords, wordIndex;
+    std::vector<HUGE_INT_WORD_TYPE>::iterator thisIter = this->word_values->begin();
+    std::vector<HUGE_INT_WORD_TYPE>::iterator argIter = operand.word_values->begin();
+    operandNumWords = operand.num_words();
+    if (operandNumWords < thisNumWords) {
+        lesserNumWords = operandNumWords;
+    } else {
+        lesserNumWords = thisNumWords;
+    }
+
+    // The words of the resulting value are found by doing XOR operations to
+    // the corresponding operand values.
+    for (wordIndex = 0; wordIndex < lesserNumWords; ++wordIndex) {
+        *thisIter ^= *argIter;
+        ++thisIter;
+        ++argIter;
+    }
+    // If the operand argument has more words, those words must be appended
+    // to the result.
+    if (operandNumWords > thisNumWords) {
+        this->word_values->insert(thisIter, argIter, operand.word_values->end());
+    }
+    // If this object has more words than the argument, those words are
+    // already set in the result.
+    // It is possible for the result to have extra leading 0 bits.
+    this->remove_extra_leading_words();
     return *this;
 }
 
-UnsignedHugeIntValue& UnsignedHugeIntValue::operator^=(const unsigned long long operand) {
-    // ToDo: Change this function to remove dependence on HugeIntWord class.
-//    HugeIntWord *thisWord = this->get_least_significant_word();
-//    uint64_t operandCarry = operand / HUGE_INT_WORD_BASE;
-//    thisWord->value ^= (operand % HUGE_INT_WORD_BASE);
-//    thisWord = thisWord->get_next_more_sig_word();
-//    while (thisWord != NULL && operandCarry > 0) {
-//        thisWord->value ^= (operandCarry % HUGE_INT_WORD_BASE);
-//        operandCarry /= HUGE_INT_WORD_BASE;
-//        thisWord = thisWord->get_next_more_sig_word();
-//    }
-//
-//    // If the operand's value has been completely used, no words need to be added to the result.
-//    if (operandCarry == 0) {
-//        this->remove_extra_leading_words();
-//        return *this;
-//    }
-//
-//    // If the operand uses more words than the original value, those words must be added to the result.
-//    do {
-//        thisWord = this->add_word(operandCarry % HUGE_INT_WORD_BASE);
-//        operandCarry /= HUGE_INT_WORD_BASE;
-//    } while (operandCarry > 0);
-//
-//    this->mostSigWord = thisWord;
-//    this->remove_extra_leading_words();
+UnsignedHugeIntValue& UnsignedHugeIntValue::operator^=(unsigned long long operand) {
+    const unsigned long long thisNumWords = this->num_words();
+    std::vector<HUGE_INT_WORD_TYPE>::iterator thisIter = this->word_values->begin();
+
+    // The operand is split into word-sized segments for XOR operations.
+    for (unsigned long long wordIndex = 0; (operand > 0) && (wordIndex < thisNumWords); ++wordIndex) {
+        *thisIter ^= (operand % HUGE_INT_WORD_BASE);
+        operand /= HUGE_INT_WORD_BASE;
+        ++thisIter;
+    }
+    // If the operand argument still has remaining bits, those must be
+    // appended to the result.
+    while (operand > 0) {
+        this->word_values->push_back((HUGE_INT_WORD_TYPE)(operand % HUGE_INT_WORD_BASE));
+        operand /= HUGE_INT_WORD_BASE;
+    }
+    // It is possible for the result to have extra leading 0 bits.
+    this->remove_extra_leading_words();
     return *this;
 }
 

@@ -403,7 +403,7 @@ public:
      * @param operand Value that will be used in a bitwise XOR operation.
      * @return The result of the bitwise XOR between the two arguments.
      */
-    UnsignedHugeIntValue operator^(const unsigned long long operand) const;
+    UnsignedHugeIntValue operator^(unsigned long long operand) const;
 
     /**
      * @brief Replaces this value with the result of a bitwise XOR operation with the operand.
@@ -419,7 +419,7 @@ public:
      * @param addend Value that will be used in a bitwise XOR operation with the original value.
      * @return Reference to the UnsignedHugeIntValue object after its value is changed.
      */
-    UnsignedHugeIntValue& operator^=(const unsigned long long operand);
+    UnsignedHugeIntValue& operator^=(unsigned long long operand);
 
     /**
      * @brief Returns the result of a bitwise NOT operation over the specified number of bits.
