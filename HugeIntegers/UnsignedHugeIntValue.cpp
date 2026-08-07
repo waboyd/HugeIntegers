@@ -1217,123 +1217,106 @@ UnsignedHugeIntValue& UnsignedHugeIntValue::operator<<=(unsigned long long numbe
 }
 
 UnsignedHugeIntValue UnsignedHugeIntValue::operator>>(unsigned long long number_of_bits) const {
-    // ToDo: Change this function to remove dependence on HugeIntWord class.
-//    if ((this->num_words() == 1) && (this->get_least_significant_word()->get_value() == 0)) {
-//        return UnsignedHugeIntValue();
-//    }
-//    if (number_of_bits == 0) {
-//        return UnsignedHugeIntValue(*this);
-//    }
-//    const unsigned long long numFullWordsShifted = number_of_bits / HUGE_INT_NUMBER_OF_BITS_PER_WORD;
-//    const int wordShiftSize = number_of_bits % HUGE_INT_NUMBER_OF_BITS_PER_WORD;
-//    const int carryShiftSize = HUGE_INT_NUMBER_OF_BITS_PER_WORD - wordShiftSize;
-//    HUGE_INT_WORD_TYPE origWordValue, shiftedWordValue, carryValue;
-//    HugeIntWord *origWord = this->get_least_significant_word(); // Word of the original value.
-//
-//    // A word of the original value is ignored for each full word that was shifted.
-//    for (unsigned long long wordNum = 0; wordNum < numFullWordsShifted; ++wordNum) {
-//        origWord = origWord->get_next_more_sig_word();
-//        if (origWord == NULL) {
-//            // If the shift was larger than the original value, 0 is returned.
-//            return UnsignedHugeIntValue();
-//        }
-//    }
-//
-//    // The least significant word for a new result object is set.
-//    shiftedWordValue = origWord->get_value() >> wordShiftSize;
-//    origWord = origWord->get_next_more_sig_word();
-//    if (origWord == NULL) {
-//        return UnsignedHugeIntValue(shiftedWordValue);
-//    }
-//    origWordValue = origWord->get_value();
-//    if (wordShiftSize == 0) {
-//        carryValue = 0;
-//    } else {
-//        carryValue = origWordValue << carryShiftSize;
-//    }
-//    UnsignedHugeIntValue resultValue(carryValue | shiftedWordValue);
-//    shiftedWordValue = origWordValue >> wordShiftSize;
-//    origWord = origWord->get_next_more_sig_word();
-//
-//    // The result word values are combined from two words of the original value.
-//    while (origWord != NULL) {
-//        origWordValue = origWord->get_value();
-//        if (wordShiftSize > 0) {
-//            carryValue = origWordValue << carryShiftSize;
-//        }
-//        resultValue.add_word(carryValue | shiftedWordValue);
-//        shiftedWordValue = origWordValue >> wordShiftSize;
-//        origWord = origWord->get_next_more_sig_word();
-//    }
-//
-//    // The most significant result word value is set from the final shifted value.
-//    if (shiftedWordValue > 0) {
-//        resultValue.add_word(shiftedWordValue);
-//    }
-//    return resultValue;
-    return UnsignedHugeIntValue();  // ToDo: Delete this line.  //////////////////////////////////////////////////////////////////////////////////
+    const unsigned long long numOrigWords = this->word_values->size();
+    if ((numOrigWords == 1) && (this->word_values->front() == 0)) {
+        return UnsignedHugeIntValue();
+    }
+    if (number_of_bits == 0) {
+        return UnsignedHugeIntValue(*this);
+    }
+    const unsigned long long numFullWordsShifted = number_of_bits / HUGE_INT_NUMBER_OF_BITS_PER_WORD;
+    if (numFullWordsShifted >= numOrigWords) {
+        // All the original bits were shifted out.
+        return UnsignedHugeIntValue();
+    }
+    const int wordShiftSize = number_of_bits % HUGE_INT_NUMBER_OF_BITS_PER_WORD;
+
+    std::vector<HUGE_INT_WORD_TYPE>::const_iterator thisIter = this->word_values->cbegin() + numFullWordsShifted;
+    auto *resultWords = new std::vector<HUGE_INT_WORD_TYPE>(numOrigWords - numFullWordsShifted);
+    std::vector<HUGE_INT_WORD_TYPE>::iterator resultIter = resultWords->begin();
+    // If the shift size is divisible by the word size, word values can be
+    // copied from the original value.
+    if (wordShiftSize == 0) {
+        for (unsigned long long wordIndex = numFullWordsShifted; wordIndex < numOrigWords; ++wordIndex) {
+            *resultIter = *thisIter;
+            ++thisIter;
+            ++resultIter;
+        }
+        return UnsignedHugeIntValue(resultWords);
+    }
+
+    const int carryShiftSize = HUGE_INT_NUMBER_OF_BITS_PER_WORD - wordShiftSize;
+    HUGE_INT_WORD_TYPE shiftedValue;
+    // The result word values are combined from two words of the original value.
+    shiftedValue = *thisIter >> wordShiftSize;
+    for (unsigned long long wordIndex = numFullWordsShifted + 1; wordIndex < numOrigWords; ++wordIndex) {
+        ++thisIter;
+        *resultIter = (*thisIter << carryShiftSize) | shiftedValue;
+        shiftedValue = *thisIter >> wordShiftSize;
+        ++resultIter;
+    }
+    // The most significant result word value is created only from the carry value.
+    if (shiftedValue > 0) {
+        *resultIter = shiftedValue;
+    } else {
+        resultWords->pop_back();
+    }
+    return UnsignedHugeIntValue(resultWords);
 }
 
 UnsignedHugeIntValue& UnsignedHugeIntValue::operator>>=(unsigned long long number_of_bits) {
-    // ToDo: Change this function to remove dependence on HugeIntWord class.
-//    if ((this->num_words() == 1) && (this->get_least_significant_word()->get_value() == 0)) {
-//        return *this;
-//    }
-//    if (number_of_bits == 0) {
-//        return *this;
-//    }
-//
-//    const unsigned long long numFullWordsShifted = number_of_bits / HUGE_INT_NUMBER_OF_BITS_PER_WORD;
-//    const int wordShiftSize = number_of_bits % HUGE_INT_NUMBER_OF_BITS_PER_WORD;
-//    const int carryShiftSize = HUGE_INT_NUMBER_OF_BITS_PER_WORD - wordShiftSize;
-//    HUGE_INT_WORD_TYPE readWordValue, shiftedWordValue, carryValue;
-//    HugeIntWord *readWord = this->get_least_significant_word(); // Word being read.
-//    HugeIntWord *writeWord = readWord; // Word being changed.
-//    HugeIntWord *wordToDelete;
-//
-//    // A word of the original value is ignored for each full word that was shifted.
-//    for (unsigned long long wordNum = 0; wordNum < numFullWordsShifted; ++wordNum) {
-//        readWord = readWord->get_next_more_sig_word();
-//        if (readWord == NULL) {
-//            // If the shift was larger than the original value, the resulting value is 0.
-//            *this = UnsignedHugeIntValue();
-//            return *this;
-//        }
-//    }
-//
-//    // The result word values are combined from two words of the original value.
-//    shiftedWordValue = readWord->get_value() >> wordShiftSize;
-//    readWord = readWord->get_next_more_sig_word();
-//    carryValue = 0;
-//    while (readWord != NULL) {
-//        readWordValue = readWord->get_value();
-//        if (wordShiftSize > 0) {
-//            carryValue = readWordValue << carryShiftSize;
-//        }
-//        writeWord->value = carryValue | shiftedWordValue;
-//        shiftedWordValue = readWordValue >> wordShiftSize;
-//        readWord = readWord->get_next_more_sig_word();
-//        writeWord = writeWord->get_next_more_sig_word();
-//    }
-//
-//    // The most significant result word value is set from the final shifted value.
-//    if ((shiftedWordValue > 0) || (writeWord->get_next_lower_sig_word() == NULL)) {
-//        writeWord->value = shiftedWordValue;
-//        wordToDelete = writeWord->get_next_more_sig_word();
-//    }
-//    else {
-//        wordToDelete = writeWord;
-//        writeWord = writeWord->get_next_lower_sig_word();
-//    }
-//    this->mostSigWord = writeWord;
-//    writeWord->moreSigWord = NULL;
-//
-//    // Excess words in the result must be deleted.
-//    while (wordToDelete != NULL) {
-//        writeWord = wordToDelete->get_next_more_sig_word();
-//        delete(wordToDelete);
-//        wordToDelete = writeWord;
-//    }
+    const unsigned long long numOrigWords = this->word_values->size();
+    if ((numOrigWords == 1) && (this->word_values->front() == 0)) {
+        return *this;
+    }
+    if (number_of_bits == 0) {
+        return *this;
+    }
+    const unsigned long long numFullWordsShifted = number_of_bits / HUGE_INT_NUMBER_OF_BITS_PER_WORD;
+    if (numFullWordsShifted >= numOrigWords) {
+        this->word_values->resize(1);
+        this->word_values->front() = 0;
+        this->word_values->shrink_to_fit();
+        return *this;
+    }
+    // If words are shifted out of the value, they are ignored.
+    std::vector<HUGE_INT_WORD_TYPE>::const_iterator readIter = this->word_values->cbegin() + numFullWordsShifted;
+    std::vector<HUGE_INT_WORD_TYPE>::iterator writeIter = this->word_values->begin();
+    const int wordShiftSize = number_of_bits % HUGE_INT_NUMBER_OF_BITS_PER_WORD;
+
+    // If the shift size is divisible by the word size, full word values can
+    // be copied to positions toward the right.
+    if (wordShiftSize == 0) {
+        for (unsigned long long wordIndex = numFullWordsShifted; wordIndex < numOrigWords; ++wordIndex) {
+            *writeIter = *readIter;
+            ++readIter;
+            ++writeIter;
+        }
+        this->word_values->resize(numOrigWords - numFullWordsShifted);
+        this->word_values->shrink_to_fit();
+        return *this;
+    }
+
+    const int carryShiftSize = HUGE_INT_NUMBER_OF_BITS_PER_WORD - wordShiftSize;
+    HUGE_INT_WORD_TYPE shiftedValue;
+    // The result word values are combined from two words of the original value.
+    shiftedValue = *readIter >> wordShiftSize;
+
+    for (unsigned long long wordIndex = numFullWordsShifted + 1; wordIndex < numOrigWords; ++wordIndex) {
+        ++readIter;
+        *writeIter = (*readIter << carryShiftSize) | shiftedValue;
+        shiftedValue = *readIter >> wordShiftSize;
+        ++writeIter;
+    }
+    // The most significant result word value is created only from the
+    // shifted value.
+    if ((shiftedValue > 0) || (numOrigWords - numFullWordsShifted == 1)) {
+        *writeIter = shiftedValue;
+        this->word_values->resize(numOrigWords - numFullWordsShifted);
+    } else {
+        this->word_values->resize(numOrigWords - numFullWordsShifted - 1);
+    }
+    this->word_values->shrink_to_fit();
     return *this;
 }
 
