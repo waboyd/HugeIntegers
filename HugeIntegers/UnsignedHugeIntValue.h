@@ -8,11 +8,6 @@
 #include <sys/stat.h>
 #include <vector>
 
-#include "HugeIntWord.h"
-
-#define HUGE_INT_WORD_TYPE  uint32_t
-#define BUFFER_NUM_WORDS    16
-
 class UnsignedHugeIntValue {
     friend class UnsignedHugeInt;
 public:
@@ -481,27 +476,6 @@ public:
      */
     long num_words() const;
 
-    // ToDo: Remove this function to remove dependence on HugeIntWord class.
-    /**
-     * @brief Returns the most significant word of the UnsignedHugeIntValue object.
-     * @return The most significant word of the object.
-     */
-    HugeIntWord* get_most_significant_word() const;
-
-    // ToDo: Remove this function to remove dependence on HugeIntWord class.
-    /**
-     * @brief Returns the least significant word of the UnsignedHugeIntValue object.
-     * @return The least significant word of the object.
-     */
-    HugeIntWord* get_least_significant_word() const;
-
-    // ToDo: Remove this function to remove dependence on HugeIntWord class.
-    /**
-     * @brief Removes and deletes the most significant word of the UnsignedHugeIntValue object.
-     * @return The most significant word of the object after the change.
-     */
-    HugeIntWord* remove_most_significant_word();
-
     /**
      * @brief Returns the value of this UnsignedHugeIntValue object as a string.
      * @return The value of this object as a string of digits.
@@ -519,50 +493,27 @@ protected:
     void set_value_from_string(std::string integer_string);
 
     /**
-     * @brief Removes and deletes all words from this object.
-     */
-    void delete_all_words();
-
-    /**
      * @brief Removes and deletes the most significant words of this object if the words have a value of 0.
      */
     void remove_extra_leading_words();
 
-    // ToDo: Remove this function to remove dependence on HugeIntWord class.
-    /**
-     * @brief Adds a new most significant word with a value of 0.
-     * @return Pointer to the new word that was added.
-     */
-    HugeIntWord* add_word();
-
-    // ToDo: Remove this function to remove dependence on HugeIntWord class.
-    /**
-     * @brief Adds new most significant words with a total value given in the parameter.
-     * @return Pointer to the most significant new word that was added.
-     */
-    HugeIntWord* add_word(const unsigned long long value);
-
-    // ToDo: Remove this function to remove dependence on HugeIntWord class.
-    /**
-     * @brief Adds the word given in the parameter as the new most significant word.
-     * @return Pointer to the new word that was added.
-     */
-    HugeIntWord* add_word(HugeIntWord* new_word);
-
-    // ToDo: Remove or change this function to remove dependence on HugeIntWord class.
-    /**
-     * @brief Changes this number by inserting a new least significant word with the given value.
-     * @param least_significant_value The value of the new least significant word to be added.
-     * @return The least significant word of this number.
-     */
-    HugeIntWord* insert_least_significant_word(unsigned long least_significant_value);
-
 private:
-//    // ToDo: Remove these pointers to remove dependence on HugeIntWord class.
-//    HugeIntWord *leastSigWord, *mostSigWord;
+    // The type used for the word (segment) values in a huge integer.
+    using WordType = uint32_t;
 
     // Holds all of the word (value segment) values.
-    std::vector<HUGE_INT_WORD_TYPE> *word_values = NULL;
+    std::vector<WordType> *word_values = NULL;
+
+    // The number of bits used to store each word value of an UnsignedHugeInt.
+    static constexpr unsigned int bits_per_word = 32;
+
+    // The base value for the words of UnsignedHugeInt.
+    // This value must be 2 raised to the power of BITS_PER_WORD.
+    static constexpr uint64_t word_base_value = 4294967296;
+
+    // The largest possible value of one word of an UnsignedHugeInt value.
+    // This value must be one less than WORD_BASE_VALUE.
+    static constexpr WordType max_word_value = 4294967295;
 
     // Private Methods
 
@@ -572,16 +523,7 @@ private:
      * This constructor is intended for use within functions of this same class. It avoids use of a default vector object.
      * @param word_values_vector Heap-allocated non-null vector of word values.
      */
-    UnsignedHugeIntValue(std::vector<HUGE_INT_WORD_TYPE>* word_values_vector);
-
-
-    /**
-     * @brief Adds a specified value at a specified word index of this UnsignedHugeIntValue.
-     * The next more significant words of this object may be changed because of carry values.
-     * @param location_to_add Iterator to the word at which the value will be added. This word will be changed.
-     * @param value_to_add Value that will be added to the specified word.
-     */
-    void add_value_at_word(std::vector<HUGE_INT_WORD_TYPE>::iterator location_to_add, const UnsignedHugeIntValue& value_to_add);
+    UnsignedHugeIntValue(std::vector<WordType>* word_values_vector);
 
     /**
      * @brief Adds a specified value at a specified word index of this UnsignedHugeIntValue.
@@ -589,23 +531,22 @@ private:
      * @param location_to_add Iterator to the word at which the value will be added. This word will be changed.
      * @param value_to_add Value that will be added to the specified word.
      */
-    void add_value_at_word(std::vector<HUGE_INT_WORD_TYPE>::iterator location_to_add, unsigned long long value_to_add);
+    void add_value_at_word(std::vector<WordType>::iterator location_to_add, const UnsignedHugeIntValue& value_to_add);
+
+    /**
+     * @brief Adds a specified value at a specified word index of this UnsignedHugeIntValue.
+     * The next more significant words of this object may be changed because of carry values.
+     * @param location_to_add Iterator to the word at which the value will be added. This word will be changed.
+     * @param value_to_add Value that will be added to the specified word.
+     */
+    void add_value_at_word(std::vector<WordType>::iterator location_to_add, unsigned long long value_to_add);
 
     /**
      * @brief Removes the highest indexed elements of the vector if they have a value of 0.
      * @param word_values Vector of word values that is to be trimmed of extra leading 0 values.
      */
-    static void remove_extra_leading_words_from(std::vector<HUGE_INT_WORD_TYPE>* word_values);
+    static void remove_extra_leading_words_from(std::vector<WordType>* word_values);
 
-    // Change or remove this function to remove dependence on HugeIntWord class.
-    /**
-     * @brief Creates a new UnsignedHugeIntValue object using the argument and its linked more significant words.
-     * @param least_significant_word An existing word that will be copied as the least significant word of the new UnsignedHugeIntValue.
-     * @return The new UnsignedHugeIntValue object.
-     */
-    static UnsignedHugeIntValue integer_with_least_significant_word(const HugeIntWord* least_significant_word);
-
-    // Change this function to remove dependence on HugeIntWord class.
     /**
      * @brief For a multiplication operation, the subtotal from multiplying words toward one word of the product is found.
      * This method is called by the multiply() method to find the value at one word of the product.
@@ -614,8 +555,8 @@ private:
      * @param number_of_multiplications Number of pairs of words that will be multiplied to find this subtotal.
      * @return The subtotal for one word of the product of the two factors.
      */
-    static UnsignedHugeIntValue find_multiplication_subtotal(std::vector<HUGE_INT_WORD_TYPE>::const_reverse_iterator greater_factor_iterator,
-                                                             std::vector<HUGE_INT_WORD_TYPE>::const_iterator lesser_factor_iterator,
+    static UnsignedHugeIntValue find_multiplication_subtotal(std::vector<WordType>::const_reverse_iterator greater_factor_iterator,
+                                                             std::vector<WordType>::const_iterator lesser_factor_iterator,
                                                              unsigned long long number_of_multiplications);
 
     /**
@@ -626,7 +567,7 @@ private:
      * @param small_factor An unsigned integer factor with a value less than the base of the UnsignedHugeIntValue words.
      * @return The result from multiplying the integers as an UnsignedHugeIntValue object.
      */
-    static UnsignedHugeIntValue multiply_single_word(const UnsignedHugeIntValue& large_factor, HUGE_INT_WORD_TYPE small_factor);
+    static UnsignedHugeIntValue multiply_single_word(const UnsignedHugeIntValue& large_factor, WordType small_factor);
 
     /**
      * @brief Multiplies this object by an unsigned integer that is small enough to fit within one word of UnsignedHugeIntValue.
@@ -636,7 +577,7 @@ private:
      * @param small_factor An unsigned integer factor with a value less than the base of the UnsignedHugeIntValue words.
      * @return Reference to this object after the value was changed from the multiplication.
      */
-    UnsignedHugeIntValue& multiply_single_word_transform(HUGE_INT_WORD_TYPE small_factor);
+    UnsignedHugeIntValue& multiply_single_word_transform(WordType small_factor);
 
     /**
      * @brief Divides an UnsignedHugeIntValue object by an unsigned integer that is small enough to fit within one word of UnsignedHugeIntValue.
@@ -648,7 +589,8 @@ private:
      * @param divisor The divisor of the division operation, which must be less than the word base value.
      * @return The whole number quotient (first) and remainder (second) results of the division operation.
      */
-    static std::pair<UnsignedHugeIntValue, HUGE_INT_WORD_TYPE> divide_single_word_divisor(const UnsignedHugeIntValue& dividend, HUGE_INT_WORD_TYPE divisor);
+    static std::pair<UnsignedHugeIntValue, UnsignedHugeIntValue::WordType> divide_single_word_divisor(
+            const UnsignedHugeIntValue& dividend, WordType divisor);
 
     /**
      * @brief Divides this UnsignedHugeIntValue object by an unsigned integer that is small enough to fit within one word of UnsignedHugeIntValue.
@@ -660,7 +602,7 @@ private:
      * @param divisor The divisor of the division operation, which must be less than the word base value.
      * @return The remainder of the division operation.
      */
-    HUGE_INT_WORD_TYPE divide_single_word_divisor_transform(HUGE_INT_WORD_TYPE divisor);
+    UnsignedHugeIntValue::WordType divide_single_word_divisor_transform(WordType divisor);
 
     /**
      * @brief Divides UnsignedHugeIntValue objects, where the divisor is not small enough to fit within one word of UnsignedHugeIntValue.
@@ -680,8 +622,8 @@ private:
      * @param divisor_words The words of the divisor.
      * @return false if the divisor is less than the remainder, otherwise returns true.
      */
-    static bool is_remainder_too_large(std::vector<HUGE_INT_WORD_TYPE>::reverse_iterator remainder_iterator,
-                                    const std::vector<HUGE_INT_WORD_TYPE>* divisor_words);
+    static bool is_remainder_too_large(std::vector<WordType>::reverse_iterator remainder_iterator,
+                                    const std::vector<WordType>* divisor_words);
 
     /**
      * @brief Subtracts from the cooresponding remainder word values.
@@ -690,7 +632,7 @@ private:
      * @param remainder_iterator Points to the least significant word of the remainder segment to subtract from.
      * @param subtrahend The value that will be subtracted from the remainder segment.
      */
-    static void subtract_from_remainder(std::vector<HUGE_INT_WORD_TYPE>::iterator remainder_iterator,
+    static void subtract_from_remainder(std::vector<WordType>::iterator remainder_iterator,
                                       const UnsignedHugeIntValue& subtrahend);
 };
 

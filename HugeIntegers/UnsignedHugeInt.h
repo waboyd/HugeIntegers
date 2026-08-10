@@ -726,7 +726,6 @@ private:
      * @param value Object whose value will be moved.
      */
     UnsignedHugeInt(UnsignedHugeIntValue* value);
-
 };
 
 // Operators involving UnsignedHugeInt, but not considered part of UnsignedHugeInt by the compiler.
