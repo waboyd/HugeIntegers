@@ -111,7 +111,7 @@ UnsignedHugeIntValue UnsignedHugeIntValue::number_of_digits() const {
 
     // The value can be repeatedly divided by a power of 10 to find the number of digits.
     constexpr WordType divisor = 1000000000;
-    constexpr unsigned int digits_per_division = 9;
+    constexpr unsigned long long digits_per_division = 9;
     while ((quotient.word_values->size() > 1) || (quotient.word_values->front()) > divisor) {
         totalNumDigits += digits_per_division;
         quotient.divide_single_word_divisor_transform(divisor);
@@ -1424,7 +1424,7 @@ void UnsignedHugeIntValue::read_from_text_file(FILE* integer_file) {
     if (integer_file == NULL)
         throw std::invalid_argument("A null file pointer was given as an argument.");
     delete this->word_values;
-    const unsigned int digitsPerSegment = 9;
+    constexpr unsigned int digitsPerSegment = 9;
     char readBuffer[digitsPerSegment + 1];
     char nextChar;
     WordType segmentValue;
@@ -1487,7 +1487,7 @@ void UnsignedHugeIntValue::write_to_text_file(FILE* integer_file) const {
     }
 
     // The number of digits must be found to determine the size of the output file.
-    constexpr unsigned int digitsPerSegment = 9;
+    constexpr unsigned long long digitsPerSegment = 9;
     constexpr WordType segmentBase = 1000000000;
     unsigned long long numDigits(digitsPerSegment);
     auto divisionResult = UnsignedHugeIntValue::divide_single_word_divisor(this, segmentBase);
@@ -1571,8 +1571,8 @@ std::string UnsignedHugeIntValue::to_string() const {
     fullNumberString.resize(allocationSize, '0');
 
     // A value base for segments is used that can be stored in one word.
-    const WordType segmentBase = 1000000000;
-    constexpr unsigned int segmentLength = 9;
+    constexpr WordType segmentBase = 1000000000;
+    constexpr unsigned short segmentLength = 9;
     // The digits of the result string are set in segments.
     unsigned long long segmentStart = allocationSize; // index of the start of the current segment in the result string.
     auto divisionResult = UnsignedHugeIntValue::divide_single_word_divisor(*this, segmentBase);
@@ -1611,8 +1611,8 @@ void UnsignedHugeIntValue::set_value_from_string(std::string integer_string) {
     this->word_values->reserve((unsigned long long)(3.321928096 * numDigits + 1) / bits_per_word + 1);
 
     // Segments are used that fit within one word of UnsignedHugeInt.
-    const WordType segmentBaseValue = 1000000000;
-    const int segmentLength = 9;
+    constexpr WordType segmentBaseValue = 1000000000;
+    constexpr unsigned long long segmentLength = 9;
     unsigned long long segmentStartIndex = numDigits % segmentLength;
     std::string segmentString;
     WordType segmentValue;
