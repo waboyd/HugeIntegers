@@ -314,49 +314,13 @@ UnsignedHugeIntValue UnsignedHugeIntValue::subtract(const UnsignedHugeIntValue& 
 }
 
 UnsignedHugeIntValue UnsignedHugeIntValue::multiply(const UnsignedHugeIntValue& factorA, const UnsignedHugeIntValue& factorB) {
-    // ToDo: Possibly apply multithreading to this method.
-    const unsigned long long numWordsA = factorA.num_words();
-    if (numWordsA == 1) {
+    if (factorA.num_words() == 1) {
         return UnsignedHugeIntValue::multiply_single_word(factorB, factorA.word_values->front());
     }
-    const unsigned long long numWordsB = factorB.num_words();
-    if (numWordsB == 1) {
+    if (factorB.num_words() == 1) {
         return UnsignedHugeIntValue::multiply_single_word(factorA, factorB.word_values->front());
     }
-
-    auto *productWords = new std::vector<WordType>(numWordsA + numWordsB, 0);
-    UnsignedHugeIntValue resultProduct(productWords);
-
-    // The subtotals are found by multiplying all pairs of words of the factors whose indexes
-    // have the same sum as the product word index.
-    std::vector<WordType>::const_reverse_iterator factorAIter = factorA.word_values->crbegin();
-    std::vector<WordType>::const_iterator factorBIter = factorB.word_values->cbegin();
-    std::vector<WordType>::iterator productIter = productWords->begin() + (numWordsA - 1);
-    unsigned long long numSubtotalProducts = numWordsB; // Number of pairs of words that multiplied to get the subtotal.
-    for (unsigned long long factorALength = numWordsA; factorALength > 0; --factorALength) {
-        if (factorALength < numSubtotalProducts) {
-            numSubtotalProducts = factorALength;
-        }
-        resultProduct.add_value_at_word(productIter, UnsignedHugeIntValue::find_multiplication_subtotal(factorAIter, factorBIter, numSubtotalProducts));
-        ++factorAIter;
-        --productIter;
-    }
-    factorAIter = factorA.word_values->crbegin();
-    ++factorBIter;
-    productIter = productWords->begin() + numWordsA;
-    numSubtotalProducts = numWordsA;
-    for (unsigned long long factorBLength = numWordsB - 1; factorBLength > 0; --factorBLength) {
-        if (factorBLength < numSubtotalProducts) {
-            numSubtotalProducts = factorBLength;
-        }
-        resultProduct.add_value_at_word(productIter, UnsignedHugeIntValue::find_multiplication_subtotal(factorAIter, factorBIter, numSubtotalProducts));
-        ++factorBIter;
-        ++productIter;
-    }
-
-    // Remove leading 0 words.
-    UnsignedHugeIntValue::remove_extra_leading_words_from(productWords);
-    return resultProduct;
+    return UnsignedHugeIntValue::multiply_many_words(factorA, factorB);
 }
 
 UnsignedHugeIntValue UnsignedHugeIntValue::multiply_by_int(const unsigned long long factor) const {
@@ -364,7 +328,7 @@ UnsignedHugeIntValue UnsignedHugeIntValue::multiply_by_int(const unsigned long l
     if (factor < word_base_value)
         return UnsignedHugeIntValue::multiply_single_word(*this, factor);
     UnsignedHugeIntValue factorObject(factor);
-    return UnsignedHugeIntValue::multiply(*this, factorObject);
+    return UnsignedHugeIntValue::multiply_many_words(*this, factorObject);
 }
 
 UnsignedHugeIntValue UnsignedHugeIntValue::multiply_single_word(const UnsignedHugeIntValue& large_factor, WordType small_factor) {
@@ -426,6 +390,44 @@ UnsignedHugeIntValue& UnsignedHugeIntValue::multiply_single_word_transform(WordT
         this->word_values->push_back((WordType)productWordValue);
     }
     return *this;
+}
+
+UnsignedHugeIntValue UnsignedHugeIntValue::multiply_many_words(const UnsignedHugeIntValue& factorA, const UnsignedHugeIntValue& factorB) {
+    // ToDo: Possibly apply multithreading to this method.
+    const unsigned long long numWordsA = factorA.num_words();
+    const unsigned long long numWordsB = factorB.num_words();
+    auto *productWords = new std::vector<WordType>(numWordsA + numWordsB, 0);
+    UnsignedHugeIntValue resultProduct(productWords);
+
+    // The subtotals are found by multiplying all pairs of words of the factors whose indexes
+    // have the same sum as the product word index.
+    std::vector<WordType>::const_reverse_iterator factorAIter = factorA.word_values->crbegin();
+    std::vector<WordType>::const_iterator factorBIter = factorB.word_values->cbegin();
+    std::vector<WordType>::iterator productIter = productWords->begin() + (numWordsA - 1);
+    unsigned long long numSubtotalProducts = numWordsB; // Number of pairs of words that multiplied to get the subtotal.
+    for (unsigned long long factorALength = numWordsA; factorALength > 0; --factorALength) {
+        if (factorALength < numSubtotalProducts) {
+            numSubtotalProducts = factorALength;
+        }
+        resultProduct.add_value_at_word(productIter, UnsignedHugeIntValue::find_multiplication_subtotal(factorAIter, factorBIter, numSubtotalProducts));
+        ++factorAIter;
+        --productIter;
+    }
+    factorAIter = factorA.word_values->crbegin();
+    ++factorBIter;
+    productIter = productWords->begin() + numWordsA;
+    numSubtotalProducts = numWordsA;
+    for (unsigned long long factorBLength = numWordsB - 1; factorBLength > 0; --factorBLength) {
+        if (factorBLength < numSubtotalProducts) {
+            numSubtotalProducts = factorBLength;
+        }
+        resultProduct.add_value_at_word(productIter, UnsignedHugeIntValue::find_multiplication_subtotal(factorAIter, factorBIter, numSubtotalProducts));
+        ++factorBIter;
+        ++productIter;
+    }
+    // Remove leading 0 words.
+    UnsignedHugeIntValue::remove_extra_leading_words_from(productWords);
+    return resultProduct;
 }
 
 std::pair<UnsignedHugeIntValue, UnsignedHugeIntValue> UnsignedHugeIntValue::divide(
@@ -659,9 +661,13 @@ UnsignedHugeIntValue& UnsignedHugeIntValue::operator-=(const unsigned long long 
 UnsignedHugeIntValue& UnsignedHugeIntValue::operator*=(const UnsignedHugeIntValue& factor) {
     // If factor is small enough to fit in one word of an UnsignedHugeIntValue object, use the faster multiplication function.
     if (factor.num_words() == 1) {
-        return this->multiply_single_word_transform((WordType)factor.word_values->at(0));
+        return this->multiply_single_word_transform((WordType)factor.word_values->front());
     }
-    *this = UnsignedHugeIntValue::multiply(*this, factor);
+    if (this->num_words() == 1) {
+        *this = multiply_single_word(factor, this->word_values->front());
+        return *this;
+    }
+    *this = UnsignedHugeIntValue::multiply_many_words(*this, factor);
     return *this;
 }
 

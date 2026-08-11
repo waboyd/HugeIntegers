@@ -580,6 +580,15 @@ private:
     UnsignedHugeIntValue& multiply_single_word_transform(WordType small_factor);
 
     /**
+     * @brief Multiplies two unsigned integers to produce an UnsignedHugeIntValue object.
+     * It is assumed that each of the two factors has more than one word.
+     * @param factorA One of the integer factors of the multiplication.
+     * @param factorB One of the integer factors of the multiplication.
+     * @return The result of multiplication as an unsigned integer.
+     */
+    static UnsignedHugeIntValue multiply_many_words(const UnsignedHugeIntValue& factorA, const UnsignedHugeIntValue& factorB);
+
+    /**
      * @brief Divides an UnsignedHugeIntValue object by an unsigned integer that is small enough to fit within one word of UnsignedHugeIntValue.
      * This method expects a divisor with a value less than the word base value, but it does not check the size of the divisor.
      * If the divisor is greater than the maximum word size, incorrect values may be produced. Division using this method is
