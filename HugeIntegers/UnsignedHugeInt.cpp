@@ -26,7 +26,7 @@ UnsignedHugeInt::UnsignedHugeInt(const UnsignedHugeInt* orig) {
     this->value = new UnsignedHugeIntValue(orig->value);
 }
 
-UnsignedHugeInt::UnsignedHugeInt(UnsignedHugeInt&& orig) {
+UnsignedHugeInt::UnsignedHugeInt(UnsignedHugeInt&& orig) noexcept {
     this->value = orig.value;
     orig.value = NULL;
 }
@@ -35,7 +35,7 @@ UnsignedHugeInt::UnsignedHugeInt(UnsignedHugeIntValue& value) {
     this->value = new UnsignedHugeIntValue(value);
 }
 
-UnsignedHugeInt::UnsignedHugeInt(UnsignedHugeIntValue&& value) {
+UnsignedHugeInt::UnsignedHugeInt(UnsignedHugeIntValue&& value) noexcept {
     this->value = new UnsignedHugeIntValue(std::move(value));
 }
 
@@ -93,7 +93,7 @@ UnsignedHugeInt& UnsignedHugeInt::operator=(const UnsignedHugeInt* orig) {
     return *this;
 }
 
-UnsignedHugeInt& UnsignedHugeInt::operator=(UnsignedHugeInt&& orig) {
+UnsignedHugeInt& UnsignedHugeInt::operator=(UnsignedHugeInt&& orig) noexcept {
     delete(this->value);
     this->value = orig.value;
     orig.value = NULL;

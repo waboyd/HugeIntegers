@@ -57,7 +57,7 @@ public:
      * The value does not not exist in the original argument object after this operation.
      * @param orig Object whose value will be moved.
      */
-    UnsignedHugeIntValue(UnsignedHugeIntValue&& orig);
+    UnsignedHugeIntValue(UnsignedHugeIntValue&& orig) noexcept;
 
     /**
      * @brief Deletes the UnsignedHugeIntValue object completely.
@@ -142,7 +142,7 @@ public:
      * @param orig Object whose value will be moved.
      * @return Reference to the new object which received the value.
      */
-    UnsignedHugeIntValue& operator=(UnsignedHugeIntValue&& orig);
+    UnsignedHugeIntValue& operator=(UnsignedHugeIntValue&& orig) noexcept;
 
     /**
      * @brief Assigns the value from the right-hand side of the assignment operator to the object on the left of the operator.

@@ -35,7 +35,7 @@ UnsignedHugeIntValue::UnsignedHugeIntValue(const UnsignedHugeIntValue* orig) {
     this->word_values = new std::vector<WordType>(*orig->word_values);
 }
 
-UnsignedHugeIntValue::UnsignedHugeIntValue(UnsignedHugeIntValue&& orig) {
+UnsignedHugeIntValue::UnsignedHugeIntValue(UnsignedHugeIntValue&& orig) noexcept {
     this->word_values = orig.word_values;
     orig.word_values = NULL;
 }
@@ -64,7 +64,7 @@ UnsignedHugeIntValue& UnsignedHugeIntValue::operator=(const UnsignedHugeIntValue
     return *this;
 }
 
-UnsignedHugeIntValue& UnsignedHugeIntValue::operator=(UnsignedHugeIntValue&& orig) {
+UnsignedHugeIntValue& UnsignedHugeIntValue::operator=(UnsignedHugeIntValue&& orig) noexcept {
     if (this == &orig)
         return *this;
     delete this->word_values;
