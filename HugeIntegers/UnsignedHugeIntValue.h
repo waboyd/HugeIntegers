@@ -548,16 +548,19 @@ private:
     static void remove_extra_leading_words_from(std::vector<WordType>* word_values);
 
     /**
-     * @brief For a multiplication operation, the subtotal from multiplying words toward one word of the product is found.
-     * This method is called by the multiply() method to find the value at one word of the product.
+     * @brief The subtotal from multiplying words of two factors toward one place value of the product is added at that place value.
+     * This is a helper function called by the multiply_many_words() method to find the value at one word of the product.
+     * The subproducts are found for corresponding factor words and added directly into the product.
+     * It is assumed that the result vector already has a size large enough to hold the full product.
      * @param greater_factor_iterator Iterator to the most significant word of a scan for the first factor.
      * @param lesser_factor_iterator Iterator to the least significant word of a scan for the second factor.
+     * @param insert_location Iterator to the place value (word location) where the subproducts are added.
      * @param number_of_multiplications Number of pairs of words that will be multiplied to find this subtotal.
-     * @return The subtotal for one word of the product of the two factors.
      */
-    static UnsignedHugeIntValue find_multiplication_subtotal(std::vector<WordType>::const_reverse_iterator greater_factor_iterator,
-                                                             std::vector<WordType>::const_iterator lesser_factor_iterator,
-                                                             unsigned long long number_of_multiplications);
+    static void insert_multiplication_subtotal(std::vector<WordType>::const_reverse_iterator greater_factor_iterator,
+                                               std::vector<WordType>::const_iterator lesser_factor_iterator,
+                                               const std::vector<WordType>::iterator& insert_location,
+                                               unsigned long long number_of_multiplications);
 
     /**
      * @brief Multiplies an UnsignedHugeIntValue object by an unsigned integer that is small enough to fit within one word of UnsignedHugeIntValue.

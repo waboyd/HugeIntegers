@@ -401,28 +401,24 @@ UnsignedHugeIntValue UnsignedHugeIntValue::multiply_many_words(const UnsignedHug
 
     // The subtotals are found by multiplying all pairs of words of the factors whose indexes
     // have the same sum as the product word index.
-    std::vector<WordType>::const_reverse_iterator factorAIter = factorA.word_values->crbegin();
+    std::vector<WordType>::const_reverse_iterator factorAIter = factorA.word_values->crend();
     std::vector<WordType>::const_iterator factorBIter = factorB.word_values->cbegin();
-    std::vector<WordType>::iterator productIter = productWords->begin() + (numWordsA - 1);
-    unsigned long long numSubtotalProducts = numWordsB; // Number of pairs of words that multiplied to get the subtotal.
-    for (unsigned long long factorALength = numWordsA; factorALength > 0; --factorALength) {
-        if (factorALength < numSubtotalProducts) {
+    std::vector<WordType>::iterator productIter = productWords->begin();
+    unsigned long long numSubtotalProducts = 1; // Number of pairs of words that multiplied to get the subtotal.
+    for (unsigned long long factorALength = 1; factorALength <= numWordsA; ++factorALength) {
+        --factorAIter;
+        if (factorALength <= numWordsB) {
             numSubtotalProducts = factorALength;
         }
-        resultProduct.add_value_at_word(productIter, UnsignedHugeIntValue::find_multiplication_subtotal(factorAIter, factorBIter, numSubtotalProducts));
-        ++factorAIter;
-        --productIter;
+        UnsignedHugeIntValue::insert_multiplication_subtotal(factorAIter, factorBIter, productIter, numSubtotalProducts);
+        ++productIter;
     }
-    factorAIter = factorA.word_values->crbegin();
-    ++factorBIter;
-    productIter = productWords->begin() + numWordsA;
-    numSubtotalProducts = numWordsA;
     for (unsigned long long factorBLength = numWordsB - 1; factorBLength > 0; --factorBLength) {
+        ++factorBIter;
         if (factorBLength < numSubtotalProducts) {
             numSubtotalProducts = factorBLength;
         }
-        resultProduct.add_value_at_word(productIter, UnsignedHugeIntValue::find_multiplication_subtotal(factorAIter, factorBIter, numSubtotalProducts));
-        ++factorBIter;
+        UnsignedHugeIntValue::insert_multiplication_subtotal(factorAIter, factorBIter, productIter, numSubtotalProducts);
         ++productIter;
     }
     // Remove leading 0 words.
@@ -702,7 +698,7 @@ UnsignedHugeIntValue& UnsignedHugeIntValue::operator%=(const UnsignedHugeIntValu
     if (divisor.num_words() == 1) {
         WordType remainder = this->divide_single_word_divisor_transform(divisor.word_values->front());
         this->word_values->resize(1);
-        this->word_values->at(0) = remainder;
+        this->word_values->front() = remainder;
         this->word_values->shrink_to_fit();
         return *this;
     }
@@ -714,7 +710,7 @@ UnsignedHugeIntValue& UnsignedHugeIntValue::operator%=(const unsigned long long 
     if (divisor <= max_word_value) {
         WordType remainder = this->divide_single_word_divisor_transform((WordType)divisor);
         this->word_values->resize(1);
-        this->word_values->at(0) = remainder;
+        this->word_values->front() = remainder;
         this->word_values->shrink_to_fit();
         return *this;
     }
@@ -1725,20 +1721,18 @@ void UnsignedHugeIntValue::add_value_at_word(std::vector<WordType>::iterator loc
     }
 }
 
-UnsignedHugeIntValue UnsignedHugeIntValue::find_multiplication_subtotal(
+void UnsignedHugeIntValue::insert_multiplication_subtotal(
         std::vector<WordType>::const_reverse_iterator greater_factor_iterator,
         std::vector<WordType>::const_iterator lesser_factor_iterator,
+        const std::vector<WordType>::iterator& insert_location,
         unsigned long long number_of_multiplications) {
-    // 4 words should be enough to store the sum of 2^64 word products.
-    auto *resultWords = new std::vector<WordType>(4, 0);
     std::vector<WordType>::iterator resultIter;
-    const std::vector<WordType>::iterator resultIterBegin = resultWords->begin();
     uint64_t wordProduct;
 
     // Each product of corresponding words is added to the resulting subtotal.
     for (unsigned long long multCount = 0; multCount < number_of_multiplications; ++multCount) {
         wordProduct = (uint64_t)(*greater_factor_iterator) * *lesser_factor_iterator;
-        resultIter = resultIterBegin;
+        resultIter = insert_location;
         while(wordProduct > 0) {
             wordProduct += *resultIter;
             *resultIter = (WordType)(wordProduct % word_base_value);
@@ -1748,8 +1742,6 @@ UnsignedHugeIntValue UnsignedHugeIntValue::find_multiplication_subtotal(
         ++greater_factor_iterator;
         ++lesser_factor_iterator;
     }
-    UnsignedHugeIntValue::remove_extra_leading_words_from(resultWords);
-    return UnsignedHugeIntValue(resultWords);
 }
 
 bool UnsignedHugeIntValue::is_remainder_too_large(std::vector<WordType>::reverse_iterator remainder_iterator,
