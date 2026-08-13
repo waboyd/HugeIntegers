@@ -1,8 +1,7 @@
 #include "UnsignedHugeIntValue.h"
 
-UnsignedHugeIntValue::UnsignedHugeIntValue() {
-    this->word_values = new std::vector<WordType>(1, 0);
-}
+UnsignedHugeIntValue::UnsignedHugeIntValue()
+        : word_values(new std::vector<WordType>(1, 0)) {}
 
 UnsignedHugeIntValue::UnsignedHugeIntValue(const unsigned long long value) {
     if (value <= max_word_value) {
@@ -27,22 +26,19 @@ UnsignedHugeIntValue::UnsignedHugeIntValue(const char* integer_string) {
     this->set_value_from_string(cppString);
 }
 
-UnsignedHugeIntValue::UnsignedHugeIntValue(const UnsignedHugeIntValue& orig) {
-    this->word_values = new std::vector<WordType>(*orig.word_values);
-}
+UnsignedHugeIntValue::UnsignedHugeIntValue(const UnsignedHugeIntValue& orig)
+        : word_values(new std::vector<WordType>(*orig.word_values)) {}
 
-UnsignedHugeIntValue::UnsignedHugeIntValue(const UnsignedHugeIntValue* orig) {
-    this->word_values = new std::vector<WordType>(*orig->word_values);
-}
+UnsignedHugeIntValue::UnsignedHugeIntValue(const UnsignedHugeIntValue* orig)
+        : word_values(new std::vector<WordType>(*orig->word_values)) {}
 
-UnsignedHugeIntValue::UnsignedHugeIntValue(UnsignedHugeIntValue&& orig) noexcept {
-    this->word_values = orig.word_values;
+UnsignedHugeIntValue::UnsignedHugeIntValue(UnsignedHugeIntValue&& orig) noexcept
+        : word_values(orig.word_values) {
     orig.word_values = NULL;
 }
 
-UnsignedHugeIntValue::UnsignedHugeIntValue(std::vector<WordType>* word_values_vector) {
-    this->word_values = word_values_vector;
-}
+UnsignedHugeIntValue::UnsignedHugeIntValue(std::vector<WordType>* word_values_vector)
+        : word_values(word_values_vector) {}
 
 UnsignedHugeIntValue::~UnsignedHugeIntValue() {
     delete this->word_values;

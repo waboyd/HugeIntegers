@@ -502,7 +502,7 @@ private:
     using WordType = uint32_t;
 
     // Holds all of the word (value segment) values.
-    std::vector<WordType> *word_values = NULL;
+    std::vector<WordType> *word_values;
 
     // The number of bits used to store each word value of an UnsignedHugeInt.
     static constexpr unsigned int bits_per_word = 32;

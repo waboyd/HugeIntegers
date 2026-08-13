@@ -1,47 +1,37 @@
 #include "UnsignedHugeInt.h"
 #include "UnsignedHugeIntValue.h"
 
-UnsignedHugeInt::UnsignedHugeInt() {
-    this->value = new UnsignedHugeIntValue();
-}
+UnsignedHugeInt::UnsignedHugeInt()
+        : value(new UnsignedHugeIntValue()) {}
 
-UnsignedHugeInt::UnsignedHugeInt(const unsigned long long value) {
-    this->value = new UnsignedHugeIntValue(value);
-}
+UnsignedHugeInt::UnsignedHugeInt(const unsigned long long value)
+        : value(new UnsignedHugeIntValue(value)) {}
 
-UnsignedHugeInt::UnsignedHugeInt(const std::string integer_string) {
-    this->value = new UnsignedHugeIntValue(integer_string);
-}
+UnsignedHugeInt::UnsignedHugeInt(const std::string integer_string)
+        : value(new UnsignedHugeIntValue(integer_string)) {}
 
-UnsignedHugeInt::UnsignedHugeInt(const char* integer_string) {
-    std::string cppIntegerString(integer_string);
-    this->value = new UnsignedHugeIntValue(cppIntegerString);
-}
+UnsignedHugeInt::UnsignedHugeInt(const char* integer_string)
+        : value(new UnsignedHugeIntValue(std::string(integer_string))) {}
 
-UnsignedHugeInt::UnsignedHugeInt(const UnsignedHugeInt& orig) {
-    this->value = new UnsignedHugeIntValue(orig.value);
-}
+UnsignedHugeInt::UnsignedHugeInt(const UnsignedHugeInt& orig)
+        : value(new UnsignedHugeIntValue(orig.value)) {}
 
-UnsignedHugeInt::UnsignedHugeInt(const UnsignedHugeInt* orig) {
-    this->value = new UnsignedHugeIntValue(orig->value);
-}
+UnsignedHugeInt::UnsignedHugeInt(const UnsignedHugeInt* orig)
+        : value(new UnsignedHugeIntValue(orig->value)) {}
 
-UnsignedHugeInt::UnsignedHugeInt(UnsignedHugeInt&& orig) noexcept {
-    this->value = orig.value;
+UnsignedHugeInt::UnsignedHugeInt(UnsignedHugeInt&& orig) noexcept
+        : value(orig.value) {
     orig.value = NULL;
 }
 
-UnsignedHugeInt::UnsignedHugeInt(UnsignedHugeIntValue& value) {
-    this->value = new UnsignedHugeIntValue(value);
-}
+UnsignedHugeInt::UnsignedHugeInt(UnsignedHugeIntValue& value)
+        : value(new UnsignedHugeIntValue(value)) {}
 
-UnsignedHugeInt::UnsignedHugeInt(UnsignedHugeIntValue&& value) noexcept {
-    this->value = new UnsignedHugeIntValue(std::move(value));
-}
+UnsignedHugeInt::UnsignedHugeInt(UnsignedHugeIntValue&& value) noexcept
+        : value(new UnsignedHugeIntValue(std::move(value))) {}
 
-UnsignedHugeInt::UnsignedHugeInt(UnsignedHugeIntValue* value) {
-    this->value = value;
-}
+UnsignedHugeInt::UnsignedHugeInt(UnsignedHugeIntValue* value)
+        : value(value) {}
 
 UnsignedHugeInt::~UnsignedHugeInt() {
     delete this->value;
@@ -247,7 +237,9 @@ std::pair<UnsignedHugeInt, UnsignedHugeInt> UnsignedHugeInt::divide(const Unsign
     // Divide and store the quotient and remainder in a pair.
     std::pair<UnsignedHugeIntValue, UnsignedHugeIntValue> divisionResults;
     divisionResults = UnsignedHugeIntValue::divide(*dividend.value, *divisor.value);
-    return std::pair<UnsignedHugeInt, UnsignedHugeInt>(UnsignedHugeInt(divisionResults.first), UnsignedHugeInt(divisionResults.second));
+    return std::pair<UnsignedHugeInt, UnsignedHugeInt>(
+            UnsignedHugeInt(std::move(divisionResults.first)),
+            UnsignedHugeInt(std::move(divisionResults.second)));
 }
 
 UnsignedHugeInt UnsignedHugeInt::operator/(const UnsignedHugeInt& divisor) const {
