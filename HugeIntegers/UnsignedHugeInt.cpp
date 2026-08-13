@@ -45,6 +45,10 @@ UnsignedHugeInt UnsignedHugeInt::length() const {
     return UnsignedHugeInt(this->value->number_of_digits());
 }
 
+void UnsignedHugeInt::shrink_to_fit() {
+    this->value->shrink_to_fit();
+}
+
 void UnsignedHugeInt::read_from_text_file(std::string file_path) {
     this->value->read_from_text_file(file_path);
 }

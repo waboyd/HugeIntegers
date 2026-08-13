@@ -71,6 +71,12 @@ public:
     UnsignedHugeIntValue number_of_digits() const;
 
     /**
+     * @brief Reduces the memory allocation size based on the current number of words.
+     * This calls the shrink_to_fit() function of the internal vector.
+     */
+    void shrink_to_fit();
+
+    /**
      * @brief Sets the value of this UnsignedHugeIntValue object to the integer in the text file.
      * The file should contain digits for only a single integer, as the entire file is scanned to
      * set the value of this object.

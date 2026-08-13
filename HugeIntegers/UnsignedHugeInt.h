@@ -79,6 +79,16 @@ public:
     UnsignedHugeInt length() const;
 
     /**
+     * @brief Reduces the memory allocation size based on the current number of bits.
+     * This calls the shrink_to_fit() function of the internal vector.
+     * This should not need to be called normally, but it is available for
+     * cases in which there is a large decrease in the number of bits stored
+     * and memory must be conserved.
+     * This does not change the value.
+     */
+    void shrink_to_fit();
+
+    /**
      * @brief Sets the value of this UnsignedHugeInt object to the integer in the text file.
      * The file should contain digits for only a single integer, as the entire file is scanned to
      * set the value of this object.

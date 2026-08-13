@@ -120,6 +120,10 @@ UnsignedHugeIntValue UnsignedHugeIntValue::number_of_digits() const {
     return totalNumDigits;
 }
 
+void UnsignedHugeIntValue::shrink_to_fit() {
+    this->word_values->shrink_to_fit();
+}
+
 UnsignedHugeIntValue::operator std::string() const {
     return this->to_string();
 }
@@ -364,7 +368,6 @@ UnsignedHugeIntValue& UnsignedHugeIntValue::multiply_single_word_transform(WordT
     if (small_factor == 0) {
         this->word_values->resize(1);
         this->word_values->at(0) = 0;
-        this->word_values->shrink_to_fit();
         return *this;
     }
 
@@ -695,7 +698,6 @@ UnsignedHugeIntValue& UnsignedHugeIntValue::operator%=(const UnsignedHugeIntValu
         WordType remainder = this->divide_single_word_divisor_transform(divisor.word_values->front());
         this->word_values->resize(1);
         this->word_values->front() = remainder;
-        this->word_values->shrink_to_fit();
         return *this;
     }
     *this = std::move(UnsignedHugeIntValue::divide_many_word_divisor(*this, divisor).second);
@@ -707,7 +709,6 @@ UnsignedHugeIntValue& UnsignedHugeIntValue::operator%=(const unsigned long long 
         WordType remainder = this->divide_single_word_divisor_transform((WordType)divisor);
         this->word_values->resize(1);
         this->word_values->front() = remainder;
-        this->word_values->shrink_to_fit();
         return *this;
     }
     *this = std::move(UnsignedHugeIntValue::divide_many_word_divisor(*this, UnsignedHugeIntValue(divisor)).second);
@@ -1276,7 +1277,6 @@ UnsignedHugeIntValue& UnsignedHugeIntValue::operator>>=(unsigned long long numbe
     if (numFullWordsShifted >= numOrigWords) {
         this->word_values->resize(1);
         this->word_values->front() = 0;
-        this->word_values->shrink_to_fit();
         return *this;
     }
     // If words are shifted out of the value, they are ignored.
@@ -1293,7 +1293,6 @@ UnsignedHugeIntValue& UnsignedHugeIntValue::operator>>=(unsigned long long numbe
             ++writeIter;
         }
         this->word_values->resize(numOrigWords - numFullWordsShifted);
-        this->word_values->shrink_to_fit();
         return *this;
     }
 
@@ -1316,7 +1315,6 @@ UnsignedHugeIntValue& UnsignedHugeIntValue::operator>>=(unsigned long long numbe
     } else {
         this->word_values->resize(numOrigWords - numFullWordsShifted - 1);
     }
-    this->word_values->shrink_to_fit();
     return *this;
 }
 
@@ -1645,7 +1643,6 @@ void UnsignedHugeIntValue::remove_extra_leading_words_from(std::vector<WordType>
         ++wordIter;
     }
     word_values->resize(newNumWords);
-    word_values->shrink_to_fit();
 }
 
 void UnsignedHugeIntValue::remove_extra_leading_words() {
