@@ -59,7 +59,7 @@ public:
      * The value does not not exist in the original argument object after this operation.
      * @param orig Object whose value will be moved.
      */
-    UnsignedHugeInt(UnsignedHugeInt&& orig);
+    UnsignedHugeInt(UnsignedHugeInt&& orig) noexcept;
 
     /**
      * @brief Deletes the UnsignedHugeInt object completely.
@@ -77,6 +77,16 @@ public:
      * @return The number of base 10 digits in the value.
      */
     UnsignedHugeInt length() const;
+
+    /**
+     * @brief Reduces the memory allocation size based on the current number of bits.
+     * This calls the shrink_to_fit() function of the internal vector.
+     * This should not need to be called normally, but it is available for
+     * cases in which there is a large decrease in the number of bits stored
+     * and memory must be conserved.
+     * This does not change the value.
+     */
+    void shrink_to_fit();
 
     /**
      * @brief Sets the value of this UnsignedHugeInt object to the integer in the text file.
@@ -150,7 +160,7 @@ public:
      * @param orig Object whose value will be moved.
      * @return Reference to the new object which received the value.
      */
-    UnsignedHugeInt& operator=(UnsignedHugeInt&& orig);
+    UnsignedHugeInt& operator=(UnsignedHugeInt&& orig) noexcept;
 
     /**
      * @brief Assigns the value from the right-hand side of the assignment operator to the object on the left of the operator.
@@ -718,7 +728,7 @@ private:
      * This constructor is intended for internal use only.
      * @param value Object whose value will be moved.
      */
-    UnsignedHugeInt(UnsignedHugeIntValue&& value);
+    UnsignedHugeInt(UnsignedHugeIntValue&& value) noexcept;
 
     /**
      * @brief Creates a new UnsignedHugeInt object with a value moved directly from the argument.
@@ -726,7 +736,6 @@ private:
      * @param value Object whose value will be moved.
      */
     UnsignedHugeInt(UnsignedHugeIntValue* value);
-
 };
 
 // Operators involving UnsignedHugeInt, but not considered part of UnsignedHugeInt by the compiler.

@@ -12,7 +12,7 @@
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
-					<Add option="-std=gnu++17" />
+					<Add option="-std=c++17" />
 					<Add option="-g" />
 					<Add directory="/home/willboyd/Programming/Catch2/build/src" />
 				</Compiler>
@@ -29,6 +29,7 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-O2" />
+					<Add option="-std=c++17" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
@@ -39,8 +40,12 @@
 			<Add option="-Wall" />
 		</Compiler>
 		<Unit filename="../../Catch2/src/catch2/catch_test_macros.hpp" />
-		<Unit filename="../HugeIntegers/HugeIntWord.cpp" />
-		<Unit filename="../HugeIntegers/HugeIntWord.h" />
+		<Unit filename="../HugeIntegers/HugeIntWord.cpp">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
+		<Unit filename="../HugeIntegers/HugeIntWord.h">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
 		<Unit filename="../HugeIntegers/UnsignedHugeInt.cpp" />
 		<Unit filename="../HugeIntegers/UnsignedHugeInt.h" />
 		<Unit filename="../HugeIntegers/UnsignedHugeIntValue.cpp" />
