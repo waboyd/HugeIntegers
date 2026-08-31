@@ -8,6 +8,8 @@
 #include <sys/stat.h>
 #include <vector>
 
+#include "HugeIntPrintable.h"
+
 class UnsignedHugeIntValue {
     friend class UnsignedHugeInt;
 public:
@@ -118,7 +120,7 @@ public:
      * @brief Writes the value from this object to a new binary file.
      * The file must not already exist. The binary file can be read by the read_from_binary_file method of UnsignedHugeIntValue.
      * Portability of the binary files is not guaranteed.
-     * @param file_path
+     * @param file_path The destination path, including the file name, of the binary file to be written.
      */
     void write_to_binary_file(std::string file_path) const;
 

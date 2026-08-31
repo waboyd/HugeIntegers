@@ -10,6 +10,7 @@
 #include <iostream>
 
 class UnsignedHugeIntValue;
+class HugeIntPrintable;
 
 class UnsignedHugeInt {
 public:
@@ -711,6 +712,8 @@ public:
      * @return The value of this object as a string of digits.
      */
     std::string to_string() const;
+
+    HugeIntPrintable printable_form() const;
 
 private:
     UnsignedHugeIntValue *value;

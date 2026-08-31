@@ -1,1 +1,42 @@
 # depslib dependency file v1.0
+1787932742 source:/home/willboyd/Programming/HugeIntegers/HugeIntegers/hugeIntBinTests.cpp
+	<random>
+	<catch2/catch_test_macros.hpp>
+	<catch2/catch_get_random_seed.hpp>
+	"UnsignedHugeInt.h"
+
+1787955725 /home/willboyd/Programming/HugeIntegers/HugeIntegers/UnsignedHugeInt.h
+	<iostream>
+
+1786479786 source:/home/willboyd/Programming/HugeIntegers/HugeIntegers/hugeIntTests.cpp
+	<catch2/catch_test_macros.hpp>
+	"UnsignedHugeInt.h"
+
+1786660181 source:/home/willboyd/Programming/HugeIntegers/HugeIntegers/UnsignedHugeInt.cpp
+	"UnsignedHugeInt.h"
+	"UnsignedHugeIntValue.h"
+
+1787959714 /home/willboyd/Programming/HugeIntegers/HugeIntegers/UnsignedHugeIntValue.h
+	<cstdint>
+	<fstream>
+	<iostream>
+	<string.h>
+	<sstream>
+	<sys/stat.h>
+	<vector>
+	"HugeIntPrintable.h"
+
+1787932741 source:/home/willboyd/Programming/HugeIntegers/HugeIntegers/UnsignedHugeIntValue.cpp
+	"UnsignedHugeIntValue.h"
+
+1788189981 /home/willboyd/Programming/HugeIntegers/HugeIntegers/HugeIntPrintable.h
+	<cstdint>
+	<fstream>
+	<iostream>
+	<string.h>
+	<sys/stat.h>
+	<vector>
+
+1788190240 source:/home/willboyd/Programming/HugeIntegers/HugeIntegers/HugeIntPrintable.cpp
+	"HugeIntPrintable.h"
+
