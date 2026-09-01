@@ -177,7 +177,7 @@ public:
      * @param value_string A C string of the value to assign to the UnsignedHugeIntValue object.
      * @return Reference to the newly created object.
      */
-    UnsignedHugeIntValue& operator=(const char*  value_string);
+    UnsignedHugeIntValue& operator=(const char* value_string);
 
     /**
      * @brief Determines which of the two numbers is greater.

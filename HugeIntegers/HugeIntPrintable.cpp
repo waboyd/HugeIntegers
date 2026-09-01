@@ -28,6 +28,33 @@ HugeIntPrintable::~HugeIntPrintable()
     delete this->word_values;
 }
 
+HugeIntPrintable& HugeIntPrintable::operator=(const HugeIntPrintable& orig) {
+    delete this->word_values;
+    this->word_values = new std::vector<WordType>(*orig.word_values);
+    this->is_negative = orig.is_negative;
+    return *this;
+}
+
+HugeIntPrintable& HugeIntPrintable::operator=(HugeIntPrintable&& orig) noexcept {
+    delete this->word_values;
+    this->word_values = orig.word_values;
+    this->is_negative = orig.is_negative;
+    orig.word_values = NULL;
+    return *this;
+}
+
+HugeIntPrintable& HugeIntPrintable::operator=(const std::string value_string) {
+    delete this->word_values;
+    this->set_value_from_string(value_string);
+    return *this;
+}
+
+HugeIntPrintable& HugeIntPrintable::operator=(const char* value_string) {
+    delete this->word_values;
+    this->set_value_from_string(std::string(value_string));
+    return *this;
+}
+
 std::string HugeIntPrintable::to_string() const {
     if ((this->word_values == NULL) || (this->word_values->size() == 0)) {
         throw std::logic_error("An attempt was made to show the value of an undefined object.");

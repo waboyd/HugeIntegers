@@ -74,7 +74,7 @@ public:
      * @param value_string A string of the value to assign to the HugeIntPrintable object.
      * @return Reference to the newly created object.
      */
-    HugeIntPrintable& operator=(const char*  value_string);
+    HugeIntPrintable& operator=(const char* value_string);
 
     /**
      * @brief Returns the number of base 10 digits in the value.
