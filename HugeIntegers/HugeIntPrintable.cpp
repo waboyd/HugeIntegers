@@ -55,6 +55,26 @@ HugeIntPrintable& HugeIntPrintable::operator=(const char* value_string) {
     return *this;
 }
 
+unsigned long long HugeIntPrintable::number_of_digits() const {
+    if ((this->word_values == NULL) || (this->word_values->size() == 0)) {
+        throw std::logic_error("An attempt was made to find the number of digits for an undefined object.");
+    }
+    unsigned long long totalNumDigits = 1;
+    // First, the number of digits in the leading word is found.
+    WordType leadingWord = this->word_values->back();
+    while (leadingWord > 10) {
+        ++totalNumDigits;
+        leadingWord /= 10;
+    }
+    // The number of digits from all of the other words is then found.
+    totalNumDigits += (this->word_values->size() - 1) * digits_per_word;
+    return totalNumDigits;
+}
+
+unsigned long long HugeIntPrintable::length() const {
+    return this->number_of_digits();
+}
+
 std::string HugeIntPrintable::to_string() const {
     if ((this->word_values == NULL) || (this->word_values->size() == 0)) {
         throw std::logic_error("An attempt was made to show the value of an undefined object.");
@@ -64,12 +84,14 @@ std::string HugeIntPrintable::to_string() const {
         return "0";
     }
 
-    // The maximum number of digits in the value.
-    unsigned long long allocationSize = numWords * digits_per_word + 1;
+    // Memory is reserved for the entire string.
+    unsigned long long numDigits = this->number_of_digits();
     std::string fullNumberString;
-    fullNumberString.reserve(allocationSize);
     if (this->is_negative) {
+        fullNumberString.reserve(numDigits + 2);
         fullNumberString += '-';
+    } else {
+        fullNumberString.reserve(numDigits + 1);
     }
 
     // The first digits can be taken directly from the last stored word.
@@ -84,7 +106,6 @@ std::string HugeIntPrintable::to_string() const {
         numLeadingZeros = digits_per_word - segmentString.length();
         fullNumberString += std::string(numLeadingZeros, '0') + segmentString;
     }
-    fullNumberString.shrink_to_fit();
     return fullNumberString;
 }
 

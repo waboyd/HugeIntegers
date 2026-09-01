@@ -997,4 +997,13 @@ TEST_CASE("HugeIntPrintable String Reading And Writing",
     std::string valueString = "40897467891347001899785910349000000000000000000000000006677283417";
     HugeIntPrintable printableObject(valueString);
     REQUIRE(valueString == printableObject.to_string());
+    REQUIRE(65 == printableObject.length());
+}
+
+TEST_CASE("HugeIntPrintable Negative String Reading And Writing",
+        "Create a negative HugeIntPrintable object from a string, and confirm that its string output is the same string.") {
+    std::string valueString = "-740061049057600017200009170056070100478000050286000028940006007873400000";
+    HugeIntPrintable printableObject(valueString);
+    REQUIRE(valueString == printableObject.to_string());
+    REQUIRE(72 == printableObject.number_of_digits());
 }
