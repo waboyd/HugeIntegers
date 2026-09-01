@@ -8,7 +8,8 @@
 #include <vector>
 
 // Holds a huge integer in a form that is easy to print as a string in base 10.
-// Changing the value of an object after it is created is not supported.
+// A HugeIntPrintable variable may be redefined, but a HugeIntPrintable
+// object may not otherwise be altered after creation.
 class HugeIntPrintable {
     friend class UnsignedHugeIntValue;
 public:
@@ -43,6 +44,37 @@ public:
      * @brief Deletes the HugeIntPrintable object completely.
      */
     virtual ~HugeIntPrintable();
+
+    /**
+     * @brief Assigns a copy of the right-hand value to the object on the left of the assignment operator.
+     * This operation does not change the right-hand value or objects.
+     * @param orig A HugeIntPrintable object with a value that will be copied.
+     * @return Reference to the newly created object.
+     */
+    HugeIntPrintable& operator=(const HugeIntPrintable& orig);
+
+    /**
+     * @brief Moves value from the argument to this object, removing the the value from the argument.
+     * @param orig Object whose value will be moved.
+     * @return Reference to the new object which received the value.
+     */
+    HugeIntPrintable& operator=(HugeIntPrintable&& orig) noexcept;
+
+    /**
+     * @brief Reads a numerical string as an integer and assigns the value to the HugeIntPrintable object.
+     * The string should contain only digits.
+     * @param value_string A string of the value to assign to the HugeIntPrintable object.
+     * @return Reference to the newly created object.
+     */
+    HugeIntPrintable& operator=(const std::string value_string);
+
+    /**
+     * @brief Reads a numerical string as an unsigned integer and assigns the value to the HugeIntPrintable object.
+     * The string should contain only digits.
+     * @param value_string A string of the value to assign to the HugeIntPrintable object.
+     * @return Reference to the newly created object.
+     */
+    HugeIntPrintable& operator=(const char*  value_string);
 
     /**
      * @brief Returns the number of base 10 digits in the value.
@@ -106,6 +138,12 @@ public:
     void write_to_binary_file(std::string file_path) const;
 
     /**
+     * @brief Returns the value of this HugeIntPrintable object as a string.
+     * @return The value of this object as a string of digits.
+     */
+    std::string to_string() const;
+
+    /**
      * @brief Converts the value of this object to a C++ string.
      */
     operator std::string() const;
@@ -142,6 +180,13 @@ protected:
      * @param word_values_vector Heap-allocated non-null vector of word values.
      */
     HugeIntPrintable(std::vector<WordType>* word_values_vector);
+
+    /**
+     * @brief Sets the value of this object to the integer given in the argument.
+     * It is assumed that this object does not have any already defined words.
+     * @param integer_string A string of the digits that will be converted to an integer.
+     */
+    void set_value_from_string(std::string integer_string);
 
 private:
     // Holds all of the word (value segment) values.

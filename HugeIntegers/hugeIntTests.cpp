@@ -10,6 +10,7 @@
 #include <catch2/catch_test_macros.hpp>
 
 #include "UnsignedHugeInt.h"
+#include "HugeIntPrintable.h"
 
 const char test_folder_path[] = "../TestFiles/";
 
@@ -989,4 +990,11 @@ TEST_CASE("Check number of digits 2", "Read the number of digits in the value of
 TEST_CASE("Check number of digits 3", "Read the number of digits for an UnsignedHugeInt with a value of 0.") {
     UnsignedHugeInt x((unsigned long long)0);
     REQUIRE(1 == x.length());
+}
+
+TEST_CASE("HugeIntPrintable String Reading And Writing",
+        "Create a positive HugeIntPrintable object from a string, and confirm that its string output is the same string.") {
+    std::string valueString = "40897467891347001899785910349000000000000000000000000006677283417";
+    HugeIntPrintable printableObject(valueString);
+    REQUIRE(valueString == printableObject.to_string());
 }
