@@ -178,8 +178,9 @@ protected:
      * This constructor is intended for use within functions of friend classes.
      * This constructor avoids use of a default vector object.
      * @param word_values_vector Heap-allocated non-null vector of word values.
+     * @param is_negative Whether the object represents a negative value.
      */
-    HugeIntPrintable(std::vector<WordType>* word_values_vector);
+    HugeIntPrintable(std::vector<WordType>* word_values_vector, bool is_negative = false);
 
     /**
      * @brief Sets the value of this object to the integer given in the argument.

@@ -23,6 +23,9 @@ HugeIntPrintable::HugeIntPrintable(HugeIntPrintable&& orig) noexcept
     orig.word_values = NULL;
 }
 
+HugeIntPrintable::HugeIntPrintable(std::vector<WordType>* word_values_vector, bool is_negative)
+        : word_values(word_values_vector), is_negative(is_negative) {}
+
 HugeIntPrintable::~HugeIntPrintable()
 {
     delete this->word_values;
@@ -75,6 +78,96 @@ unsigned long long HugeIntPrintable::length() const {
     return this->number_of_digits();
 }
 
+HugeIntPrintable HugeIntPrintable::read_from_text_file(std::string file_path) {
+    FILE *readTextFile = fopen(file_path.c_str(), "r");
+    if (readTextFile == NULL)
+        std::invalid_argument("The file with the given path could not be opened.");
+    // The size of the file must be found.
+    fseek(readTextFile, 0, SEEK_END);
+    unsigned long long fileReadIndex = ftell(readTextFile);
+    if (fileReadIndex == 0) {
+        fclose(readTextFile);
+        std::invalid_argument(
+            "An attempt was made to convert an empty file into a HugeIntPrintable object.");
+    }
+    // Room is allocated to store all digits of the value from the file.
+    auto *wordVector = new std::vector<WordType>((fileReadIndex - 1) / digits_per_word + 1, 0);
+    std::vector<WordType>::iterator wordIter = wordVector->begin();
+    constexpr unsigned int readBufferSize = 504;
+    char readBuffer[readBufferSize];
+    unsigned int readBufferIndex;
+    char wordBuffer[digits_per_word + 1];
+    wordBuffer[digits_per_word] = '\0'; // End of the number segment.
+    unsigned long long numWordsRead = 0;
+    unsigned int wordBufferIndex = digits_per_word - 1;
+    char nextChar;
+
+    // The file is read in reverse order.
+    while (fileReadIndex > readBufferSize) {
+        fileReadIndex -= readBufferSize;
+        fseek(readTextFile, fileReadIndex, SEEK_SET);
+        fread(readBuffer, sizeof(char), readBufferSize, readTextFile);
+        readBufferIndex = readBufferSize;
+        do {
+            --readBufferIndex;
+            nextChar = readBuffer[readBufferIndex];
+            // Characters that are not digits will be skipped.
+            if (!isdigit(nextChar))
+                continue;
+            wordBuffer[wordBufferIndex] = nextChar;
+            if (wordBufferIndex == 0) {
+                *wordIter = (WordType)strtoul(wordBuffer, NULL, 10);
+                ++numWordsRead;
+                ++wordIter;
+                wordBufferIndex = digits_per_word - 1;
+            } else {
+                --wordBufferIndex;
+            }
+        } while (readBufferIndex > 0);
+    }
+    // The last read buffer needs to be read from the file.
+    fseek(readTextFile, 0, SEEK_SET);
+    fread(readBuffer, sizeof(char), fileReadIndex, readTextFile);
+    fclose(readTextFile);
+    readBufferIndex = fileReadIndex;
+    while (readBufferIndex > 0) {
+        --readBufferIndex;
+        nextChar = readBuffer[readBufferIndex];
+        // Characters that are not digits will be skipped.
+        if (!isdigit(nextChar))
+            continue;
+        wordBuffer[wordBufferIndex] = nextChar;
+        if (wordBufferIndex == 0) {
+            *wordIter = (WordType)strtoul(wordBuffer, NULL, 10);
+            ++numWordsRead;
+            ++wordIter;
+            wordBufferIndex = digits_per_word - 1;
+        } else {
+            --wordBufferIndex;
+        }
+    }
+    // The value in the word buffer needs to be stored as the last word value.
+    if (wordBufferIndex < digits_per_word - 1) {
+        wordBuffer[wordBufferIndex] = '0';
+        while (wordBufferIndex > 0) {
+            --wordBufferIndex;
+            wordBuffer[wordBufferIndex] = '0';
+        }
+        *wordIter = (WordType)strtoul(wordBuffer, NULL, 10);
+        ++numWordsRead;
+        ++wordIter;
+    }
+    // If too many words were reserved, some words need to be deleted.
+    --wordIter;
+    while ((*wordIter == 0) && (numWordsRead > 1)) {
+        --wordIter;
+        --numWordsRead;
+    }
+    wordVector->resize(numWordsRead);
+    wordVector->shrink_to_fit();
+    return HugeIntPrintable(wordVector, readBuffer[0] == '-');
+}
+
 std::string HugeIntPrintable::to_string() const {
     if ((this->word_values == NULL) || (this->word_values->size() == 0)) {
         throw std::logic_error("An attempt was made to show the value of an undefined object.");
@@ -107,6 +200,10 @@ std::string HugeIntPrintable::to_string() const {
         fullNumberString += std::string(numLeadingZeros, '0') + segmentString;
     }
     return fullNumberString;
+}
+
+HugeIntPrintable::operator std::string() const {
+    return this->to_string();
 }
 
 void HugeIntPrintable::set_value_from_string(std::string integer_string) {

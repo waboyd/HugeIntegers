@@ -1007,3 +1007,16 @@ TEST_CASE("HugeIntPrintable Negative String Reading And Writing",
     REQUIRE(valueString == printableObject.to_string());
     REQUIRE(72 == printableObject.number_of_digits());
 }
+
+TEST_CASE("HugeIntPrintable Read Five Line Text File",
+        "Read a large integer from a text file to a HugeIntPrintable object.") {
+    std::string filePath = std::string(test_folder_path) + "fiveLineInt.txt";
+    std::string expectedValueString = "209680437196854065847012871284085415840151068475405282745820"
+    "1254976846987675242669958404021029535743871849065098876984153103251870528574141835463840987551"
+    "1554986303489046876984248051881657053577512838715405488754654687406986713212587165408970078200"
+    "7063608736644408998977104350866871587078038236048068176837184025718540486084487685865761687686"
+    "5874846608623688707587680468754687687287046517336715546984384154541175200435713521084842187154"
+    "0741652";
+    HugeIntPrintable printableObject = HugeIntPrintable::read_from_text_file(filePath);
+    REQUIRE(expectedValueString == printableObject.to_string());
+}
