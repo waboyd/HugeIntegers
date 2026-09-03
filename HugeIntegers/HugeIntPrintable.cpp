@@ -168,6 +168,37 @@ HugeIntPrintable HugeIntPrintable::read_from_text_file(std::string file_path) {
     return HugeIntPrintable(wordVector, readBuffer[0] == '-');
 }
 
+void HugeIntPrintable::write_to_text_file(std::string file_path) const {
+    unsigned long long numWords = this->word_values->size();
+    if (numWords == 0) {
+        throw std::logic_error("An attempt was made to write an undefined value to a file.");
+    }
+    std::vector<WordType>::const_reverse_iterator wordIter = this->word_values->crbegin();
+
+    // Writing to an existing file is not permitted.
+    struct stat placeholder_stat;
+    if (stat(file_path.c_str(), &placeholder_stat) >= 0)
+        std::invalid_argument("An attempt was made to write a HugeIntPrintable value to an existing file.");
+    FILE *writeTextFile = fopen(file_path.c_str(), "w");
+    if (writeTextFile == NULL)
+        throw std::runtime_error("A new file could not be opened for writing a HugeIntPrintable value.");
+
+    if (this->is_negative) {
+        putc('-', writeTextFile);
+    }
+    // The first word value can be placed directly into the file.
+    std::string bufferString = std::to_string(*wordIter);
+    fputs(bufferString.c_str(), writeTextFile);
+    // For other word values, leading zeros may need to be added.
+    for (unsigned long long wordIndex = 1; wordIndex < numWords; ++wordIndex) {
+        ++wordIter;
+        bufferString = std::to_string(*wordIter);
+        bufferString = std::string(digits_per_word - bufferString.length(), '0') + bufferString;
+        fputs(bufferString.c_str(), writeTextFile);
+    }
+    fclose(writeTextFile);
+}
+
 std::string HugeIntPrintable::to_string() const {
     if ((this->word_values == NULL) || (this->word_values->size() == 0)) {
         throw std::logic_error("An attempt was made to show the value of an undefined object.");

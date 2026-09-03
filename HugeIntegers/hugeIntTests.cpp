@@ -1020,3 +1020,45 @@ TEST_CASE("HugeIntPrintable Read Five Line Text File",
     HugeIntPrintable printableObject = HugeIntPrintable::read_from_text_file(filePath);
     REQUIRE(expectedValueString == printableObject.to_string());
 }
+
+TEST_CASE("Write HugeIntPrintable to Text File",
+        "Write a multi-word HugeIntPrintable value to a text file, with some words equal to 0.") {
+    std::string numberString = "95689290601940100000000000000000183475010000000000000000000078581722734886";
+    HugeIntPrintable x(numberString);
+    char textFilePath[70];
+    strcpy(textFilePath, test_folder_path);
+    strcat(textFilePath, "tempTestFile7.txt");
+
+    // Delete the file before writing if it already exists.
+    remove(textFilePath);
+
+    // Use the write_to_text_file method to write the number to a text file.'
+    x.write_to_text_file(textFilePath);
+
+    // Read the text file and compare its text to the expected string.
+    FILE *readTextFile = fopen(textFilePath, "r");
+    char readBuffer[101];
+    char digitBuffer[101];
+    unsigned int numCharsRead;
+    unsigned int readCharIndex, digitCharIndex;
+    std::string stringFromFile = "";
+    numCharsRead = fread(readBuffer, sizeof(char), 100, readTextFile);
+    while(numCharsRead > 0) {
+        // Take only the digits from the read buffer to create the digit buffer.
+        digitCharIndex = 0;
+        for (readCharIndex = 0; readCharIndex < numCharsRead; ++readCharIndex) {
+            if (isdigit(readBuffer[readCharIndex])) {
+                digitBuffer[digitCharIndex] = readBuffer[readCharIndex];
+                ++digitCharIndex;
+            }
+        }
+        digitBuffer[digitCharIndex] = '\0';
+        // Attach the digit buffer to the string from the file.
+        stringFromFile += std::string(digitBuffer);
+        // Read more from the file.
+        numCharsRead = fread(readBuffer, sizeof(char), 100, readTextFile);
+    }
+    fclose(readTextFile);
+    remove(textFilePath);
+    REQUIRE(numberString == stringFromFile);
+}
