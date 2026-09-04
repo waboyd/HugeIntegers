@@ -181,7 +181,8 @@ void HugeIntPrintable::write_to_text_file(std::string file_path) const {
         std::invalid_argument("An attempt was made to write a HugeIntPrintable value to an existing file.");
     FILE *writeTextFile = fopen(file_path.c_str(), "w");
     if (writeTextFile == NULL)
-        throw std::runtime_error("A new file could not be opened for writing a HugeIntPrintable value.");
+        throw std::runtime_error(
+            "A new file could not be opened for writing a HugeIntPrintable value at " + file_path + ".");
 
     if (this->is_negative) {
         putc('-', writeTextFile);
@@ -197,6 +198,49 @@ void HugeIntPrintable::write_to_text_file(std::string file_path) const {
         fputs(bufferString.c_str(), writeTextFile);
     }
     fclose(writeTextFile);
+}
+
+HugeIntPrintable HugeIntPrintable::read_from_binary_file(std::string file_path) {
+    std::ifstream fileReadStream(file_path, std::ios::in | std::ios::binary);
+    if (!fileReadStream.is_open()) {
+        fileReadStream.close();
+        throw std::invalid_argument("The file " + file_path + " could not be opened.");
+    }
+    // The is_negative value, the number of words, and the word values are read from the file.
+    bool isNegative;
+    unsigned long long numWords;
+    fileReadStream.read(reinterpret_cast<char*>(&isNegative), sizeof(bool));
+    fileReadStream.read(reinterpret_cast<char*>(&numWords), sizeof(unsigned long long));
+
+    // The file data is put into a new vector.
+    auto *wordValues = new std::vector<WordType>(numWords);
+    fileReadStream.read(reinterpret_cast<char*>(
+            wordValues->data()), numWords * sizeof(WordType));
+    fileReadStream.close();
+    return HugeIntPrintable(wordValues, isNegative);
+}
+
+void HugeIntPrintable::write_to_binary_file(std::string file_path) const {
+    unsigned long long numWords = this->word_values->size();
+    if (numWords == 0) {
+        throw std::logic_error(
+            "An attempt was made to write an undefined HugeIntPrintable object to a binary file.");
+    }
+    // Writing to an existing file is not permitted.
+    struct stat placeholder_stat;
+    if (stat(file_path.c_str(), &placeholder_stat) >= 0)
+        std::invalid_argument("An attempt was made to write a HugeIntPrintable object to an existing file.");
+    std::ofstream fileWriteStream(file_path, std::ios::out | std::ios::binary);
+    if (!fileWriteStream.is_open()) {
+        fileWriteStream.close();
+        throw std::runtime_error("A binary file at " + file_path + " could not be created.");
+    }
+    // The is_negative value, the number of words, and the word values are written to the file.
+    fileWriteStream.write(reinterpret_cast<const char*>(&this->is_negative), sizeof(bool));
+    fileWriteStream.write(reinterpret_cast<const char*>(&numWords), sizeof(unsigned long long));
+    fileWriteStream.write(reinterpret_cast<const char*>(
+            this->word_values->data()), numWords * sizeof(WordType));
+    fileWriteStream.close();
 }
 
 std::string HugeIntPrintable::to_string() const {

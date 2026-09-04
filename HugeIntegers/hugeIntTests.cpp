@@ -1062,3 +1062,19 @@ TEST_CASE("Write HugeIntPrintable to Text File",
     remove(textFilePath);
     REQUIRE(numberString == stringFromFile);
 }
+
+TEST_CASE("Write and Read HugeIntPrintable With Very Large Number to Binary File",
+        "Write a many-word HugeIntPrintable object to a binary file, then read the value with a different object.") {
+    std::string numberString =
+        "63046098013867104030649870736360987071891222936639294086780181880398400000000000000000009701356870436798"
+        "70498669871503842048433982211489403999999999999999999999970683363000806404933500087904070704900001044040"
+        "08070350680650405020780404000070849099963308350983535384984984436884000484808400443698404177434658083522"
+        "78801399470004119398000285177";
+    std::string binaryFilePath = std::string(test_folder_path) + "tempTestFile8.bin";
+    HugeIntPrintable inputObject(numberString);
+    remove(binaryFilePath.c_str());
+    inputObject.write_to_binary_file(binaryFilePath);
+    HugeIntPrintable outputObject = HugeIntPrintable::read_from_binary_file(binaryFilePath);
+    remove(binaryFilePath.c_str());
+    REQUIRE(numberString == outputObject.to_string());
+}
