@@ -344,3 +344,7 @@ void HugeIntPrintable::set_value_from_string(std::string integer_string) {
     }
 }
 
+std::ostream& operator<<(std::ostream& out_stream, const HugeIntPrintable& huge_int_object) {
+    out_stream << huge_int_object.to_string();
+    return out_stream;
+}
