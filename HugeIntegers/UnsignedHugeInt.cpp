@@ -77,6 +77,10 @@ UnsignedHugeInt::operator std::string() const {
     return this->value->to_string();
 }
 
+HugeIntPrintable UnsignedHugeInt::printable_form() const {
+    return this->value->printable_form();
+}
+
 UnsignedHugeInt& UnsignedHugeInt::operator=(const UnsignedHugeInt& orig) {
     this->value->operator=(orig.value);
     return *this;

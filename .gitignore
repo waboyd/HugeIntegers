@@ -35,5 +35,8 @@
 # Temporary files
 */temp*
 
+# Setup data
+SetupData/
+
 # Codelite
 .codelite/*.*

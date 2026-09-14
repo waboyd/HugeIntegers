@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <string.h>
@@ -128,6 +129,18 @@ public:
      * @brief Converts the value of this object to a C++ string.
      */
     operator std::string() const;
+
+    /**
+     * @brief Creates a HugeIntPrintable object with the same value.
+     * The HugeIntPrintable object is stored in base 10 segments that can be
+     * quickly converted to a string or saved to disk.
+     * This conversion operation may take a very long time for values with
+     * many (more than a million) digits.
+     * This operation will perform setup and save values to disk the first
+     * time it is performed for a value with many digits.
+     * @return New HugeIntPrintable object with the same value as this object.
+     */
+    HugeIntPrintable printable_form() const;
 
     /**
      * @brief Assigns a copy of the right-hand value to the object on the left of the assignment operator.
@@ -523,6 +536,23 @@ private:
     // This value must be one less than WORD_BASE_VALUE.
     static constexpr WordType max_word_value = 4294967295;
 
+    // Path of the folder for UnsignedHugeInt setup data.
+    static inline std::string setup_folder_path = "../SetupData/";
+
+    // Filename of a large UnsignedHugeInt object stored in the setup folder.
+    // The value stored should be a power of HugeIntPrintable::word_base_value.
+    static inline std::string smaller_ten_power_filename = "SmallerTenPower";
+
+    // Filename of a large UnsignedHugeInt object stored in the setup folder.
+    // The value stored should be a power of the value stored in
+    // smaller_ten_power_filename.
+    static inline std::string medium_ten_power_filename = "MediumTenPower";
+
+    // Filename of a large UnsignedHugeInt object stored in the setup folder.
+    // The value stored should be a power of the value stored in
+    // medium_ten_power_filename.
+    static inline std::string large_ten_power_filename = "LargeTenPower";
+
     // Private Methods
 
     /**
@@ -654,6 +684,14 @@ private:
      */
     static void subtract_from_remainder(std::vector<WordType>::iterator remainder_iterator,
                                       const UnsignedHugeIntValue& subtrahend);
+
+    /**
+     * @brief Performs a few operations to speed up conversions to base 10.
+     * This setup function saves a few powers of 10 with many digits as
+     * UnsignedHugeIntValue objects. The saved values can then be used to
+     * speed up conversions to base 10.
+     */
+    static void base_ten_conversion_setup();
 };
 
 // Operators involving UnsignedHugeIntValue, but not considered part of UnsignedHugeIntValue by the compiler.

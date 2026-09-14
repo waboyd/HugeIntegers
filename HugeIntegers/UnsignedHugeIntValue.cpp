@@ -1552,6 +1552,66 @@ long UnsignedHugeIntValue::num_words() const {
     return this->word_values->size();
 }
 
+void UnsignedHugeIntValue::base_ten_conversion_setup() {
+    // The setup folder should be created if it does not already exist.
+    std::filesystem::create_directories(setup_folder_path);
+    // If files already exist for the powers of ten, they should be replaced.
+    std::filesystem::remove(setup_folder_path + smaller_ten_power_filename);
+    std::filesystem::remove(setup_folder_path + medium_ten_power_filename);
+    std::filesystem::remove(setup_folder_path + large_ten_power_filename);
+
+    UnsignedHugeIntValue hugeIntPower =
+            UnsignedHugeIntValue::multiply_single_word(
+                    UnsignedHugeIntValue(HugeIntPrintable::word_base_value),
+                    HugeIntPrintable::word_base_value);
+    // hugeIntPower was initialized to HugeIntPrintable::word_base_value ^ 2.
+    hugeIntPower *= hugeIntPower;
+    hugeIntPower *= hugeIntPower;
+    hugeIntPower *= hugeIntPower;
+    hugeIntPower *= hugeIntPower;
+    hugeIntPower *= hugeIntPower;
+    // hugeIntPower is now HugeIntPrintable::word_base_value ^ 64.
+    // This will be the smaller_ten_power value.
+    hugeIntPower.write_to_binary_file(
+            setup_folder_path + smaller_ten_power_filename);
+    std::cout << "SmallerTenPower was saved.\n";
+
+    hugeIntPower *= hugeIntPower;
+    hugeIntPower *= hugeIntPower;
+    hugeIntPower *= hugeIntPower;
+    hugeIntPower *= hugeIntPower;
+    hugeIntPower *= hugeIntPower;
+    hugeIntPower *= hugeIntPower;
+    // hugeIntPower is now smaller_ten_power ^ 64, or
+    // HugeIntPrintable::word_base_value ^ 4096.
+    // This will be the medium_ten_power.
+    hugeIntPower.write_to_binary_file(
+            setup_folder_path + medium_ten_power_filename);
+    std::cout << "MediumTenPower was saved.\n";
+
+    hugeIntPower *= hugeIntPower;
+    hugeIntPower *= hugeIntPower;
+    hugeIntPower *= hugeIntPower;
+    hugeIntPower *= hugeIntPower;
+    hugeIntPower *= hugeIntPower;
+    hugeIntPower *= hugeIntPower;
+    // hugeIntPower is now medium_ten_power ^ 64, or
+    // HugeIntPrintable::word_base_value ^ 262144.
+    // This will be the large_ten_power.
+    hugeIntPower.write_to_binary_file(
+            setup_folder_path + large_ten_power_filename);
+    std::cout << "LargerTenPower was saved.\n";
+}
+
+HugeIntPrintable UnsignedHugeIntValue::printable_form() const {
+    // ToDo: Define this function to produce a HugeIntPrintable object from the current value.
+    if (this->word_values->size() < 250000) {
+        return HugeIntPrintable();
+    }
+    UnsignedHugeIntValue::base_ten_conversion_setup();
+    return HugeIntPrintable();
+}
+
 std::string UnsignedHugeIntValue::to_string() const {
     if (this->word_values == NULL) {
         throw std::logic_error("An attempt was made to show the value of an undefined object.");

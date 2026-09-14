@@ -15,6 +15,7 @@
 #define HUGE_INT_MAX_WORD_VALUE     4294967295
 
 #include "UnsignedHugeInt.h"
+#include "HugeIntPrintable.h"
 
 const char test_folder_path[] = "../TestFiles/";
 
@@ -515,4 +516,13 @@ TEST_CASE("Random Ones Bit Shift",
     origInt.left_ones_shift_transform(numBitsShifted);
     origInt >>= numBitsShifted;
     CHECK(rightShiftedInt == origInt);
+}
+
+TEST_CASE("Ten Million Digit Printable Form Conversion",
+        "Convert a value with around ten million digits to a HugeIntPrintable object.") {
+    constexpr unsigned long long numBits = 33219300;
+    UnsignedHugeInt hugeInteger;
+    hugeInteger.left_ones_shift_transform(numBits);
+    HugeIntPrintable printableHugeInt = hugeInteger.printable_form();
+    CHECK(printableHugeInt.number_of_digits() >= 10000000);
 }
