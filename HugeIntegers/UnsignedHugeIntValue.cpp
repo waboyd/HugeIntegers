@@ -1514,8 +1514,7 @@ void UnsignedHugeIntValue::write_to_text_file(FILE* integer_file) const {
     }
 }
 
-void UnsignedHugeIntValue::read_from_binary_file(std::string file_path) {
-    delete this->word_values;
+UnsignedHugeIntValue UnsignedHugeIntValue::read_from_binary_file(std::string file_path) {
     std::ifstream fileReadStream(file_path, std::ios::in | std::ios::binary);
     if (!fileReadStream.is_open()) {
         fileReadStream.close();
@@ -1527,9 +1526,10 @@ void UnsignedHugeIntValue::read_from_binary_file(std::string file_path) {
     fileReadStream.seekg(0, fileReadStream.beg);
 
     // The file data is put into a new vector.
-    this->word_values = new std::vector<WordType>(fileSize / sizeof(WordType));
-    fileReadStream.read(reinterpret_cast<char*>(this->word_values->data()), fileSize);
+    auto *wordValues = new std::vector<WordType>(fileSize / sizeof(WordType));
+    fileReadStream.read(reinterpret_cast<char*>(wordValues->data()), fileSize);
     fileReadStream.close();
+    return UnsignedHugeIntValue(wordValues);
 }
 
 void UnsignedHugeIntValue::write_to_binary_file(std::string file_path) const {

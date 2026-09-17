@@ -352,10 +352,9 @@ TEST_CASE("Write and Read Binary File for Very Large Number",
         "78801399470004119398000285177";
     std::string binaryFilePath = std::string(test_folder_path) + "tempTestFile6.bin";
     UnsignedHugeInt x(numberString);
-    UnsignedHugeInt y;
     remove(binaryFilePath.c_str());
     x.write_to_binary_file(binaryFilePath);
-    y.read_from_binary_file(binaryFilePath);
+    UnsignedHugeInt y = UnsignedHugeInt::read_from_binary_file(binaryFilePath);
     remove(binaryFilePath.c_str());
     REQUIRE(numberString == y.to_string());
 }

@@ -1,23 +1,24 @@
 # depslib dependency file v1.0
-1787932742 source:/home/willboyd/Programming/HugeIntegers/HugeIntegers/hugeIntBinTests.cpp
+1789427472 source:/home/willboyd/Programming/HugeIntegers/HugeIntegers/hugeIntBinTests.cpp
 	<random>
 	<catch2/catch_test_macros.hpp>
 	<catch2/catch_get_random_seed.hpp>
 	"UnsignedHugeInt.h"
+	"HugeIntPrintable.h"
 
-1787955725 /home/willboyd/Programming/HugeIntegers/HugeIntegers/UnsignedHugeInt.h
+1789663621 /home/willboyd/Programming/HugeIntegers/HugeIntegers/UnsignedHugeInt.h
 	<iostream>
 
-1788563748 source:/home/willboyd/Programming/HugeIntegers/HugeIntegers/hugeIntTests.cpp
+1789663801 source:/home/willboyd/Programming/HugeIntegers/HugeIntegers/hugeIntTests.cpp
 	<catch2/catch_test_macros.hpp>
 	"UnsignedHugeInt.h"
 	"HugeIntPrintable.h"
 
-1789424690 source:/home/willboyd/Programming/HugeIntegers/HugeIntegers/UnsignedHugeInt.cpp
+1789663731 source:/home/willboyd/Programming/HugeIntegers/HugeIntegers/UnsignedHugeInt.cpp
 	"UnsignedHugeInt.h"
 	"UnsignedHugeIntValue.h"
 
-1789101484 /home/willboyd/Programming/HugeIntegers/HugeIntegers/UnsignedHugeIntValue.h
+1789663334 /home/willboyd/Programming/HugeIntegers/HugeIntegers/UnsignedHugeIntValue.h
 	<cstdint>
 	<filesystem>
 	<fstream>

@@ -120,12 +120,13 @@ public:
     void write_to_text_file(FILE* integer_file) const;
 
     /**
-     * @brief Sets the value of this object to the value from a binary file.
-     * The file should be one created by the write_to_binary_file method of UnsignedHugeInt. Portability of the binary files
-     * is not guaranteed.
+     * @brief Creates an UnsignedHugeInt object with the value from a binary file.
+     * The file should be one created by the write_to_binary_file method of
+     * UnsignedHugeInt. Portability of the binary files is not guaranteed.
      * @param file_path The file path, including the file name, of the binary file containing the value of an UnsignedHugeInt.
+     * @return Object with the value read from the binary file.
      */
-    void read_from_binary_file(std::string file_path);
+    static UnsignedHugeInt read_from_binary_file(std::string file_path);
 
     /**
      * @brief Writes the value from this object to a new binary file.
