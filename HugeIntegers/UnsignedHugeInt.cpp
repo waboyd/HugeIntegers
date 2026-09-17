@@ -49,12 +49,8 @@ void UnsignedHugeInt::shrink_to_fit() {
     this->value->shrink_to_fit();
 }
 
-void UnsignedHugeInt::read_from_text_file(std::string file_path) {
-    this->value->read_from_text_file(file_path);
-}
-
-void UnsignedHugeInt::read_from_text_file(FILE* integer_file) {
-    this->value->read_from_text_file(integer_file);
+UnsignedHugeInt UnsignedHugeInt::read_from_text_file(std::string file_path) {
+    return UnsignedHugeInt(UnsignedHugeIntValue::read_from_text_file(file_path));
 }
 
 void UnsignedHugeInt::write_to_text_file(std::string file_path) const {

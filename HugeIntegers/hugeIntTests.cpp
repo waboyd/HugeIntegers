@@ -126,10 +126,8 @@ TEST_CASE("Set Equal to String", "Change the value of an UnsignedHugeInt object 
 TEST_CASE("Read From Text File 1", "Take the value of an UnsignedHugeInt object from a text file.") {
     std::string filePath = std::string(test_folder_path) + "smallInt.txt";
     std::string expectedValueString = "19843";
-    UnsignedHugeInt x;
     FILE *testTextFile = fopen(filePath.c_str(), "r");
-    x.read_from_text_file(testTextFile);
-    fclose(testTextFile);
+    UnsignedHugeInt x = UnsignedHugeInt::read_from_text_file(filePath);
     REQUIRE(expectedValueString == x.to_string());
 }
 
@@ -138,8 +136,7 @@ TEST_CASE("Read From Text File 2", "Take the value of an UnsignedHugeInt object 
     strcpy(filePath, test_folder_path);
     strcat(filePath, "oneLineInt.txt");
     std::string expectedValueString = "730984055406875409847684032487198406875407354458765804141708026";
-    UnsignedHugeInt x;
-    x.read_from_text_file(filePath);
+    UnsignedHugeInt x = UnsignedHugeInt::read_from_text_file(filePath);
     REQUIRE(expectedValueString == x.to_string());
 }
 
@@ -148,10 +145,7 @@ TEST_CASE("Read From Text File 3", "Take the value of an UnsignedHugeInt object 
     std::string expectedValueString = "820498354354904968439898403871842520506525012000844863354646"
             "85441064524354878348484999654074035247887357479873228725855787149401870063865530630257"
             "6983601830000135725";
-    UnsignedHugeInt x;
-    FILE *testTextFile = fopen(filePath.c_str(), "r");
-    x.read_from_text_file(testTextFile);
-    fclose(testTextFile);
+    UnsignedHugeInt x = UnsignedHugeInt::read_from_text_file(filePath);
     REQUIRE(expectedValueString == x.to_string());
 }
 
@@ -163,8 +157,7 @@ TEST_CASE("Read From Text File 4", "Take the value of an UnsignedHugeInt object 
     "7063608736644408998977104350866871587078038236048068176837184025718540486084487685865761687686"
     "5874846608623688707587680468754687687287046517336715546984384154541175200435713521084842187154"
     "0741652";
-    UnsignedHugeInt x;
-    x.read_from_text_file(filePath);
+    UnsignedHugeInt x = UnsignedHugeInt::read_from_text_file(filePath);
     REQUIRE(expectedValueString == x.to_string());
 }
 
@@ -173,10 +166,7 @@ TEST_CASE("Read From Text File 5", "Take the value of an UnsignedHugeInt object 
     std::string expectedValueString = "820498354354904968439898403871842520506525012000844863354646"
             "85441064524354878348484999654074035247887357479873228725855787149401870063865530630257"
             "69836018300000000000135725";
-    UnsignedHugeInt x;
-    FILE *testTextFile = fopen(filePath.c_str(), "r");
-    x.read_from_text_file(testTextFile);
-    fclose(testTextFile);
+    UnsignedHugeInt x = UnsignedHugeInt::read_from_text_file(filePath);
     REQUIRE(expectedValueString == x.to_string());
 }
 
@@ -323,10 +313,9 @@ TEST_CASE("Write and Read a Text File",
         "098435740";
     std::string textFilePath = std::string(test_folder_path) + "tempTestFile4.txt";
     UnsignedHugeInt x(numberString);
-    UnsignedHugeInt y;
     remove(textFilePath.c_str());
     x.write_to_text_file(textFilePath);
-    y.read_from_text_file(textFilePath);
+    UnsignedHugeInt y = UnsignedHugeInt::read_from_text_file(textFilePath);
     remove(textFilePath.c_str());
     REQUIRE(numberString == y.to_string());
 }
@@ -336,10 +325,9 @@ TEST_CASE("Write and Read Binary File for Small Number",
     std::string numberString = "590";
     std::string binaryFilePath = std::string(test_folder_path) + "tempTestFile5.bin";
     UnsignedHugeInt x(numberString);
-    UnsignedHugeInt y;
     remove(binaryFilePath.c_str());
     x.write_to_binary_file(binaryFilePath);
-    y.read_from_binary_file(binaryFilePath);
+    UnsignedHugeInt y = UnsignedHugeInt::read_from_binary_file(binaryFilePath);
     remove(binaryFilePath.c_str());
     REQUIRE(numberString == y.to_string());}
 

@@ -1408,37 +1408,30 @@ UnsignedHugeIntValue& UnsignedHugeIntValue::left_ones_shift_transform(unsigned l
     return *this;
 }
 
-void UnsignedHugeIntValue::read_from_text_file(std::string file_path) {
+UnsignedHugeIntValue UnsignedHugeIntValue::read_from_text_file(std::string file_path) {
     FILE *readTextFile = fopen(file_path.c_str(), "r");
     if (readTextFile == NULL)
         std::invalid_argument("The file with the given path could not be opened.");
-    read_from_text_file(readTextFile);
-    fclose(readTextFile);
-}
 
-void UnsignedHugeIntValue::read_from_text_file(FILE* integer_file) {
-    if (integer_file == NULL)
-        throw std::invalid_argument("A null file pointer was given as an argument.");
-    delete this->word_values;
     constexpr unsigned int digitsPerSegment = 9;
     char readBuffer[digitsPerSegment + 1];
     char nextChar;
     WordType segmentValue;
     WordType multiplier;
     unsigned short placeIndex;
-    this->word_values = new std::vector<WordType>(1, 0);
-    auto *thisWordValues = this->word_values;
+    auto *wordValues = new std::vector<WordType>(1, 0);
+    UnsignedHugeIntValue result(wordValues);
     // Find the size of the file for the vector memory reservation.
-    fseek(integer_file, 0, SEEK_END);
-    unsigned long long fileSize = ftell(integer_file);
-    fseek(integer_file, 0, SEEK_SET);
-    thisWordValues->reserve((3.321928096 * fileSize + 1) / bits_per_word + 1);
+    fseek(readTextFile, 0, SEEK_END);
+    unsigned long long fileSize = ftell(readTextFile);
+    fseek(readTextFile, 0, SEEK_SET);
+    wordValues->reserve((3.321928096 * fileSize + 1) / bits_per_word + 1);
     do {
         placeIndex = 0;
         multiplier = 1;
         // A segment of digits is read at a time and converted to a long integer.
         while (placeIndex < digitsPerSegment) {
-            nextChar = fgetc(integer_file);
+            nextChar = fgetc(readTextFile);
             // When the end of the file is reached, no more digits are put in the buffer, and
             // the multiplier keeps its value.
             if (nextChar == EOF)
@@ -1453,10 +1446,12 @@ void UnsignedHugeIntValue::read_from_text_file(FILE* integer_file) {
         readBuffer[placeIndex] = '\0'; // End of the number segment.
         // Converts the string to a long integer.
         segmentValue = strtoul(readBuffer, NULL, 10);
-        this->multiply_single_word_transform(multiplier);
-        this->add_value_at_word(thisWordValues->begin(), segmentValue);
+        result.multiply_single_word_transform(multiplier);
+        result.add_value_at_word(wordValues->begin(), segmentValue);
     } while (nextChar != EOF);
-    thisWordValues->shrink_to_fit();
+    fclose(readTextFile);
+    wordValues->shrink_to_fit();
+    return result;
 }
 
 void UnsignedHugeIntValue::write_to_text_file(std::string file_path) const {

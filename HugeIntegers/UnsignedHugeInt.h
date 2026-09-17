@@ -91,19 +91,12 @@ public:
 
     /**
      * @brief Sets the value of this UnsignedHugeInt object to the integer in the text file.
-     * The file should contain digits for only a single integer, as the entire file is scanned to
-     * set the value of this object.
+     * The file should contain digits for only a single integer, as the entire
+     * file is scanned to set the value of this object.
      * @param file_path The path of a file containing an unsigned integer value.
+     * @return Object with the value read from the text file.
      */
-    void read_from_text_file(std::string file_path);
-
-    /**
-     * @brief Sets the value of this UnsignedHugeInt object to the integer in the text file.
-     * The file should contain digits for only a single integer, as the entire file is scanned to
-     * set the value of this object.
-     * @param integer_file A file pointer, with read permission, to the file to be read.
-     */
-    void read_from_text_file(FILE* integer_file);
+    static UnsignedHugeInt read_from_text_file(std::string file_path);
 
     /**
      * @brief Writes the value from this object to a new text file.

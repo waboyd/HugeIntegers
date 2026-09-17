@@ -96,8 +96,7 @@ TEST_CASE("Write And Read Value With Many Zero Bits",
     REQUIRE(origNumberString == stringFromTextFile);
 
     // Test of reading the text file using the class function.
-    UnsignedHugeInt textFileInt;
-    textFileInt.read_from_text_file(textFilePath);
+    UnsignedHugeInt textFileInt = UnsignedHugeInt::read_from_text_file(textFilePath);
     REQUIRE(origNumberString == textFileInt.to_string());
     remove(textFilePath);
 
@@ -108,8 +107,7 @@ TEST_CASE("Write And Read Value With Many Zero Bits",
     remove(binFilePath);
     x.write_to_binary_file(binFilePath);
 
-    UnsignedHugeInt binFileInt;
-    binFileInt.read_from_binary_file(binFilePath);
+    UnsignedHugeInt binFileInt = UnsignedHugeInt::read_from_binary_file(binFilePath);
     REQUIRE(origNumberString == binFileInt.to_string());
     remove(binFilePath);
 }
