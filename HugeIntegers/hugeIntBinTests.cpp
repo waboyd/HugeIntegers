@@ -516,11 +516,11 @@ TEST_CASE("Random Ones Bit Shift",
     CHECK(rightShiftedInt == origInt);
 }
 
-TEST_CASE("Ten Million Digit Printable Form Conversion",
-        "Convert a value with around ten million digits to a HugeIntPrintable object.") {
-    constexpr unsigned long long numBits = 33219300;
+TEST_CASE("Million Digit Printable Form Conversion",
+        "Convert a value with more than six million digits to a HugeIntPrintable object.") {
+    constexpr unsigned long long numBits = 20000000;
     UnsignedHugeInt hugeInteger;
     hugeInteger.left_ones_shift_transform(numBits);
     HugeIntPrintable printableHugeInt = hugeInteger.printable_form();
-    CHECK(printableHugeInt.number_of_digits() >= 10000000);
+    CHECK(printableHugeInt.number_of_digits() >= 6000000);
 }

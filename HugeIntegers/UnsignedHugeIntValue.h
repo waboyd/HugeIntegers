@@ -111,14 +111,6 @@ public:
      */
     static UnsignedHugeIntValue read_from_binary_file(std::string file_path);
 
-//    /**
-//     * @brief Sets the value of this object to the value from a binary file.
-//     * The file should be one created by the write_to_binary_file method of UnsignedHugeIntValue. Portability of the binary files
-//     * is not guaranteed.
-//     * @param file_path The file path, including the file name, of the binary file containing the value of an UnsignedHugeIntValue.
-//     */
-//    void read_from_binary_file(std::string file_path);
-
     /**
      * @brief Writes the value from this object to a new binary file.
      * The file must not already exist. The binary file can be read by the read_from_binary_file method of UnsignedHugeIntValue.
@@ -143,6 +135,20 @@ public:
      * @return New HugeIntPrintable object with the same value as this object.
      */
     HugeIntPrintable printable_form() const;
+
+    /**
+     * @brief Stores the given value as base 10 words in the destination vector.
+     * This is a helper function for printable_form().
+     * The parameters are not references. This allows compatibility with
+     * multithreading. Moving is recommended for value_chunk.
+     * @param value_chunk The value that will be stored as base 10 words.
+     * @param result_dest The least significant (rightmost) word where this value will be stored.
+     * @param smaller_ten_power The value of HugeIntPrintable::word_base ^ 64.
+     */
+    static void parse_chunk_digits(
+            UnsignedHugeIntValue value_chunk,
+            std::vector<HugeIntPrintable::WordType>::iterator result_dest,
+            const UnsignedHugeIntValue& smaller_ten_power);
 
     /**
      * @brief Assigns a copy of the right-hand value to the object on the left of the assignment operator.

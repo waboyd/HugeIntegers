@@ -1603,8 +1603,84 @@ HugeIntPrintable UnsignedHugeIntValue::printable_form() const {
     if (this->word_values->size() < 250000) {
         return HugeIntPrintable();
     }
-    UnsignedHugeIntValue::base_ten_conversion_setup();
-    return HugeIntPrintable();
+
+    // To process a huge value, some powers of 10 are loaded from files.
+    UnsignedHugeIntValue smallerTenPower, mediumTenPower, largeTenPower;
+    const std::string smallerFilePath = setup_folder_path + smaller_ten_power_filename;
+    const std::string mediumFilePath = setup_folder_path + medium_ten_power_filename;
+    const std::string largeFilePath = setup_folder_path + large_ten_power_filename;
+    try {
+        smallerTenPower = UnsignedHugeIntValue::read_from_binary_file(smallerFilePath);
+        mediumTenPower = UnsignedHugeIntValue::read_from_binary_file(mediumFilePath);
+        largeTenPower = UnsignedHugeIntValue::read_from_binary_file(largeFilePath);
+    }
+    catch (...) {
+        // If the powers of 10 could not be loaded, they need to be set up.
+        UnsignedHugeIntValue::base_ten_conversion_setup();
+        smallerTenPower = UnsignedHugeIntValue::read_from_binary_file(smallerFilePath);
+        mediumTenPower = UnsignedHugeIntValue::read_from_binary_file(mediumFilePath);
+        largeTenPower = UnsignedHugeIntValue::read_from_binary_file(largeFilePath);
+    }
+
+    // The word vector for the HugeIntPrintable object is set up.
+    const unsigned long long numPrintableWords =
+            (unsigned long long)(this->num_words() * bits_per_word * 0.30103) /
+                                HugeIntPrintable::digits_per_word + 1;
+    auto* printableWords =
+            new std::vector<HugeIntPrintable::WordType>(numPrintableWords, 0);
+    std::vector<WordType>::iterator resultWordIter = printableWords->begin();
+
+    // The value is divided into chunks of base ten digits.
+    auto largeDivisionResults = UnsignedHugeIntValue::divide_many_word_divisor(this, largeTenPower);
+    UnsignedHugeIntValue& mainQuotient = largeDivisionResults.first;
+    UnsignedHugeIntValue& largeChunk = largeDivisionResults.second;
+    std::pair<UnsignedHugeIntValue, UnsignedHugeIntValue> midDivisionResults;
+    UnsignedHugeIntValue& midQuotient = midDivisionResults.first;
+    UnsignedHugeIntValue& midChunk = midDivisionResults.second;
+    while ((mainQuotient.word_values->size() > 1) ||
+            (mainQuotient.word_values->front() > 0) ||
+            (largeChunk.word_values->size() > 1) ||
+            (largeChunk.word_values->front() > 0)) {
+        // Each iteration of the while loop will set 262144 words of the result.
+        midDivisionResults = UnsignedHugeIntValue::divide_many_word_divisor(largeChunk, mediumTenPower);
+        for (unsigned int midOffset = 0; midOffset < 64; ++midOffset) {
+            // Each iteration of the for loop sets 4096 words of the result.
+            parse_chunk_digits(std::move(midChunk), resultWordIter, smallerTenPower);
+            resultWordIter += 4096;
+            midDivisionResults = UnsignedHugeIntValue::divide_many_word_divisor(midQuotient, mediumTenPower);
+        }
+        std::cout << "Performing the large division in printable_form().\n";    ////////////////////////////////////////////
+        largeDivisionResults = UnsignedHugeIntValue::divide_many_word_divisor(mainQuotient, largeTenPower);
+    }
+
+    // If the result vector has too many words, some leading words are removed.
+    UnsignedHugeIntValue::remove_extra_leading_words_from(printableWords);
+    printableWords->shrink_to_fit();
+    return HugeIntPrintable(printableWords);
+}
+
+void UnsignedHugeIntValue::parse_chunk_digits(
+        UnsignedHugeIntValue value_chunk,
+        std::vector<HugeIntPrintable::WordType>::iterator result_dest,
+        const UnsignedHugeIntValue& smaller_ten_power) {
+    // The value_chunk is a remainder of HugeIntPrintable::word_base ^ 4096,
+    // so the value_chunk will set 4096 words of the result vector.
+    const WordType printableWordBase = HugeIntPrintable::word_base_value;
+    auto greaterDivisionResults = UnsignedHugeIntValue::divide_many_word_divisor(value_chunk, smaller_ten_power);
+    UnsignedHugeIntValue& greaterQuotient = greaterDivisionResults.first;
+    UnsignedHugeIntValue& smallerChunk = greaterDivisionResults.second;
+    HugeIntPrintable::WordType wordValue;
+    while ((greaterQuotient.word_values->size() > 1) ||
+            (greaterQuotient.word_values->front() > 0) ||
+            (smallerChunk.word_values->size() > 1) ||
+            (smallerChunk.word_values->front() > 0)) {
+        for (unsigned int wordOffset = 0; wordOffset < 64; ++wordOffset) {
+            wordValue = smallerChunk.divide_single_word_divisor_transform(printableWordBase);
+            *result_dest = wordValue;
+            ++result_dest;
+        }
+        greaterDivisionResults = UnsignedHugeIntValue::divide_many_word_divisor(greaterQuotient, smaller_ten_power);
+    }
 }
 
 std::string UnsignedHugeIntValue::to_string() const {
