@@ -549,17 +549,17 @@ private:
 
     // Filename of a large UnsignedHugeInt object stored in the setup folder.
     // The value stored should be a power of HugeIntPrintable::word_base_value.
-    static inline std::string smaller_ten_power_filename = "SmallerTenPower";
+    static inline std::string smaller_ten_power_filename = "SmallerTenPower.bin";
 
     // Filename of a large UnsignedHugeInt object stored in the setup folder.
     // The value stored should be a power of the value stored in
     // smaller_ten_power_filename.
-    static inline std::string medium_ten_power_filename = "MediumTenPower";
+    static inline std::string medium_ten_power_filename = "MediumTenPower.bin";
 
     // Filename of a large UnsignedHugeInt object stored in the setup folder.
     // The value stored should be a power of the value stored in
     // medium_ten_power_filename.
-    static inline std::string large_ten_power_filename = "LargeTenPower";
+    static inline std::string large_ten_power_filename = "LargeTenPower.bin";
 
     // Private Methods
 

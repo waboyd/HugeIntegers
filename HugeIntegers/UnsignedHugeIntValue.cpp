@@ -539,7 +539,7 @@ std::pair<UnsignedHugeIntValue, UnsignedHugeIntValue> UnsignedHugeIntValue::divi
     // The most significant word of the quotient is found separately.
     // A lower estimate of the quotient word is found by dividing a lower estimate of the
     // dividend by an upper estimate of the divisor.
-    divisorUpperEstimate = *divisorIter + (((double)(*(divisorIter + 1)) + 1) / word_base_value);
+    divisorUpperEstimate = *divisorIter + (((double)(*(divisorIter + 1)) + 4096) / word_base_value);
     dividendLowerEstimate = *remainderLeftIter + ((double)(*(remainderLeftIter + 1)) / word_base_value);
     quotientWordEstimate = (WordType)(dividendLowerEstimate / divisorUpperEstimate);
     // The product of the divisor and the quotient word is subtracted from the remainder segment.
@@ -1621,7 +1621,6 @@ HugeIntPrintable UnsignedHugeIntValue::printable_form() const {
         mediumTenPower = UnsignedHugeIntValue::read_from_binary_file(mediumFilePath);
         largeTenPower = UnsignedHugeIntValue::read_from_binary_file(largeFilePath);
     }
-
     // The word vector for the HugeIntPrintable object is set up.
     const unsigned long long numPrintableWords =
             (unsigned long long)(this->num_words() * bits_per_word * 0.30103) /
@@ -1646,10 +1645,13 @@ HugeIntPrintable UnsignedHugeIntValue::printable_form() const {
         for (unsigned int midOffset = 0; midOffset < 64; ++midOffset) {
             // Each iteration of the for loop sets 4096 words of the result.
             parse_chunk_digits(std::move(midChunk), resultWordIter, smallerTenPower);
-            resultWordIter += 4096;
+            if ((midQuotient.word_values->size() == 1) && (midQuotient.word_values->front() == 0)) {
+                resultWordIter += (4096 * (64 - midOffset));
+                break;
+            }
             midDivisionResults = UnsignedHugeIntValue::divide_many_word_divisor(midQuotient, mediumTenPower);
+            resultWordIter += 4096;
         }
-        std::cout << "Performing the large division in printable_form().\n";    ////////////////////////////////////////////
         largeDivisionResults = UnsignedHugeIntValue::divide_many_word_divisor(mainQuotient, largeTenPower);
     }
 
@@ -1675,6 +1677,10 @@ void UnsignedHugeIntValue::parse_chunk_digits(
             (smallerChunk.word_values->size() > 1) ||
             (smallerChunk.word_values->front() > 0)) {
         for (unsigned int wordOffset = 0; wordOffset < 64; ++wordOffset) {
+            if ((smallerChunk.word_values->size() == 1) && (smallerChunk.word_values->front() == 0)) {
+                result_dest += (64 - wordOffset);
+                break;
+            }
             wordValue = smallerChunk.divide_single_word_divisor_transform(printableWordBase);
             *result_dest = wordValue;
             ++result_dest;

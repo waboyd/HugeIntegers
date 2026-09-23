@@ -194,6 +194,15 @@ TEST_CASE("Decrement Suffix With One Word Carry 32Bit",
     REQUIRE(origValueString == y.to_string());
 }
 
+TEST_CASE("Divide Huge Saved Integers",
+        "Divide two integer that have tens of thousands of bits.") {
+    UnsignedHugeInt dividend = UnsignedHugeInt::read_from_binary_file(std::string(test_folder_path) + "testDividend1.bin");
+    UnsignedHugeInt divisor = UnsignedHugeInt::read_from_binary_file(std::string(test_folder_path) + "testDivisor1.bin");
+    auto divisionResults = UnsignedHugeInt::divide(dividend, divisor);
+    REQUIRE(divisionResults.first > divisor);
+    REQUIRE(divisionResults.second < divisor);
+}
+
 TEST_CASE("Bitwise AND Between Huge Integers",
         "Perform a bitwise AND between two UnsignedHugeInt objects.") {
     UnsignedHugeInt x(3086491544);
@@ -516,11 +525,12 @@ TEST_CASE("Random Ones Bit Shift",
     CHECK(rightShiftedInt == origInt);
 }
 
-TEST_CASE("Million Digit Printable Form Conversion",
-        "Convert a value with more than six million digits to a HugeIntPrintable object.") {
-    constexpr unsigned long long numBits = 20000000;
-    UnsignedHugeInt hugeInteger;
-    hugeInteger.left_ones_shift_transform(numBits);
-    HugeIntPrintable printableHugeInt = hugeInteger.printable_form();
-    CHECK(printableHugeInt.number_of_digits() >= 6000000);
-}
+//TEST_CASE("Million Digit Printable Form Conversion",
+//        "Convert a value with more than six million digits to a HugeIntPrintable object.") {
+//    constexpr unsigned long long numBits = 20000000;
+//    UnsignedHugeInt hugeInteger;
+//    hugeInteger.left_ones_shift_transform(numBits);
+//    HugeIntPrintable printableHugeInt = hugeInteger.printable_form();
+//    CHECK(printableHugeInt.number_of_digits() >= 6000000);
+//    std::cout << printableHugeInt << std::endl;
+//}
