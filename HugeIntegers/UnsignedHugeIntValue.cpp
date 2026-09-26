@@ -539,14 +539,25 @@ std::pair<UnsignedHugeIntValue, UnsignedHugeIntValue> UnsignedHugeIntValue::divi
     // The most significant word of the quotient is found separately.
     // A lower estimate of the quotient word is found by dividing a lower estimate of the
     // dividend by an upper estimate of the divisor.
-    divisorUpperEstimate = *divisorIter + (((double)(*(divisorIter + 1)) + 4096) / word_base_value);
+    divisorUpperEstimate = *divisorIter + (((double)(*(divisorIter + 1)) + 1.) / word_base_value);
     dividendLowerEstimate = *remainderLeftIter + ((double)(*(remainderLeftIter + 1)) / word_base_value);
     quotientWordEstimate = (WordType)(dividendLowerEstimate / divisorUpperEstimate);
     // The product of the divisor and the quotient word is subtracted from the remainder segment.
     UnsignedHugeIntValue subProduct = UnsignedHugeIntValue::multiply_single_word(divisor, quotientWordEstimate);
+    // In rare cases, rounding may cause the quotient estimate to be too large.
+    std::vector<WordType> *subProductWords = subProduct.word_values;
+    unsigned long long numSubProductWords = subProductWords->size();
+    while (((numSubProductWords > numDivisorWords) &&
+            !UnsignedHugeIntValue::is_remainder_as_large(remainderLeftIter, subProductWords)) ||
+            ((numSubProductWords == numDivisorWords) &&
+            (*remainderLeftIter == 0) &&
+            !UnsignedHugeIntValue::is_remainder_as_large(remainderLeftIter + 1, subProductWords))) {
+        --quotientWordEstimate;
+        subProduct -= divisor;
+    }
     UnsignedHugeIntValue::subtract_from_remainder(remainderRightIter, subProduct);
     // The quotient word is incremented until it is the exact correct value.
-    while (UnsignedHugeIntValue::is_remainder_too_large(remainderLeftIter, divisorWords)) {
+    while (UnsignedHugeIntValue::is_remainder_as_large(remainderLeftIter, divisorWords)) {
         ++quotientWordEstimate;
         UnsignedHugeIntValue::subtract_from_remainder(remainderRightIter, divisor);
     }
@@ -572,6 +583,19 @@ std::pair<UnsignedHugeIntValue, UnsignedHugeIntValue> UnsignedHugeIntValue::divi
         quotientWordEstimate = (WordType)(dividendLowerEstimate / divisorUpperEstimate);
         // The product of the divisor and the quotient word is subtracted from the remainder segment.
         subProduct = UnsignedHugeIntValue::multiply_single_word(divisor, quotientWordEstimate);
+        // In rare cases, rounding may cause the quotient estimate to be too large.
+        subProductWords = subProduct.word_values;
+        numSubProductWords = subProductWords->size();
+        while (((numSubProductWords > numDivisorWords) &&
+                !UnsignedHugeIntValue::is_remainder_as_large(remainderLeftIter, subProductWords)) ||
+                ((numSubProductWords == numDivisorWords) &&
+                (*remainderLeftIter == 0) &&
+                !UnsignedHugeIntValue::is_remainder_as_large(remainderLeftIter + 1, subProductWords))) {
+            --quotientWordEstimate;
+            subProduct -= divisor;
+            subProductWords = subProduct.word_values;
+            numSubProductWords = subProductWords->size();
+        }
         UnsignedHugeIntValue::subtract_from_remainder(remainderRightIter, subProduct);
 
         // The correct quotient value should cause the leftmost word of the remainder to be 0.
@@ -581,7 +605,7 @@ std::pair<UnsignedHugeIntValue, UnsignedHugeIntValue> UnsignedHugeIntValue::divi
         }
         ++remainderLeftIter;
         // The quotient word is incremented until the remainder is less than the divisor.
-        while (UnsignedHugeIntValue::is_remainder_too_large(remainderLeftIter, divisorWords)) {
+        while (UnsignedHugeIntValue::is_remainder_as_large(remainderLeftIter, divisorWords)) {
             ++quotientWordEstimate;
             UnsignedHugeIntValue::subtract_from_remainder(remainderRightIter, divisor);
         }
@@ -1630,6 +1654,7 @@ HugeIntPrintable UnsignedHugeIntValue::printable_form() const {
     std::vector<WordType>::iterator resultWordIter = printableWords->begin();
 
     // The value is divided into chunks of base ten digits.
+    std::cout << "Starting the first large division in printable_form(). Number of dividend words: " << this->num_words() << std::endl; ///////////////////////
     auto largeDivisionResults = UnsignedHugeIntValue::divide_many_word_divisor(this, largeTenPower);
     UnsignedHugeIntValue& mainQuotient = largeDivisionResults.first;
     UnsignedHugeIntValue& largeChunk = largeDivisionResults.second;
@@ -1640,6 +1665,7 @@ HugeIntPrintable UnsignedHugeIntValue::printable_form() const {
             (mainQuotient.word_values->front() > 0) ||
             (largeChunk.word_values->size() > 1) ||
             (largeChunk.word_values->front() > 0)) {
+        std::cout << "Starting the processing for a large chunk.\n";    ///////////////////////////////////////////////////////////////////////
         // Each iteration of the while loop will set 262144 words of the result.
         midDivisionResults = UnsignedHugeIntValue::divide_many_word_divisor(largeChunk, mediumTenPower);
         for (unsigned int midOffset = 0; midOffset < 64; ++midOffset) {
@@ -1652,12 +1678,14 @@ HugeIntPrintable UnsignedHugeIntValue::printable_form() const {
             midDivisionResults = UnsignedHugeIntValue::divide_many_word_divisor(midQuotient, mediumTenPower);
             resultWordIter += 4096;
         }
+        std::cout << "Starting the next large division in printable_form(). Number of dividend words: " << mainQuotient.num_words() << std::endl; ////////////////////
         largeDivisionResults = UnsignedHugeIntValue::divide_many_word_divisor(mainQuotient, largeTenPower);
     }
 
     // If the result vector has too many words, some leading words are removed.
     UnsignedHugeIntValue::remove_extra_leading_words_from(printableWords);
     printableWords->shrink_to_fit();
+    std::cout << "End of printable_form().\n";  ////////////////////////////////////////////////////////////////////////////////////////////////////////
     return HugeIntPrintable(printableWords);
 }
 
@@ -1874,7 +1902,7 @@ void UnsignedHugeIntValue::insert_multiplication_subtotal(
     }
 }
 
-bool UnsignedHugeIntValue::is_remainder_too_large(std::vector<WordType>::reverse_iterator remainder_iterator,
+bool UnsignedHugeIntValue::is_remainder_as_large(std::vector<WordType>::reverse_iterator remainder_iterator,
                                                const std::vector<WordType>* divisor_words) {
     std::vector<WordType>::const_reverse_iterator divisorIter = divisor_words->crbegin();
     for (unsigned long long numWordsRemaining = divisor_words->size(); numWordsRemaining > 0; --numWordsRemaining) {
@@ -1893,15 +1921,15 @@ bool UnsignedHugeIntValue::is_remainder_too_large(std::vector<WordType>::reverse
 void UnsignedHugeIntValue::subtract_from_remainder(std::vector<WordType>::iterator remainder_iterator,
                                                  const UnsignedHugeIntValue& subtrahend) {
     std::vector<WordType>::const_iterator subtrahendIter = subtrahend.word_values->cbegin();
-    uint64_t remainderWord, subtrahendWord, carryValue = 0;
+    uint64_t remainderWordValue, subtrahendWordValue, carryValue = 0;
     for (unsigned long long numWordsRemaining = subtrahend.word_values->size(); numWordsRemaining > 0; --numWordsRemaining) {
-        remainderWord = *remainder_iterator;
-        subtrahendWord = *subtrahendIter + carryValue;
-        if (remainderWord < subtrahendWord) {
-            *remainder_iterator = word_base_value + remainderWord - subtrahendWord;
+        remainderWordValue = *remainder_iterator;
+        subtrahendWordValue = *subtrahendIter + carryValue;
+        if (remainderWordValue < subtrahendWordValue) {
+            *remainder_iterator = word_base_value + remainderWordValue - subtrahendWordValue;
             carryValue = 1;
         } else {
-            *remainder_iterator = remainderWord - subtrahendWord;
+            *remainder_iterator = remainderWordValue - subtrahendWordValue;
             carryValue = 0;
         }
         ++remainder_iterator;

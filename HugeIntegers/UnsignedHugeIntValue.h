@@ -680,8 +680,8 @@ private:
      * @param divisor_words The words of the divisor.
      * @return false if the divisor is less than the remainder, otherwise returns true.
      */
-    static bool is_remainder_too_large(std::vector<WordType>::reverse_iterator remainder_iterator,
-                                    const std::vector<WordType>* divisor_words);
+    static bool is_remainder_as_large(std::vector<WordType>::reverse_iterator remainder_iterator,
+                                      const std::vector<WordType>* divisor_words);
 
     /**
      * @brief Subtracts from the cooresponding remainder word values.
@@ -691,7 +691,7 @@ private:
      * @param subtrahend The value that will be subtracted from the remainder segment.
      */
     static void subtract_from_remainder(std::vector<WordType>::iterator remainder_iterator,
-                                      const UnsignedHugeIntValue& subtrahend);
+                                        const UnsignedHugeIntValue& subtrahend);
 
     /**
      * @brief Performs a few operations to speed up conversions to base 10.
