@@ -18,6 +18,8 @@
 #include "HugeIntPrintable.h"
 
 const char test_folder_path[] = "../TestFiles/";
+// Determines whether tests that take a long time will be performed.
+constexpr bool is_do_long_tests = true;
 
 // Creates an UnsignedHugeInt with the specified number of words and a random value.
 UnsignedHugeInt randomHugeInt(unsigned long num_words) {
@@ -196,11 +198,17 @@ TEST_CASE("Decrement Suffix With One Word Carry 32Bit",
 
 TEST_CASE("Divide Huge Saved Integers",
         "Divide two integer that have tens of thousands of bits.") {
+    if (!is_do_long_tests) {
+        return;
+    }
     UnsignedHugeInt dividend = UnsignedHugeInt::read_from_binary_file(std::string(test_folder_path) + "testDividend1.bin");
     UnsignedHugeInt divisor = UnsignedHugeInt::read_from_binary_file(std::string(test_folder_path) + "testDivisor1.bin");
     auto divisionResults = UnsignedHugeInt::divide(dividend, divisor);
-    REQUIRE(divisionResults.first > divisor);
-    REQUIRE(divisionResults.second < divisor);
+    UnsignedHugeInt& quotient = divisionResults.first;
+    UnsignedHugeInt& remainder = divisionResults.second;
+    REQUIRE(quotient > divisor);
+    REQUIRE(remainder < divisor);
+    REQUIRE(dividend == quotient * divisor + remainder);
 }
 
 TEST_CASE("Bitwise AND Between Huge Integers",
@@ -525,12 +533,15 @@ TEST_CASE("Random Ones Bit Shift",
     CHECK(rightShiftedInt == origInt);
 }
 
-//TEST_CASE("Million Digit Printable Form Conversion",
-//        "Convert a value with more than six million digits to a HugeIntPrintable object.") {
-//    constexpr unsigned long long numBits = 20000000;
-//    UnsignedHugeInt hugeInteger;
-//    hugeInteger.left_ones_shift_transform(numBits);
-//    HugeIntPrintable printableHugeInt = hugeInteger.printable_form();
-//    CHECK(printableHugeInt.number_of_digits() >= 6000000);
+TEST_CASE("Million Digit Printable Form Conversion",
+        "Convert a value with more than six million digits to a HugeIntPrintable object.") {
+    if (!is_do_long_tests) {
+        return;
+    }
+    constexpr unsigned long long numBits = 20000000;
+    UnsignedHugeInt hugeInteger;
+    hugeInteger.left_ones_shift_transform(numBits);
+    HugeIntPrintable printableHugeInt = hugeInteger.printable_form();
+    CHECK(printableHugeInt.number_of_digits() >= 6000000);
 //    std::cout << printableHugeInt << std::endl;
-//}
+}
