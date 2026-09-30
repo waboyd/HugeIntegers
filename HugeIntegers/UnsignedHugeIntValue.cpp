@@ -1,5 +1,8 @@
 #include "UnsignedHugeIntValue.h"
 
+#include <algorithm>
+#include <thread>
+
 UnsignedHugeIntValue::UnsignedHugeIntValue()
         : word_values(new std::vector<WordType>(1, 0)) {}
 
@@ -1658,15 +1661,15 @@ HugeIntPrintable UnsignedHugeIntValue::printable_form() const {
     auto largeDivisionResults = UnsignedHugeIntValue::divide_many_word_divisor(this, largeTenPower);
     UnsignedHugeIntValue& mainQuotient = largeDivisionResults.first;
     UnsignedHugeIntValue& largeChunk = largeDivisionResults.second;
+    std::vector<std::thread> threadList;
     while ((mainQuotient.word_values->size() > 1) ||
             (mainQuotient.word_values->front() > 0)) {
         std::cout << "Starting the processing for a large chunk.\n";    ///////////////////////////////////////////////////////////////////////
-        // Each iteration of the while loop will set 262144 words of the result.
-        UnsignedHugeIntValue::parse_chunk_digits(
-                std::move(largeChunk),
-                resultWordIter,
-                mediumTenPower,
-                smallerTenPower);
+        threadList.push_back(std::thread(UnsignedHugeIntValue::parse_chunk_digits,
+                                         std::move(largeChunk),
+                                         resultWordIter,
+                                         mediumTenPower,
+                                         smallerTenPower));
         resultWordIter += 262144;
         std::cout << "Starting the next large division in printable_form(). Number of dividend words: " << mainQuotient.num_words() << std::endl; ////////////////////
         largeDivisionResults = UnsignedHugeIntValue::divide_many_word_divisor(mainQuotient, largeTenPower);
@@ -1677,6 +1680,10 @@ HugeIntPrintable UnsignedHugeIntValue::printable_form() const {
             resultWordIter,
             mediumTenPower,
             smallerTenPower);
+
+    // All threads must finish processing digits.
+    std::for_each(threadList.begin(), threadList.end(),
+                  [](std::thread& thisThread) {thisThread.join();});
 
     // If the result vector has too many words, some leading words are removed.
     UnsignedHugeIntValue::remove_extra_leading_words_from(printableWords);
@@ -1690,6 +1697,7 @@ void UnsignedHugeIntValue::parse_chunk_digits(
         std::vector<HugeIntPrintable::WordType>::iterator result_dest,
         const UnsignedHugeIntValue& medium_ten_power,
         const UnsignedHugeIntValue& smaller_ten_power) {
+    std::cout << "Start of parse_chunk_digits().\n";    ///////////////////////////////////////////////////////////////////////////////////////////////////
     std::pair<UnsignedHugeIntValue, UnsignedHugeIntValue> greaterDivisionResults, midDivisionResults;
     UnsignedHugeIntValue& greaterQuotient = greaterDivisionResults.first;
     UnsignedHugeIntValue& midChunk = greaterDivisionResults.second;
@@ -1726,6 +1734,7 @@ void UnsignedHugeIntValue::parse_chunk_digits(
         }
         greaterDivisionResults = UnsignedHugeIntValue::divide_many_word_divisor(greaterQuotient, medium_ten_power);
     }
+    std::cout << "End of parse_chunk_digits().\n";    ///////////////////////////////////////////////////////////////////////////////////////////////////
 }
 
 std::string UnsignedHugeIntValue::to_string() const {

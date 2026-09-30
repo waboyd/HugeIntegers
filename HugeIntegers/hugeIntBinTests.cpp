@@ -543,5 +543,6 @@ TEST_CASE("Million Digit Printable Form Conversion",
     hugeInteger.left_ones_shift_transform(numBits);
     HugeIntPrintable printableHugeInt = hugeInteger.printable_form();
     CHECK(printableHugeInt.number_of_digits() >= 6000000);
-//    std::cout << printableHugeInt << std::endl;
+    UnsignedHugeInt copyFromString(printableHugeInt.to_string());
+    CHECK(hugeInteger == copyFromString);
 }
