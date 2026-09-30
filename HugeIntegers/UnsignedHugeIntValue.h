@@ -137,20 +137,6 @@ public:
     HugeIntPrintable printable_form() const;
 
     /**
-     * @brief Stores the given value as base 10 words in the destination vector.
-     * This is a helper function for printable_form().
-     * The parameters are not references. This allows compatibility with
-     * multithreading. Moving is recommended for value_chunk.
-     * @param value_chunk The value that will be stored as base 10 words.
-     * @param result_dest The least significant (rightmost) word where this value will be stored.
-     * @param smaller_ten_power The value of HugeIntPrintable::word_base ^ 64.
-     */
-    static void parse_chunk_digits(
-            UnsignedHugeIntValue value_chunk,
-            std::vector<HugeIntPrintable::WordType>::iterator result_dest,
-            const UnsignedHugeIntValue& smaller_ten_power);
-
-    /**
      * @brief Assigns a copy of the right-hand value to the object on the left of the assignment operator.
      * This operation does not change the right-hand value or objects.
      * @param orig An UnsignedHugeIntValue object with a value that will be copied.
@@ -700,6 +686,23 @@ private:
      * speed up conversions to base 10.
      */
     static void base_ten_conversion_setup();
+
+    /**
+     * @brief Stores the given value as base 10 words in the destination vector.
+     * This is a helper function for printable_form().
+     * The parameters are not references. This allows compatibility with
+     * multithreading. Moving is recommended for value_chunk.
+     * @param value_chunk The value that will be stored as base 10 words.
+     * @param result_dest The least significant (rightmost) word where this value will be stored.
+     * @param smaller_ten_power The value of HugeIntPrintable::word_base ^ 64.
+     */
+    static void parse_chunk_digits(
+            UnsignedHugeIntValue value_chunk,
+            std::vector<HugeIntPrintable::WordType>::iterator result_dest,
+            const UnsignedHugeIntValue& medium_ten_power,
+            const UnsignedHugeIntValue& smaller_ten_power);
+
+
 };
 
 // Operators involving UnsignedHugeIntValue, but not considered part of UnsignedHugeIntValue by the compiler.
