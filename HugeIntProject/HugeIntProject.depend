@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1790714279 source:/home/willboyd/Programming/HugeIntegers/HugeIntegers/hugeIntBinTests.cpp
+1790800244 source:/home/willboyd/Programming/HugeIntegers/HugeIntegers/hugeIntBinTests.cpp
 	<random>
 	<catch2/catch_test_macros.hpp>
 	<catch2/catch_get_random_seed.hpp>
@@ -29,8 +29,10 @@
 	<vector>
 	"HugeIntPrintable.h"
 
-1790381511 source:/home/willboyd/Programming/HugeIntegers/HugeIntegers/UnsignedHugeIntValue.cpp
+1790895716 source:/home/willboyd/Programming/HugeIntegers/HugeIntegers/UnsignedHugeIntValue.cpp
 	"UnsignedHugeIntValue.h"
+	<algorithm>
+	<thread>
 
 1788563340 /home/willboyd/Programming/HugeIntegers/HugeIntegers/HugeIntPrintable.h
 	<cstdint>
