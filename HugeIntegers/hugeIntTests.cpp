@@ -126,7 +126,6 @@ TEST_CASE("Set Equal to String", "Change the value of an UnsignedHugeInt object 
 TEST_CASE("Read From Text File 1", "Take the value of an UnsignedHugeInt object from a text file.") {
     std::string filePath = std::string(test_folder_path) + "smallInt.txt";
     std::string expectedValueString = "19843";
-    FILE *testTextFile = fopen(filePath.c_str(), "r");
     UnsignedHugeInt x = UnsignedHugeInt::read_from_text_file(filePath);
     REQUIRE(expectedValueString == x.to_string());
 }
@@ -180,10 +179,8 @@ TEST_CASE("Write to Text File 1", "Write a one-word UnsignedHugeInt to a text fi
     // Delete the file before writing if it already exists.
     remove(textFilePath);
 
-    // Use the write_to_text_file method to write the number to a text file.'
-    FILE *writeTextFile = fopen(textFilePath, "w");
-    x.write_to_text_file(writeTextFile);
-    fclose(writeTextFile);
+    // Write the number to a text file.
+    x.write_to_text_file(textFilePath);
 
     // Read the text file and compare its text to the expected string.
     FILE *readTextFile = fopen(textFilePath, "r");

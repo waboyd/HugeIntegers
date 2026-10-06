@@ -98,11 +98,27 @@ public:
     static HugeIntPrintable read_from_text_file(std::string file_path);
 
     /**
+     * @brief Creates a HugeIntPrintable object from the integer in the text file.
+     * The file should contain digits for only a single integer, as the
+     * entire file is scanned to set the value of this object.
+     * @param file_path The path of a file containing an integer value.
+     * @return A new object with the value of the integer in the text file.
+     */
+    static HugeIntPrintable read_from_text_file(const char* file_path);
+
+    /**
      * @brief Writes the value from this object to a new text file.
      * The file with the given path must not already exist.
      * @param file_path The destination path, including the file name, of the text file to be written.
      */
     void write_to_text_file(std::string file_path) const;
+
+    /**
+     * @brief Writes the value from this object to a new text file.
+     * The file with the given path must not already exist.
+     * @param file_path The destination path, including the file name, of the text file to be written.
+     */
+    void write_to_text_file(const char* file_path) const;
 
     /**
      * @brief Reads and recreates a HugeIntPrintable object from a binary file.
@@ -114,12 +130,29 @@ public:
     static HugeIntPrintable read_from_binary_file(std::string file_path);
 
     /**
+     * @brief Reads and recreates a HugeIntPrintable object from a binary file.
+     * The file should be one created by the write_to_binary_file method
+     * of HugeIntPrintable. Portability of the binary files is not guaranteed.
+     * @param file_path The file path, including the file name, of the binary file containing a HugeIntPrintable object.
+     * @return A HugeIntPrintable object read from the binary file.
+     */
+    static HugeIntPrintable read_from_binary_file(const char* file_path);
+
+    /**
      * @brief Writes the value from this object to a new binary file.
      * The file must not already exist. The binary file can be read by the read_from_binary_file method of HugeIntPrintable.
      * Portability of the binary files is not guaranteed.
      * @param file_path The destination path, including the file name, of the binary file to be written.
      */
     void write_to_binary_file(std::string file_path) const;
+
+    /**
+     * @brief Writes the value from this object to a new binary file.
+     * The file must not already exist. The binary file can be read by the read_from_binary_file method of HugeIntPrintable.
+     * Portability of the binary files is not guaranteed.
+     * @param file_path The destination path, including the file name, of the binary file to be written.
+     */
+    void write_to_binary_file(const char* file_path) const;
 
     /**
      * @brief Returns the value of this HugeIntPrintable object as a string.

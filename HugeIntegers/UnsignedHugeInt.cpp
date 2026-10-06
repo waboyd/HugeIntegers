@@ -53,20 +53,32 @@ UnsignedHugeInt UnsignedHugeInt::read_from_text_file(std::string file_path) {
     return UnsignedHugeInt(UnsignedHugeIntValue::read_from_text_file(file_path));
 }
 
+UnsignedHugeInt UnsignedHugeInt::read_from_text_file(const char* file_path) {
+    return UnsignedHugeInt(UnsignedHugeIntValue::read_from_text_file(std::string(file_path)));
+}
+
 void UnsignedHugeInt::write_to_text_file(std::string file_path) const {
     this->value->write_to_text_file(file_path);
 }
 
-void UnsignedHugeInt::write_to_text_file(FILE* integer_file) const {
-    this->value->write_to_text_file(integer_file);
+void UnsignedHugeInt::write_to_text_file(const char* file_path) const {
+    this->value->write_to_text_file(std::string(file_path));
 }
 
 UnsignedHugeInt UnsignedHugeInt::read_from_binary_file(std::string file_path) {
     return UnsignedHugeInt(UnsignedHugeIntValue::read_from_binary_file(file_path));
 }
 
+UnsignedHugeInt UnsignedHugeInt::read_from_binary_file(const char* file_path) {
+    return UnsignedHugeInt(UnsignedHugeIntValue::read_from_binary_file(std::string(file_path)));
+}
+
 void UnsignedHugeInt::write_to_binary_file(std::string file_path) const {
     this->value->write_to_binary_file(file_path);
+}
+
+void UnsignedHugeInt::write_to_binary_file(const char* file_path) const {
+    this->value->write_to_binary_file(std::string(file_path));
 }
 
 UnsignedHugeInt::operator std::string() const {

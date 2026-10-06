@@ -99,6 +99,15 @@ public:
     static UnsignedHugeInt read_from_text_file(std::string file_path);
 
     /**
+     * @brief Sets the value of this UnsignedHugeInt object to the integer in the text file.
+     * The file should contain digits for only a single integer, as the entire
+     * file is scanned to set the value of this object.
+     * @param file_path The path of a file containing an unsigned integer value.
+     * @return Object with the value read from the text file.
+     */
+    static UnsignedHugeInt read_from_text_file(const char* file_path);
+
+    /**
      * @brief Writes the value from this object to a new text file.
      * The file with the given path must not already exist.
      * @param file_path The destination path, including the file name, of the text file to be written.
@@ -106,11 +115,11 @@ public:
     void write_to_text_file(std::string file_path) const;
 
     /**
-     * @brief Writes the value from this object as text to a file.
-     * The value will be written to the current file pointer location.
-     * @param integer_file A file pointer, with write permission, to the file location where the value will be written.
+     * @brief Writes the value from this object to a new text file.
+     * The file with the given path must not already exist.
+     * @param file_path The destination path, including the file name, of the text file to be written.
      */
-    void write_to_text_file(FILE* integer_file) const;
+    void write_to_text_file(const char* file_path) const;
 
     /**
      * @brief Creates an UnsignedHugeInt object with the value from a binary file.
@@ -122,12 +131,29 @@ public:
     static UnsignedHugeInt read_from_binary_file(std::string file_path);
 
     /**
+     * @brief Creates an UnsignedHugeInt object with the value from a binary file.
+     * The file should be one created by the write_to_binary_file method of
+     * UnsignedHugeInt. Portability of the binary files is not guaranteed.
+     * @param file_path The file path, including the file name, of the binary file containing the value of an UnsignedHugeInt.
+     * @return Object with the value read from the binary file.
+     */
+    static UnsignedHugeInt read_from_binary_file(const char* file_path);
+
+    /**
      * @brief Writes the value from this object to a new binary file.
      * The file must not already exist. The binary file can be read by the read_from_binary_file method of UnsignedHugeInt.
      * Portability of the binary files is not guaranteed.
      * @param file_path
      */
     void write_to_binary_file(std::string file_path) const;
+
+    /**
+     * @brief Writes the value from this object to a new binary file.
+     * The file must not already exist. The binary file can be read by the read_from_binary_file method of UnsignedHugeInt.
+     * Portability of the binary files is not guaranteed.
+     * @param file_path
+     */
+    void write_to_binary_file(const char* file_path) const;
 
     /**
      * @brief Converts the value of this object to a C++ string.

@@ -168,6 +168,10 @@ HugeIntPrintable HugeIntPrintable::read_from_text_file(std::string file_path) {
     return HugeIntPrintable(wordVector, readBuffer[0] == '-');
 }
 
+HugeIntPrintable HugeIntPrintable::read_from_text_file(const char* file_path) {
+    return HugeIntPrintable::read_from_text_file(std::string(file_path));
+}
+
 void HugeIntPrintable::write_to_text_file(std::string file_path) const {
     unsigned long long numWords = this->word_values->size();
     if (numWords == 0) {
@@ -200,6 +204,10 @@ void HugeIntPrintable::write_to_text_file(std::string file_path) const {
     fclose(writeTextFile);
 }
 
+void HugeIntPrintable::write_to_text_file(const char* file_path) const {
+    this->write_to_text_file(std::string(file_path));
+}
+
 HugeIntPrintable HugeIntPrintable::read_from_binary_file(std::string file_path) {
     std::ifstream fileReadStream(file_path, std::ios::in | std::ios::binary);
     if (!fileReadStream.is_open()) {
@@ -218,6 +226,10 @@ HugeIntPrintable HugeIntPrintable::read_from_binary_file(std::string file_path) 
             wordValues->data()), numWords * sizeof(WordType));
     fileReadStream.close();
     return HugeIntPrintable(wordValues, isNegative);
+}
+
+HugeIntPrintable HugeIntPrintable::read_from_binary_file(const char* file_path) {
+    return HugeIntPrintable::read_from_binary_file(std::string(file_path));
 }
 
 void HugeIntPrintable::write_to_binary_file(std::string file_path) const {
@@ -241,6 +253,10 @@ void HugeIntPrintable::write_to_binary_file(std::string file_path) const {
     fileWriteStream.write(reinterpret_cast<const char*>(
             this->word_values->data()), numWords * sizeof(WordType));
     fileWriteStream.close();
+}
+
+void HugeIntPrintable::write_to_binary_file(const char* file_path) const {
+    this->write_to_binary_file(std::string(file_path));
 }
 
 std::string HugeIntPrintable::to_string() const {
