@@ -1575,6 +1575,7 @@ long UnsignedHugeIntValue::num_words() const {
 }
 
 void UnsignedHugeIntValue::base_ten_conversion_setup() {
+    std::cout << "Setting up files for base 10 conversions.\n";
     // The setup folder should be created if it does not already exist.
     std::filesystem::create_directories(setup_folder_path);
     // If files already exist for the powers of ten, they should be replaced.
@@ -1596,7 +1597,6 @@ void UnsignedHugeIntValue::base_ten_conversion_setup() {
     // This will be the smaller_ten_power value.
     hugeIntPower.write_to_binary_file(
             setup_folder_path + smaller_ten_power_filename);
-    std::cout << "SmallerTenPower was saved.\n";
 
     hugeIntPower *= hugeIntPower;
     hugeIntPower *= hugeIntPower;
@@ -1609,7 +1609,6 @@ void UnsignedHugeIntValue::base_ten_conversion_setup() {
     // This will be the medium_ten_power.
     hugeIntPower.write_to_binary_file(
             setup_folder_path + medium_ten_power_filename);
-    std::cout << "MediumTenPower was saved.\n";
 
     hugeIntPower *= hugeIntPower;
     hugeIntPower *= hugeIntPower;
@@ -1622,7 +1621,7 @@ void UnsignedHugeIntValue::base_ten_conversion_setup() {
     // This will be the large_ten_power.
     hugeIntPower.write_to_binary_file(
             setup_folder_path + large_ten_power_filename);
-    std::cout << "LargerTenPower was saved.\n";
+    std::cout << "The setup for base 10 conversions was completed.\n";
 }
 
 HugeIntPrintable UnsignedHugeIntValue::printable_form() const {

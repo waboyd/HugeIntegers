@@ -1,18 +1,19 @@
 # HugeIntegers Library for C++
 
-This is the source code and static library for a new C++ class named UnsignedHugeInt. The class is designed to be used as an integer type that allows exact values to be stored for integers with many digits, and allows exact answers to mathematical operations to be easily found using those integers.
+This is the source code and static library for a new C++ class named `UnsignedHugeInt`. The class is designed to be used as an integer type that allows exact values to be stored for integers with many digits, and allows exact answers to mathematical operations to be easily found using those integers.
 
-The class does not have an inherent limit on the size of the integers used or the number of digits per integer, but size limits can still occur from restrictions in the programming environment or available memory. Positive integers with millions of digits can be stored or used in computations as objects of UnsignedHugeInt. The class is not intended to store or perform operations using negative integers. Use of negative values with the operations UnsignedHugeInt will result in unexpected and incorrect values.
+The class structure allows integers with up to 10<sup>19</sup> digits. In practice, the size limitations for the integers will occur from restrictions in the programming environment or available memory. Positive integers with millions of digits can be stored or used in computations as objects of `UnsignedHugeInt`. The class is not intended to store or perform operations using negative integers. Use of negative values with the operations `UnsignedHugeInt` will result in errors or unexpected and incorrect values.
 
-This library, was created entirely by William A. Boyd Jr. This library is distributed under the MIT License. This software may be used or modified freely, but please name me as the creator of the original version of this library in the credits of the applicable product(s). If you have questions or comments, please send me an email at bwilliam@hotmail.com, and include the name of the library in the subject line. I would be happy to hear if this software was useful.
+This library was created entirely by William A. Boyd Jr. This library is distributed under the MIT License. This software may be used or modified freely, but please name me as the creator of the original version of this library in the credits of the applicable product(s). If you have questions or comments, please send me an email at bwilliam@hotmail.com, and include the name of the library in the subject line. I would be happy to hear if this software was useful.
 
 The Catch2 test framework has been used for the class testing. The file catch.hpp was present in previous versions of this repository, but the file has been since removed from the library files. Catch2 was obtained from https://github.com/catchorg/Catch2.
 
 
 ## Setup
-The library is precompiled as a static library in the folder named StaticLibrary. Your compiler will need access to the header file UnsignedHugeInt.h, and your linker will need the file libHugeInt.lib.
+The library is precompiled as a static library in the folder named StaticLibrary. Your compiler will need access to the header file `UnsignedHugeInt.h`, and your linker will need the file `libHugeInt.lib`.
 
-The library file libHugeInt.lib was compiled on a Fedora (Linux) system. If the file is not compatible within your environment, you may need to compile the source code for your particular environment. The constant values in the header files should not be changed to use this library. The required source files are:
+The library file `libHugeInt.lib` was compiled on a Fedora (Linux) system. If the file is not compatible within your environment, you may need to compile the source code for your particular environment. Other than file paths, the constant values in the header files should not be changed to use this library. The required source files are:
+
 
 * UnsignedHugeInt.h
 * UnsignedHugeInt.cpp
@@ -20,11 +21,14 @@ The library file libHugeInt.lib was compiled on a Fedora (Linux) system. If the 
 * UnsignedHugeIntValue.cpp
 * HugeIntWord.h
 * HugeIntWord.cpp
+* HugeIntPrintable.h
+* HugeIntPrintable.cpp
 
-Of these, only UnsignedHugeInt.h should be included by external software.
+Of these, only `UnsignedHugeInt.h`, and optionally `HugeIntPrintable.h`, should be included by external software.
 
 If the installation was successful, the following lines should be compilable without problems.
 
+```
     #include "UnsignedHugeInt.h"
 
     int main(int argc, char **argv)
@@ -33,38 +37,48 @@ If the installation was successful, the following lines should be compilable wit
         ++x;
         std::cout << "Value of x: " << x << "\n";
     }
+```
 
 This should assign the value to x, increment it, and print its new value.
 
 ## Instantiation and Initialization
 
-Include the UnsingedHugeInt.h as a header file to allow the use of UnsignedHugeInt as a type.
+Include `UnsingedHugeInt.h` as a header file to allow the use of `UnsignedHugeInt` as a type.
 
+```
     #include "UnsignedHugeInt.h"
+```
 
-Variables of UnsignedHugeInt can be declared and initialized with the same syntax used for other C++ integer types. Unlike the primitive int types, variables of UnsignedHugeInt that are not initialized are given a value of 0.
+Variables of `UnsignedHugeInt` can be declared and initialized with the same syntax used for other C++ integer types. Unlike the primitive int types, variables of `UnsignedHugeInt` that are not explicitly initialized are given a value of 0.
 
+```
     UnsignedHugeInt a;		// Initializes a to 0.
     UnsignedHugeInt b(5542);	// Initializes b to 5542.
     UnsignedHugeInt c = 478;	// Initializes c to 478.
     int x = 73l;
     UnsignedHugeInt d = x;		// Initializes d to 731 (value of x).
+```
 
-If an integer is too large for the native C++ environment to process, you will not be able to assign the value as a literal integer value. For example, an UnsignedHugeInt can hold a value of 1234567890098765432101, but the compiler does not understand the number 1234567890098765432101 because it is too large.
+If an integer is too large for the native C++ environment to process, you will not be able to assign the value as a literal integer value. For example, an `UnsignedHugeInt` can hold a value of 1234567890098765432101, but the compiler does not understand the number 1234567890098765432101 because it is too large.
 
+```
     UnsignedHugeInt a = 1234567890098765432101; // Does not work. Do not do this!
+```
 
-For this reason, strings (char* or std::string) of digits can be used to assign a value to an UnsignedHugeInt. The string must contain only digits for the integer. Values can also be copied from existing UnsignedHugeInt or nonnegative integer variables.
+For this reason, strings (`char*` or `std::string`) of digits can be used to assign a value to an `UnsignedHugeInt`. The string must contain only digits for the integer. Values can also be copied from existing `UnsignedHugeInt` or nonnegative integer variables.
 
+```
     UnsignedHugeInt a = "1234567890098765432101";	// This will give the numerical value to the variable.
     UnsignedHugeInt b(a);		// Copies the value 1234567890098765432101 to the new variable b.
     UnsignedHugeInt c = a;		// Copies the value 1234567890098765432101 to the new variable c.
+```
 
 
 ## Output
 
-The UnsignedHugeInt method to_string() returns the value of the variable as a std::string. An object of UnsignedHugeInt can also be cast as a std::string to give the same result. The value of an UnsignedHugeInt can be output directly to a stream.
+The `UnsignedHugeInt` method `to_string()` returns the value of the variable as a `std::string`. An object of `UnsignedHugeInt` can also be cast as a `std::string` to give the same result. The value of an `UnsignedHugeInt` can be output directly to a stream.
 
+```
     UnsignedHugeInt d = "56748962340197409876098734777769112230553";
     std::string intString1, intString2;
     intString1 = d.to_string();
@@ -72,40 +86,50 @@ The UnsignedHugeInt method to_string() returns the value of the variable as a st
     std::cout << "intString1: " << intString1 << "\n";
     std::cout << "intString2: " << intString2 << "\n";
     std::cout << "d: " << d << "\n";
+```
 
 Result:
 
+```
     intString1: 56748962340197409876098734777769112230553
     intString2: 56748962340197409876098734777769112230553
     d: 56748962340197409876098734777769112230553
+```
 
-The UnsignedHugeInt method `number_of_digits()` returns the number of base 10 digits in the value as an UnsignedHugeInt. The UnsignedHugeInt method `length()` is equivalent.
+The `UnsignedHugeInt` method `number_of_digits()` returns the number of base 10 digits in the value as an `UnsignedHugeInt`. The `UnsignedHugeInt` method `length()` is equivalent.
 
 ## Arithmetic Operators
 
-UnsignedHugeInt supports the following arithmetic operators, which behave the same way as the operators for the native C++ integer types.
+`UnsignedHugeInt` supports the following arithmetic operators, which behave the same way as the operators for the native C++ integer types.
 
+```
 	+	-	*	/	%
 	+=	-=	*=	/=	%=
 	++ (prefix or suffix)
 	-- (prefix or suffix)
-All of these return UnsignedHugeInt objects when one of the arguments is an UnsignedHugeInt. The subtraction and decrement operations throw an exception if the result is negative. Integer values can be used on either side of the arithmetic operators, but the use of negative values in the operations is not supported.
+```
+All of these return `UnsignedHugeInt` objects when one of the arguments is an `UnsignedHugeInt`. The subtraction and decrement operations throw an exception if the result is negative. Integer values can be used on either side of the arithmetic operators, but the use of negative values in the operations is not supported.
 
 As an example, this finds the average of the two values.
 
+```
     UnsignedHugeInt value1("61351980004064111786419867354198035418403537");
     UnsignedHugeInt value2 = "490498411878773549840354840587489112335499309";
     UnsignedHugeInt average;	// Has a value of 0 if not initialized.
     average = (value1 + value2) / 2;
     std::cout << "Average value: " << average << "\n";
+```
 
 The following line is output by this program segment:
 
+```
     Average value: 275925195941418830813387353970843573876951423
+```
 
 
-The static UnsignedHugeInt method `divide(const UnsignedHugeInt& dividend, const UnsignedHugeInt& divisor)` returns a pair of UnsignedHugeInt objects: the quotient and remainder of the integer division. This method is recommended whenever the quotient and remainder will both be used, as this avoids repetition of the division process.
+The static `UnsignedHugeInt` method `divide(const UnsignedHugeInt& dividend, const UnsignedHugeInt& divisor)` returns a pair of `UnsignedHugeInt` objects: the quotient and remainder of the integer division. This method is recommended whenever the quotient and remainder will both be used, as this avoids repetition of the division process.
 
+```
     UnsignedHugeInt dividend("57044496378411123084322189436884324008935689407410046875046");
     UnsignedHugeInt divisor("47103549732045657048015699403540");
     UnsignedHugeInt quotient, remainder;
@@ -115,93 +139,140 @@ The static UnsignedHugeInt method `divide(const UnsignedHugeInt& dividend, const
     remainder = division_results.second;
     std::cout << "Quotient: " << quotient << "\n";
     std::cout << "Remainder: " << remainder << "\n";
+```
 
 
 Result:
 
+```
     Quotient: 1211044532798818032951280240
     Remainder: 32876386735422226721762658825446
+```
 
 
 ## Bitwise Operators
 
-UnsignedHugeInt supports the following bitwise operators, which behave the same way as the operators for the native C++ integer types.
+`UnsignedHugeInt` supports the following bitwise operators, which behave the same way as the operators for the native C++ integer types.
 
+```
 	&   (bitwise AND)
 	|   (bitwise OR)
 	^   (bitwise exclusive OR)
 	<<  (left bit shift)
 	>>  (right bit shift)
+```
 
-These operations all return an UnsignedHugeInt object when an UnsignedHugeInt is used as an operand or argument. The bit shift operations do not currently support the use of an UnsignedHugeInt to represent the number of bits to shift the value.
+These operations all return an `UnsignedHugeInt` object when an `UnsignedHugeInt` is used as an operand or argument. The bit shift operations do not currently support the use of an `UnsignedHugeInt` to represent the number of bits to shift the value.
 
-The standard bitwise NOT operator `~` is intentionally left unsupported for UnsignedHugeInt values. The expected behavior of the operator would not be clear when applied to values that may use an unlimited number of bits. Instead, a separate function of the UnsignedHugeInt class was created to perform bitwise NOT operations.
-    `UnsignedHugeInt bitwise_not(const unsigned long long number_of_bits) const;`
-    
-This operation creates a new UnsignedHugeInt object with bit values that are the complement of the rightmost, least significant bits. The number of bits to be used in the NOT operation must be specified, and all bits left of the specified number of bits will be 0 in the result.
+The standard bitwise NOT operator `~` is intentionally left unsupported for `UnsignedHugeInt` values. The expected behavior of the operator would not be clear when applied to values that may use an unlimited number of bits. Instead, a separate function of the `UnsignedHugeInt` class was created to perform bitwise NOT operations.
+```
+    UnsignedHugeInt bitwise_not(const unsigned long long number_of_bits) const;
+```
 
+This operation creates a new `UnsignedHugeInt` object with bit values that are the complement of the rightmost, least significant bits. The number of bits to be used in the NOT operation must be specified, and all bits left of the specified number of bits will be 0 in the result.
+
+```
     UnsignedHugeInt x = 21; // 10101 in binary
     UnsignedHugeInt y = x.bitwise_not(3); // results in 2, or 010 in binary
     UnsignedHugeInt z = x.bitwise_not(7); // results in 106, or 1101010 in binary
-    
-Additional left shift operations are supported that place 1 bits, instead of 0 bits, as the portion of the value that is shifted in from the right. The class function `left_ones_shifted(const unsigned long long number_of_bits)` creates a new UnsignedHugeInt object for the new value. The class function `left_ones_shift_transform(const unsigned long long number_of_bits)` replaces the existing value of the UnsignedHugeInt object with the shifted value.
+```
 
+Additional left shift operations are supported that place 1 bits, instead of 0 bits, as the portion of the value that is shifted in from the right. The class function `left_ones_shifted(const unsigned long long number_of_bits)` creates a new `UnsignedHugeInt` object for the new value. The class function `left_ones_shift_transform(const unsigned long long number_of_bits)` replaces the existing value of the `UnsignedHugeInt` object with the shifted value.
+
+```
     UnsignedHugeInt x = 14; // 1110 in binary
     UnsignedHugeInt y = x.left_ones_shifted(2); // sets y to 59, or 111011 in binary
     x.left_ones_shift_transform(3); // changes the value of x to 119, or 1110111 in binary
-
+```
 
 ## Comparison Operators
 
-The standard comparison operators are supported for UnsignedHugeInt.
+The standard comparison operators are supported for `UnsignedHugeInt`.
 
+```
 	<	>	==
 	<=	>=	!=
-These all return a bool value and have the same behavior expected for other integer types. Integer values can be used for one side of the operator, but the use of negative values in the operations is not supported.
+```
+These all return a `bool` value and have the same behavior expected for other integer types. Integer values can be used for one side of the operator, but the use of negative values in the operations is not supported.
 
 ## Text File Operations
 
-The value of an UnsignedHugeInt can be written to a text file using the method
-`write_to_text_file(std::string file_path)`. The argument should be the path of the file to be written, including the name of the file. The write_to_text_file method can only be used to create a new file containing only digits from the value and newline ('\n') characters. An exception is thrown if the file already exists before the method is called.
+The value of an `UnsignedHugeInt` can be written to a text file using the method
+`write_to_text_file(std::string file_path)`. The argument should be the path of the file to be written, including the name of the file. The `write_to_text_file()` method can only be used to create a new file containing only digits from the value and newline (`\n`) characters. An exception is thrown if the file already exists before the method is called.
 
-The value of an UnsignedHugeInt can be set to a value from a text file via the method `read_from_text_file(std::string file_path)`. The argument should be the path of the file to be read, including the name of the file. The text file is assumed to hold the digits of only one unsigned integer. All non-digit characters in the text file are ignored.
+The value of an `UnsignedHugeInt` can be set to a value from a text file via the static method `read_from_text_file(std::string file_path)`. The argument should be the path of the file to be read, including the name of the file. The text file is assumed to hold the digits of only one unsigned integer. All non-digit characters in the text file are ignored.
 
-
+```
     UnsignedHugeInt x = "380985198723318923069853786";
-    UnsignedHugeInt y;
     std::string integer_file_path = "../TextFiles/LargeNumber1.txt";	// The file does not yet exist.
     x.write_to_text_file(integer_file_path);	// Write the value of x to a text file.
-    y.read_from_text_file(integer_file_path);	// Set y to the value in the text file.
+    UnsignedHugeInt y = UnsignedHugeInt::read_from_text_file(integer_file_path);	// Set y to the value in the text file.
     std::cout << "Value of y: " << y << "\n";
-
+```
 
 Result:
 
+```
     Value of y: 380985198723318923069853786
+```
 
 
 
 ## Binary File Operations
 
-The value of an UnsignedHugeInt can be written to a binary file using the method
-`write_to_binary_file(std::string file_path)`. The use of a binary file is more efficient than a text file, in terms of both performance and required disk space. The drawback is that the binary file can only be read by the same library that created the file, in the same environment. The argument should be the path of the file to be written, including the name of the file. The write_to_binary_file() method can only be used to create a new binary file; an exception is thrown if the file already exists before the method is called.
+The value of an `UnsignedHugeInt` can be written to a binary file using the method
+`write_to_binary_file(std::string file_path)`. The use of a binary file is more efficient than a text file, in terms of both performance and required disk space. The drawback is that the binary file can only be read by the same library that created the file, in the same environment. The argument should be the path of the file to be written, including the name of the file. The `write_to_binary_file()` method can only be used to create a new binary file; an exception is thrown if the file already exists before the method is called.
 
-The method `read_from_binary_file(std::string file_path)` reads the value of an UnsignedHugeInt that was previously written to a file by the write_to_binary_file() method. The argument should be the path of the file to be read, including the name of the file. The portability of the binary files across different computers is not guaranteed.
+The static method `read_from_binary_file(std::string file_path)` reads the value of an `UnsignedHugeInt` that was previously written to a file by the `write_to_binary_file()` method. The argument should be the path of the file to be read, including the name of the file. The portability of the binary files across different computers is not guaranteed.
 
 
+```
     UnsignedHugeInt x = "296870106117339450400480835217839840";
-    UnsignedHugeInt y;
-    std::string integer_file_path = "..\\DataFiles\\LargeNumber.bin";	// The file does not yet exist.
+    std::string integer_file_path = "../DataFiles/LargeNumber.bin";	// The file does not yet exist.
     x.write_to_binary_file(integer_file_path);	// Write the value of x to a binary file.
-    y.read_from_binary_file(integer_file_path);	// Set y to the value in the binary file.
+    UnsignedHugeInt y = UnsignedHugeInt::read_from_binary_file(integer_file_path);	// Set y to the value in the binary file.
     std::cout << "Value of y: " << y << "\n";
+```
 
 
 Result:
 
+```
     Value of y: 296870106117339450400480835217839840
+```
 
 
+
+## HugeIntPrintable Class to Store Outputs
+
+Values stored as `UnsignedHugeInt` objects can be directly displayed, converted to a string, or written to a text file, as described above. The values are stored in the `UnsignedHugeInt` objects in binary segments, so the values are converted to base 10 digits for each of those output operations. For values consisting of a huge number of digits, the conversion could take a long time. The `HugeIntPrintable` class was created to store results in base 10 format using less memory than strings.
+
+A `UnsignedHugeInt` object can be converted to a `HugeIntPrintable` object using the `printable_form()` function of `UnsignedHugeInt`. The first time `printable_form()` is called for a function with more than 2.5 million digits, a setup will be automatically run. The setup will save some values to files to make the conversions faster. The setup should complete within a few minutes.
+
+A `HugeIntPrintable` object can be used to print values and read and write to text and binary files, using the same function names as with `UnsignedHugeInt`. Operations involving strings and text files are much faster for `HugeIntPrintable` than for `UnsignedHugeInt`. A `HugeIntPrintable` object can be created to avoid repeating conversions between binary and base 10 representations.
+
+A text file containing only an unsigned integer can be read as either an `UnsignedHugeInt` object or a `HugeIntPrintable` object. Binary files are not compatible between the two classes; if a `HugeIntPrintable` object is written to a binary file, that file can only be read correctly by `HugeIntPrintable::read_from_binary_file()`.
+
+The use of the `HugeIntPrintable` class is optional. The `UnsignedHugeInt` class can be used without the `HugeIntPrintable` class. Use of the `HugeIntPrintable` class requires that the header file `HugeIntPrintable.h` be included. Mathematical and comparison operations are not implemented for `HugeIntPrintable` because the class is intended for printing results.
+
+```
+    UnsignedHugeInt x = "71340967786780210488653412098574034859403";
+    x *= 1000000;
+    HugeIntPrintable printableResult = x.printable_form();
+    // The string output is much faster for a HugeIntPrintable object than an UnsignedHugeInt object.
+    std::cout << "Result as a string: " << printableResult << std::endl;
+    std::string integer_file_path = "../TextFiles/MultResult1.txt";	// The file does not yet exist.
+    printableResult.write_to_text_file(integer_file_path);	// Faster than a write from an UnsignedHugeInt object.
+    HugeIntPrintable resultFromTextFile = HugeIntPrintable::read_from_text_file(integer_file_path);	// Faster than an UnsignedHugeInt read.
+    std::cout << "Result read from a text file: " << resultFromTextFile << std::endl;
+```
+
+Result:
+
+```
+    Result as a string: 71340967786780210488653412098574034859403000000
+    Result read from a text file: 71340967786780210488653412098574034859403000000
+```
 
 ## Development Notes
 
@@ -209,6 +280,6 @@ This library was developed by William A. Boyd Jr. The latest version of the libr
 
 No guarantees are made as to whether development will continue for this library. Some useful changes that could be applied to this library are listed below.
 
-- Change the overall structure for a huge integer, from a linked list to a structure based on dynamic-sized arrays (std::vector). This change should reduce memory usage.
-- Apply multithreading to the multiplication and/or division operations.
-- Implement a related class that supports operations for signed integers with many digits.
+* Apply multithreading to the multiplication and/or division operations.
+* Implement a related class that supports operations for signed integers with many digits.
+
